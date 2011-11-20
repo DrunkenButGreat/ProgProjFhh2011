@@ -1,3 +1,10 @@
+/** MoveCheck
+ * 
+ * Prüft ob der Zug korrekt war
+ * 
+ * @author Julian Kipka
+ * @version 0.1
+ */
 package de.gruppe12.shared;
 
 import de.fhhannover.inform.hnefatafl.vorgaben.BoardContent;

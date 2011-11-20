@@ -1,3 +1,11 @@
+/** Board
+ * 
+ * Board-Objekt
+ * 
+ * @author Julian Kipka
+ * @Version 1.0
+ */
+
 package de.gruppe12.shared;
 
 import de.fhhannover.inform.hnefatafl.vorgaben.BoardContent;
