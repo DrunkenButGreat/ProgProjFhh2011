@@ -5,8 +5,8 @@ package de.gruppe12.ki;
 * Copyright: (c) 2011 <p>
 * Company: Gruppe 12 <p>
 * @author Markus
-* @version 1.0.0 19.11.2011
-* Änderungen: 19.11. javadoc eingefügt
+* @version 1.0.1 21.11.2011
+* Änderungen: 21.11. 
 */
 
 public class StrategyManager {
@@ -19,16 +19,15 @@ public class StrategyManager {
 	 */
 	public void register(MoveStrategy strategy){
 	 this.strategy = strategy;
-	 
 	}
 	
 	/**
 	 * getStrategy
 	 * 
-	 * @return
+	 * @return alle Strategien
 	 */
 	public MoveStrategy[] getStrategies(){
-		MoveStrategy[] stListe = null;
+		MoveStrategy[] stListe = new NormalStrategy[12];
 		return stListe;
 	}
 	

@@ -1,6 +1,8 @@
 package de.gruppe12.ki;
 
-import de.fhhannover.inform.hnefatafl.vorgaben.Move;
+import de.gruppe12.*;
+import de.gruppe12.shared.Move;
+
 
 /**
 * Die Klasse NormalStrategy ist die normale Spielstrategie <p>
@@ -14,6 +16,7 @@ import de.fhhannover.inform.hnefatafl.vorgaben.Move;
 public class NormalStrategy implements MoveStrategy {
 	private int getNr;
 	private String name;
+	private Node<Move> verlauf;
 	
 	public NormalStrategy(int grpNr){
 		name = "normal";
@@ -29,8 +32,9 @@ public class NormalStrategy implements MoveStrategy {
 	}
 
 	public Move calculateDefenderMove(Move lastMove, int thinktimeInSeconds) {
-		//Move newM = new Move(4,3);
-		return null;
+		verlauf.setRight(new Node<Move>(lastMove));
+		Move newM = new Move(lastMove.getToCell(),new Cell(2,3));
+		return newM;
 	}
 
 	public Move calculateAttackerMove(Move lastMove, int thinktimeInSeconds) {
