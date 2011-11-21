@@ -21,8 +21,6 @@ public class MoveCheck {
 	 * @return
 	 */
 	public static Boolean check (Board board, Move move){ 
-		this.board = board.get();
-		this.move = move;
 		
 		/* Testen on der Zug auf den Feld statt fand
 		 * 
