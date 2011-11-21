@@ -1,6 +1,6 @@
 /** MoveCheck
  * 
- * Prüft ob der Zug korrekt war
+ * Prï¿½ft ob der Zug korrekt war
  * 
  * @author Julian Kipka
  * @version 0.1
@@ -10,10 +10,7 @@ package de.gruppe12.shared;
 import de.fhhannover.inform.hnefatafl.vorgaben.BoardContent;
 import de.fhhannover.inform.hnefatafl.vorgaben.Move;
 
-public abstract class MoveCheck {
-	
-	BoardContent[][] board;
-	Move move;
+public class MoveCheck {
 	
 	/** check
 	 * 
@@ -23,7 +20,7 @@ public abstract class MoveCheck {
 	 * @param move
 	 * @return
 	 */
-	public Boolean check (Board board, Move move){ 
+	public static Boolean check (Board board, Move move){ 
 		this.board = board.get();
 		this.move = move;
 		
@@ -55,7 +52,7 @@ public abstract class MoveCheck {
 	 * @param move
 	 * @return
 	 */
-	private boolean checkFreeWay(Board board, Move move){
+	private static boolean checkFreeWay(Board board, Move move){
 		return true;
 	}
 
