@@ -115,15 +115,7 @@ public class GameGui extends JFrame {
 
 
 	private void buildMenuBar() {
-		jmbMenuBar= new JMenuBar() {
-			@Override public void paintComponent(Graphics g) {
-				super.paintComponent(g);
-				Graphics2D gtemp= (Graphics2D) g.create();
-				gtemp.setColor(Color.YELLOW);
-				gtemp.drawRect(7, 7, getWidth()-15, getHeight()-15);
-				gtemp.dispose();
-			}
-		};
+		jmbMenuBar= new JMenuBar();
 		
 		JMenu jmDatei= new JMenu("Datei");
 		JMenuItem jmiSpielBeenden= new JMenuItem("Spiel Beenden");
@@ -131,7 +123,7 @@ public class GameGui extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
+				// TODO Programm beenden
 				
 			}
 		});
