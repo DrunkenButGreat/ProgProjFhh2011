@@ -30,7 +30,6 @@ public class StrategyManager {
 	public MoveStrategy[] getStrategies(){
 		MoveStrategy[] stListe = null;
 		return stListe;
-		
 	}
 	
 	/**
