@@ -19,12 +19,15 @@ public class MoveCheck {
 	 */
 	public static Boolean check (Board board, Move move){ 
 		
-		/* Teste ob Zugrichtung korrekt */
-		if(move.getFromCell().getCol()!=move.getToCell().getCol() &&
-				move.getFromCell().getRow()!=move.getToCell().getRow()) 
-		return false;
-		
-		else return checkFreeWay(board,move);
+			
+		if(
+				checkMoveDirection(board,move)&&
+				checkForFortress(board, move)&&
+				checkBoardContent(move)&&
+				checkFreeWay(board,move)&&				
+				checkInBoard(board, move)				
+		) return true;
+		else return false;
 	}
 	
 	/**checkFreeWay
@@ -47,7 +50,7 @@ public class MoveCheck {
 	 * @param move: Der zu Analysierende Zug
 	 * @return
 	 */
-	private static boolean checkBoadContent(Move move){
+	private static boolean checkBoardContent(Move move){
 		if(move.getFromCell().getContent()!=move.getToCell().getContent()) return false;
 		else return true;
 	}
@@ -82,6 +85,15 @@ public class MoveCheck {
 	
 	private static boolean checkForFortress(Board board, Move move){
 		return true;
+	}
+	
+	private static boolean checkMoveDirection(Board board, Move move){
+		/* Teste ob Zugrichtung korrekt */
+		if(move.getFromCell().getCol()!=move.getToCell().getCol() &&
+				move.getFromCell().getRow()!=move.getToCell().getRow()) 
+		return false;
+		
+		else return true;
 	}
 
 }
