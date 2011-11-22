@@ -1,6 +1,8 @@
 package de.gruppe12.ki;
 
+import de.fhhannover.inform.hnefatafl.vorgaben.BoardContent;
 import de.gruppe12.*;
+import de.gruppe12.shared.Cell;
 import de.gruppe12.shared.Move;
 
 
@@ -33,7 +35,7 @@ public class NormalStrategy implements MoveStrategy {
 
 	public Move calculateDefenderMove(Move lastMove, int thinktimeInSeconds) {
 		verlauf.setRight(new Node<Move>(lastMove));
-		Move newM = new Move(lastMove.getToCell(),new Cell(2,3));
+		Move newM = new Move(lastMove.getToCell(),new Cell(2,3, BoardContent.DEFENDER));
 		return newM;
 	}
 
