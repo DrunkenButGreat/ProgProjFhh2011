@@ -3,7 +3,7 @@
  * Pr�ft ob der Zug korrekt war
  * 
  * @author Julian Kipka
- * @version 0.1
+ * @version 1.0
  */
 package de.gruppe12.shared;
 
