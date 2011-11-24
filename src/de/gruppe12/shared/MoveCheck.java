@@ -7,7 +7,11 @@
  */
 package de.gruppe12.shared;
 
+import de.fhhannover.inform.hnefatafl.vorgaben.BoardContent;
+
 public class MoveCheck {
+	
+	//TODO: Funktionstest ob die Funktionen richtig funktionieren
 	
 	/** check
 	 * 
@@ -17,15 +21,15 @@ public class MoveCheck {
 	 * @param move
 	 * @return
 	 */
-	public static Boolean check (Board board, Move move){ 
+	public static Boolean check (Move move, Board board){ 
 		
 			
 		if(
-				checkMoveDirection(board,move)&&
-				checkForFortress(board, move)&&
+				checkMoveDirection(move, board)&&
+				checkForFortress(move, board)&&
 				checkBoardContent(move)&&
-				checkFreeWay(board,move)&&				
-				checkInBoard(board, move)				
+				checkFreeWay(move, board)&&				
+				checkInBoard(move, board)				
 		) return true;
 		else return false;
 	}
@@ -38,8 +42,53 @@ public class MoveCheck {
 	 * @param move
 	 * @return
 	 */
-	private static boolean checkFreeWay(Board board, Move move){
-		return true;
+	private static boolean checkFreeWay(Move move, Board board){
+		/* Bewegungsrichtung ermitteln */
+		if(move.getFromCell().getCol()!=move.getToCell().getCol()){
+			
+			//bewegungsvektor bestimmen
+			if(move.getFromCell().getCol()>move.getToCell().getCol()){
+				
+				/* von  rechts nach links */
+				for(int i = move.getFromCell().getCol(); i>=move.getToCell().getCol(); i--){
+					if(board.get()[i][move.getToCell().getRow()]!=BoardContent.EMPTY) return false;
+				}
+				
+				return true;
+			} else {
+				
+				/* von links nach rechts */
+				for(int i = move.getFromCell().getCol(); i<=move.getToCell().getCol(); i++){
+					if(board.get()[i][move.getToCell().getRow()]!=BoardContent.EMPTY) return false;
+				}
+				
+				return true;
+			}
+			
+			
+		} else {
+			
+			if(move.getFromCell().getRow()>move.getToCell().getRow()){
+				
+				/* von  unten nach oben */
+				for(int i = move.getFromCell().getRow(); i>=move.getToCell().getRow(); i--){
+					if(board.get()[move.getToCell().getCol()][i]!=BoardContent.EMPTY) return false;
+				}
+				
+				return true;
+				
+			} else {
+				
+				/* von  oben nach unten */
+				for(int i = move.getFromCell().getRow(); i<=move.getToCell().getRow(); i++){
+					if(board.get()[move.getToCell().getCol()][i]!=BoardContent.EMPTY) return false;
+				}
+				
+				return true;
+				
+			}
+			
+		}
 	}
 	
 	/** checkBoardContent
@@ -67,7 +116,7 @@ public class MoveCheck {
 	 * @param move
 	 * @return
 	 */
-	private static boolean checkInBoard(Board board, Move move){
+	private static boolean checkInBoard(Move move, Board board){
 		if(		move.getFromCell().getCol()>=board.get().length &&
 				move.getFromCell().getCol()<0 &&
 				
@@ -83,11 +132,33 @@ public class MoveCheck {
 		else return true;
 	}
 	
-	private static boolean checkForFortress(Board board, Move move){
-		return true;
+	
+	/** checkForFortress
+	 * 
+	 * Prüft ob von oder auf ein INVALID feld gezogen wird
+	 * 
+	 * @param board
+	 * @param move
+	 * @return
+	 */
+	private static boolean checkForFortress(Move move, Board board){
+		
+		/* König darf von daher erst prüfen ob Content King */
+		if(move.getFromCell().getContent()!=BoardContent.KING){
+			
+			/* Test von Quelle und Ziel Move / Test anhand des Boardcontents */
+			
+			if(
+					board.get()[move.getToCell().getCol()][move.getToCell().getRow()]!=BoardContent.INVALID &&
+					board.get()[move.getFromCell().getCol()][move.getFromCell().getRow()]!= BoardContent.INVALID
+			) return true;
+			else return false;
+			
+		} else return true;
+		
 	}
 	
-	private static boolean checkMoveDirection(Board board, Move move){
+	private static boolean checkMoveDirection(Move move, Board board){
 		/* Teste ob Zugrichtung korrekt */
 		if(move.getFromCell().getCol()!=move.getToCell().getCol() &&
 				move.getFromCell().getRow()!=move.getToCell().getRow()) 
@@ -95,5 +166,6 @@ public class MoveCheck {
 		
 		else return true;
 	}
+	
 
 }
