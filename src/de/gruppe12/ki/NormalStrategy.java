@@ -1,9 +1,6 @@
 package de.gruppe12.ki;
 
-import de.fhhannover.inform.hnefatafl.vorgaben.BoardContent;
-import de.gruppe12.*;
-import de.gruppe12.shared.Cell;
-import de.gruppe12.shared.Move;
+import de.gruppe12.shared.*;
 
 
 /**
@@ -11,8 +8,8 @@ import de.gruppe12.shared.Move;
 * Copyright: (c) 2011 <p>
 * Company: Gruppe 12 <p>
 * @author Markus
-* @version 1.0.0 19.11.2011
-* Änderungen: 19.11. javadoc eingefügt
+* @version 0.0.2 23.11.2011
+* Änderungen: 23.11. Problem mit Vorgaben.MoveStrategy / Kommentare in calculate
 */
 
 public class NormalStrategy implements MoveStrategy {
@@ -34,18 +31,56 @@ public class NormalStrategy implements MoveStrategy {
 	}
 
 	public Move calculateDefenderMove(Move lastMove, int thinktimeInSeconds) {
-		verlauf.setRight(new Node<Move>(lastMove));
-		Move newM = new Move(lastMove.getToCell(),new Cell(2,3, BoardContent.DEFENDER));
+		//Speichern in Verlaufbaum, muss noch durchdacht werden
+		//verlauf.setLeft(new Node<Move>(lastMove));
+		
+		//Abbruchbedingung Zeit muss eingefügt werden
+		//if(time>= thinktimeInSeconds){
+		
+		//Hauptcode zur Berechnung nächster Schritt
+		//Platzhalter:
+		Move newM = new Move(lastMove.getToCell(),new Cell(2,3, null));
+		
+		//} else {
 		return newM;
+		//}
 	}
 
 	public Move calculateAttackerMove(Move lastMove, int thinktimeInSeconds) {
-		//Move newM = new Move(2,4);
-		return null;
-	}
+		//Speichern in Verlaufbaum, muss noch durchdacht werden
+		//verlauf.setRight(new Node<Move>(lastMove));
+		
+		//Abbruchbedingung Zeit muss eingefügt werden
+		//if(time>= thinktimeInSeconds){
+		
+		//Hauptcode zur Berechnung nächster Schritt
+		//Platzhalter:
+		Move newM = new Move(lastMove.getToCell(),new Cell(2,3, null));
+		
+		//} else {
+		return newM;
+		//}	
+		}
 	
 	public String toString(){
 	return name+" Strategy, Gruppe"+getNr;	
+	}
+
+	//Methoden müssen importiert werden, vlt in vorgaben löschen ?
+	@Override
+	public de.fhhannover.inform.hnefatafl.vorgaben.Move calculateDefenderMove(
+			de.fhhannover.inform.hnefatafl.vorgaben.Move lastMove,
+			int thinktimeInSeconds) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public de.fhhannover.inform.hnefatafl.vorgaben.Move calculateAttackerMove(
+			de.fhhannover.inform.hnefatafl.vorgaben.Move lastMove,
+			int thinktimeInSeconds) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
