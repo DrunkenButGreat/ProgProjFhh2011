@@ -82,7 +82,7 @@ public class NormalStrategy implements MoveStrategy {
 	 * 
 	 * GenerateMoves()
 	 * 
-	 * @return ein Array mit allen Möglichen Moves
+	 * @return ein Array mit allen möglichen Moves
 	 */
 	//muss noch implementiert werden
 	private Move[] GenerateMoves() {
@@ -96,7 +96,7 @@ public class NormalStrategy implements MoveStrategy {
 	 */
 	   private int calculateValue(Move m) {
 		      int value=0;
-		     //implementierung von Bewertung eines Moves fehlt hir noch
+		     //implementierung von Bewertung eines Moves fehlt hier noch
 		      return value;
 		   }
 	
