@@ -14,7 +14,8 @@ import de.fhhannover.inform.hnefatafl.vorgaben.BoardContent;
 public class Board {
 	
 	final int fields = 13;
-	BoardContent[][] board = new BoardContent[fields][fields];
+	private BoardContent[][] board = new BoardContent[fields][fields];
+	private boolean finish;
 	
 	void Boad(){
 		init();
@@ -24,6 +25,8 @@ public class Board {
 	 * setzt das Spielfeld auf die Anfangspositionen
 	 */
 	public void init(){
+		
+		finish = false;
 		
 		/* Die Positionen setzten die für alle außer dem König tabu sind */
 		board[0][0] = BoardContent.INVALID;
@@ -151,5 +154,13 @@ public class Board {
 			}
 		}
 		return sb.toString();
+	}
+	
+	public void setFinish(){
+		finish = true;
+	}
+	
+	public boolean isFinished(){
+		return finish;
 	}
 }

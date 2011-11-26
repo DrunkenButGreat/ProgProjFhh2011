@@ -3,17 +3,28 @@ package de.gruppe12.gui;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ContainerEvent;
+import java.awt.event.ContainerListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
+import javax.swing.Box;
+import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -53,22 +64,14 @@ public class GameGui extends JFrame {
 		setTitle("Hnefatafl");
 		
 		buildMenuBar();
-		
 		buildStartMenu();
 		buildPlayerKISelection();
 		buildGamePanel();
-		
-		
-		
-		
-		
-		
-		// -------------------------------
+
 		
 		setJMenuBar(jmbMenuBar);
 		
 		setLayout(cardLO);
-		
 		add(jpnlStartMenu, "Start Menu");
 		add(jpnlPlayerKISelection, "Selection Menu");
 		add(jpnlGamePanel, "Game Panel");
@@ -78,6 +81,47 @@ public class GameGui extends JFrame {
 
 	private void buildStartMenu() {
 		jpnlStartMenu= new JPanel();
+		jpnlStartMenu.setLayout(new GridBagLayout());
+		final JButton jbtnHumanVsHuman = new JButton("Mensch vs Mensch");
+		final JButton jbtnHumanVsAI = new JButton("Mensch vs KI");
+		final JButton jbtnAIVsAI = new JButton("KI vs KI");
+		
+		//todo: zur Übersicht Funktion anlegen, die GridBagConstraints erzeugt
+		
+		GridBagConstraints gbc= new GridBagConstraints();
+		Component glue= Box.createGlue();
+		
+		gbc.gridx= 1;
+		gbc.fill= GridBagConstraints.BOTH;
+		gbc.weightx=0.5;
+		gbc.weighty=0.5;
+		
+		gbc.gridy= 1;
+		jpnlStartMenu.add(jbtnHumanVsHuman, gbc);
+		
+		gbc.gridx=0; gbc.gridy=0;
+		jpnlStartMenu.add(Box.createGlue(), gbc);
+		
+		gbc.gridx=2; gbc.gridy=4;
+		jpnlStartMenu.add(glue, gbc);
+		
+		
+		gbc.gridx=1;
+		
+		gbc.gridy= 2;
+		jpnlStartMenu.add(jbtnHumanVsAI, gbc);
+		
+		gbc.gridy= 3;
+		jpnlStartMenu.add(jbtnAIVsAI, gbc);
+		
+		jpnlStartMenu.addComponentListener(new ComponentAdapter() {
+			@Override public void componentResized(ComponentEvent e) {
+				int fontSize= jbtnHumanVsHuman.getHeight()/3;
+				jbtnHumanVsHuman.setFont(new Font("Arial", Font.BOLD, fontSize));
+				jbtnHumanVsAI.setFont(new Font("Arial", Font.BOLD, fontSize));
+				jbtnAIVsAI.setFont(new Font("Arial", Font.BOLD, fontSize));
+			}
+		});
 		
 	}
 
