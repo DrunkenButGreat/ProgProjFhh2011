@@ -3,12 +3,17 @@ package de.gruppe12.gui;
 import java.util.Observable;
 import java.util.Observer;
 
-public class GuiController extends Observable implements Observer{
+import javax.swing.SwingUtilities;
+
+public class GuiController implements Observer{
 	private int[][] dummyBoard;
 	boolean defendersTurn;
+	private final MoveAnimation anim;
+	private GameGui gui;
 	
 	public GuiController() {
 		defendersTurn= false;
+		anim= new MoveAnimation(this);
 		
 		int k= 1;
 		int d= 2;
@@ -28,8 +33,10 @@ public class GuiController extends Observable implements Observer{
 		dummyBoard[10]= new int[]{0,0,0,0,0,0,0,0,0,0,0,0,0};
 		dummyBoard[11]= new int[]{0,0,0,0,0,0,a,0,0,0,0,0,0};
 		dummyBoard[12]= new int[]{0,0,0,0,a,a,a,a,a,0,0,0,0};
-		
-		
+	}
+	
+	protected void setGameGui(GameGui gui) {
+		this.gui= gui;
 	}
 	
 	protected boolean isPlayersTurn(int cellX, int cellY) {
@@ -42,11 +49,16 @@ public class GuiController extends Observable implements Observer{
 		return result;
 	}
 	
-	public int[][] getBoard() {
+	protected int[][] getBoard() {
 		return dummyBoard;
 	}
 	
-	public void doMove(int srcX, int srcY, int destX, int destY) {
+	protected String getLog() {
+		//TODO: zeug
+		return null;
+	}
+	
+	protected void doMove(int srcX, int srcY, int destX, int destY) {
 		//###############
 		dummyBoard[destX][destY]= dummyBoard[srcX][srcY];
 		dummyBoard[srcX][srcY]= 0;
@@ -56,8 +68,15 @@ public class GuiController extends Observable implements Observer{
 
 	@Override
 	public void update(Observable obsSrc, Object obj) {
-		
-		
+		update();
+	}
+	
+	protected void update() {
+		gui.redraw();
+	}
+
+	protected MoveAnimation getAnimation() {
+		return anim;
 	}
 
 }
