@@ -17,7 +17,7 @@ public class Board {
 	private BoardContent[][] board = new BoardContent[fields][fields];
 	private boolean finish;
 	
-	void Boad(){
+	public Board(){
 		init();
 	}
 	
