@@ -1,17 +1,22 @@
 package de.gruppe12.gui;
 
+import java.awt.Point;
 import java.util.Observable;
 import java.util.Observer;
 
 import javax.swing.SwingUtilities;
 
-public class GuiController implements Observer{
+import de.gruppe12.shared.Cell;
+import de.gruppe12.shared.Move;
+
+public class GuiController extends Observable implements Observer{
 	private int[][] dummyBoard;
 	boolean defendersTurn;
 	private final MoveAnimation anim;
 	private GameGui gui;
 	
 	public GuiController() {
+		addObserver(this);
 		defendersTurn= false;
 		anim= new MoveAnimation(this);
 		
@@ -62,19 +67,27 @@ public class GuiController implements Observer{
 		//###############
 		dummyBoard[destX][destY]= dummyBoard[srcX][srcY];
 		dummyBoard[srcX][srcY]= 0;
+		
+		setChanged();
+		notifyObservers(new Move(new Cell(srcX, srcY, null), new Cell(destX, destY, null)));
 		defendersTurn= !defendersTurn;
 		//###############
 	}
 
 	@Override
 	public void update(Observable obsSrc, Object obj) {
-		update();
+		if (obj instanceof Move) {
+			Move move= (Move)obj;
+			Point sourceCell= new Point(move.getFromCell().getCol(), move.getFromCell().getRow());
+			Point destCell= new Point(move.getToCell().getCol(), move.getToCell().getRow());
+			anim.startAnimation(sourceCell, destCell);
+		}
 	}
 	
 	protected void update() {
 		gui.redraw();
 	}
-
+	
 	protected MoveAnimation getAnimation() {
 		return anim;
 	}

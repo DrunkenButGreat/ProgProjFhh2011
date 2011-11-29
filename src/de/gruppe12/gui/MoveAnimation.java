@@ -37,6 +37,7 @@ public class MoveAnimation {
 
 	protected void update(long dT) {
 		remainingDuration-= dT;
+		remainingDuration= Math.max(0, remainingDuration);
 		gc.update();
 	}
 
@@ -46,8 +47,8 @@ public class MoveAnimation {
 
 	protected double[] getStonePosition() {
 		return new double[] {
-				Math.max(sourceCell.x, destCell.x)- Math.abs(sourceCell.x-destCell.x)*remainingDuration/(double)animationDuration,
-				Math.max(sourceCell.y, destCell.y)- Math.abs(sourceCell.y-destCell.y)*remainingDuration/(double)animationDuration
+				destCell.x+ (sourceCell.x-destCell.x)*remainingDuration/(double)animationDuration,
+				destCell.y+ (sourceCell.y-destCell.y)*remainingDuration/(double)animationDuration
 		};
 	}
 

@@ -1,53 +1,17 @@
 package de.gruppe12.gui;
 
-import java.awt.BorderLayout;
-import java.awt.CardLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ContainerEvent;
-import java.awt.event.ContainerListener;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.*;
+import javax.swing.*;
 
 import javax.imageio.ImageIO;
-import javax.swing.Box;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.JSplitPane;
-import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
+
 
 public class GameGui extends JFrame {
 	private static final long serialVersionUID = 1L;
 	
 	private JMenuBar jmbMenuBar;
-	private CardLayout cardLO;
 
 	private JPanel jpnlStartMenu;
 	private JPanel jpnlHumanVsHuman;
@@ -58,8 +22,11 @@ public class GameGui extends JFrame {
 	private JPanel jpnlBoardDisplay;
 	private JPanel jpnlGameInfo;
 	
+	private final CardLayout cardLO;
 	private final GuiController controller;
 	private final Container cardLOContainer;
+
+	private KeyListener enterListener;
 	
 	public GameGui () throws IOException {
 		super();
@@ -78,13 +45,21 @@ public class GameGui extends JFrame {
 		setIconImage(ImageIO.read(new File("images/viking icon.gif")));
 		setTitle("Hnefatafl");
 		
+		enterListener= new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyChar()=='\n') {
+					((JButton)e.getSource()).doClick();
+				}
+			}
+		};
+		
 		buildMenuBar();
 		buildStartMenu();
 		buildHumanVsHuman();
 		buildHumanVsAi();
 		buildAiVsAi();
 		buildGamePanel();
-
 		
 		setJMenuBar(jmbMenuBar);
 		
@@ -111,6 +86,10 @@ public class GameGui extends JFrame {
 		addToGBPanel(1, 3, 1, 1, 0.5, 0.5, jbtnAiVsAi, jpnlStartMenu);
 		addToGBPanel(2, 4, 1, 1, 0.5, 0.5, Box.createGlue(), jpnlStartMenu);
 		
+		jbtnHumanVsHuman.addKeyListener(enterListener);
+		jbtnHumanVsAi.addKeyListener(enterListener);
+		jbtnAiVsAi.addKeyListener(enterListener);
+		
 		jpnlStartMenu.addComponentListener(new ComponentAdapter() {
 			@Override public void componentResized(ComponentEvent e) {
 				int fontSize= jbtnHumanVsHuman.getHeight()/3;
@@ -119,11 +98,13 @@ public class GameGui extends JFrame {
 				jbtnAiVsAi.setFont(new Font("Arial", Font.BOLD, fontSize));
 			}
 		});
+		
 		jbtnHumanVsHuman.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				cardLO.show(cardLOContainer, "Human vs Human");
+				jpnlHumanVsHuman.requestFocus();
 			}
 		});
 		
@@ -134,8 +115,8 @@ public class GameGui extends JFrame {
 		
 		final JLabel jlbPlayer1= new JLabel("Angreifer:");
 		final JLabel jlbPlayer2= new JLabel("Verteidiger:");
-		final JTextField jtfPlayer1= new JTextField("   Spieler 1");
-		final JTextField jtfPlayer2= new JTextField("   Spieler 2");
+		final JTextField jtfPlayer1= new JTextField("   Spieler 1   ");
+		final JTextField jtfPlayer2= new JTextField("   Spieler 2   ");
 		final JButton jbtnStart= new JButton("Spiel starten");
 		jpnlHumanVsHuman.setLayout(new GridBagLayout());
 		addToGBPanel(0, 0, 1, 1, 0.5, 0.5, Box.createGlue(), jpnlHumanVsHuman);
@@ -148,23 +129,42 @@ public class GameGui extends JFrame {
 		addToGBPanel(1, 5, 2, 1, 0.5, 0.5, jbtnStart, jpnlHumanVsHuman);
 		addToGBPanel(3, 6, 1, 1, 0.5, 0.5, Box.createGlue(), jpnlHumanVsHuman);
 		
-		KeyAdapter enterListener= new KeyAdapter() {
+		jpnlHumanVsHuman.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent arg0) {
+				jtfPlayer1.setText("Spieler 1");
+				jtfPlayer2.setText("Spieler 2");
+				jtfPlayer1.requestFocus();
+				
+			}
+		});
+		
+		FocusListener markOnFocus= new FocusListener() {
 			
 			@Override
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyChar()== '\n') {
-					if (e.getSource().equals(jbtnStart)) {
-						jbtnStart.doClick();
-					} else {
-						((JTextField)e.getSource()).transferFocus();
-					}
-				}
-				
+			public void focusLost(FocusEvent arg0) {}
+			
+			@Override
+			public void focusGained(FocusEvent fe) {
+				JTextField field= (JTextField)fe.getSource();
+				field.setSelectionStart(0);
+				field.setSelectionEnd(field.getText().length());
 			}
 		};
 		
-		jtfPlayer1.addKeyListener(enterListener);
-		jtfPlayer2.addKeyListener(enterListener);
+		jtfPlayer1.addFocusListener(markOnFocus);
+		jtfPlayer2.addFocusListener(markOnFocus);
+		
+		KeyAdapter enterToTabListener= new KeyAdapter() {
+			
+			@Override
+			public void keyPressed(KeyEvent e) {
+				((JTextField)e.getSource()).transferFocus();
+			}
+		};
+		
+		jtfPlayer1.addKeyListener(enterToTabListener);
+		jtfPlayer2.addKeyListener(enterToTabListener);
 		jbtnStart.addKeyListener(enterListener);
 		jbtnStart.addActionListener(new ActionListener() {
 			
@@ -267,28 +267,18 @@ public class GameGui extends JFrame {
 		JMenuItem jmiHvA= new JMenuItem("Human vs AI");
 		JMenuItem jmiAvA= new JMenuItem("AI vs AI");
 		JMenuItem jmiGamePanel= new JMenuItem("Game Panel");
-		JMenuItem jmiAnimationTest= new JMenuItem("Animation Test");
 		
 		jmiStartMenu.addActionListener(devListener);
 		jmiHvH.addActionListener(devListener);
 		jmiHvA.addActionListener(devListener);
 		jmiAvA.addActionListener(devListener);
 		jmiGamePanel.addActionListener(devListener);
-		jmiAnimationTest.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				controller.getAnimation().startAnimation(new Point(4,0), new Point(4,12));
-				
-			}
-		});
 		
 		jmDevelopment.add(jmiStartMenu);
 		jmDevelopment.add(jmiHvH);
 		jmDevelopment.add(jmiHvA);
 		jmDevelopment.add(jmiAvA);
 		jmDevelopment.add(jmiGamePanel);
-		jmDevelopment.add(jmiAnimationTest);
 		
 		jmbMenuBar.add(jmDevelopment);
 		/*######### ######### #########*/
