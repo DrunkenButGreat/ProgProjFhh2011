@@ -16,6 +16,7 @@ public class JPanelBoardDisplay extends JPanel {
 	private int boardStartX;
 	private int boardStartY;
 	private final Point selectedCell; 
+	private int[][] board;
 	
 	public JPanelBoardDisplay(final GuiController gc) {
 		this.gc= gc;
@@ -23,6 +24,8 @@ public class JPanelBoardDisplay extends JPanel {
 		setOpaque(false);
 		
 		repaint();
+		
+		
 		
 		addMouseListener(new MouseAdapter() {
 			@Override public void mouseClicked(MouseEvent e) {
@@ -67,7 +70,7 @@ public class JPanelBoardDisplay extends JPanel {
 		
 		Graphics2D tempg= (Graphics2D) g.create();
 		
-		int[][] board= gc.getBoard();
+		board= gc.getBoard();
 		
 		int roughBoardSize= (int)(Math.min(getWidth(), getHeight()) * 0.8);
 		fieldSize = roughBoardSize/15;
@@ -92,10 +95,7 @@ public class JPanelBoardDisplay extends JPanel {
 					tempg.setColor(Color.GREEN);
 					tempg.drawRect(boardStartX+fieldSize*(i+1), boardStartY+fieldSize*(j+1), fieldSize, fieldSize);
 					if (board[i][j]>0) {
-						if (board[i][j]==3) tempg.setColor(Color.RED);
-						else if (board[i][j]==2) tempg.setColor(Color.BLUE);
-						else tempg.setColor(Color.CYAN);
-						tempg.drawOval(boardStartX+fieldSize*(i+1)+1, boardStartY+fieldSize*(j+1)+1, fieldSize-2, fieldSize-2);
+						drawStone(i, j, tempg);
 					}
 				}
 			}
@@ -112,4 +112,23 @@ public class JPanelBoardDisplay extends JPanel {
 		tempg.dispose();
 	}
 
+	private void drawStone(int i, int j, Graphics2D g) {
+		if (board[i][j]==3) g.setColor(Color.RED);
+		else if (board[i][j]==2) g.setColor(Color.BLUE);
+		else g.setColor(Color.CYAN);
+		
+		if (gc.getAnimation().isRunning()) {
+			Point cell= gc.getAnimation().getDestCell();
+			if (i== cell.x && j== cell.y) {
+				double[] pos= gc.getAnimation().getStonePosition();
+				g.drawOval(
+						(int)Math.round(boardStartX+fieldSize*(pos[0]+1)+1), 
+						(int)Math.round(boardStartY+fieldSize*(pos[1]+1)+1), 
+						fieldSize-2, fieldSize-2);
+				return;
+			}
+		}
+		
+		g.drawOval(boardStartX+fieldSize*(i+1)+1, boardStartY+fieldSize*(j+1)+1, fieldSize-2, fieldSize-2);
+	}
 }

@@ -1,58 +1,40 @@
 package de.gruppe12.gui;
 
-import java.awt.BorderLayout;
-import java.awt.CardLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ContainerEvent;
-import java.awt.event.ContainerListener;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.*;
+import javax.swing.*;
 
 import javax.imageio.ImageIO;
-import javax.swing.Box;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.JSplitPane;
-import javax.swing.SwingUtilities;
+
 
 public class GameGui extends JFrame {
 	private static final long serialVersionUID = 1L;
 	
 	private JMenuBar jmbMenuBar;
-	private CardLayout cardLO;
 
 	private JPanel jpnlStartMenu;
-	private JPanel jpnlPlayerKISelection;
+	private JPanel jpnlHumanVsHuman;
+	private JPanel jpnlHumanVsAi;
+	private JPanel jpnlAiVsAi;
 	private JPanel jpnlGamePanel;
 	
 	private JPanel jpnlBoardDisplay;
 	private JPanel jpnlGameInfo;
 	
-	public final GuiController controller;
+	private final CardLayout cardLO;
+	private final GuiController controller;
+	private final Container cardLOContainer;
+
+	private KeyListener enterListener;
 	
 	public GameGui () throws IOException {
 		super();
 		
 		controller= new GuiController();
+		controller.setGameGui(this);
 		cardLO= new CardLayout();
+		cardLOContainer= getContentPane();
 		
 		initGUI();
 		
@@ -63,17 +45,29 @@ public class GameGui extends JFrame {
 		setIconImage(ImageIO.read(new File("images/viking icon.gif")));
 		setTitle("Hnefatafl");
 		
+		enterListener= new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyChar()=='\n') {
+					((JButton)e.getSource()).doClick();
+				}
+			}
+		};
+		
 		buildMenuBar();
 		buildStartMenu();
-		buildPlayerKISelection();
+		buildHumanVsHuman();
+		buildHumanVsAi();
+		buildAiVsAi();
 		buildGamePanel();
-
 		
 		setJMenuBar(jmbMenuBar);
 		
 		setLayout(cardLO);
 		add(jpnlStartMenu, "Start Menu");
-		add(jpnlPlayerKISelection, "Selection Menu");
+		add(jpnlHumanVsHuman, "Human vs Human");
+		add(jpnlHumanVsAi, "Human vs AI");
+		add(jpnlAiVsAi, "AI vs AI");
 		add(jpnlGamePanel, "Game Panel");
 		
 		pack();
@@ -83,50 +77,125 @@ public class GameGui extends JFrame {
 		jpnlStartMenu= new JPanel();
 		jpnlStartMenu.setLayout(new GridBagLayout());
 		final JButton jbtnHumanVsHuman = new JButton("Mensch vs Mensch");
-		final JButton jbtnHumanVsAI = new JButton("Mensch vs KI");
-		final JButton jbtnAIVsAI = new JButton("KI vs KI");
+		final JButton jbtnHumanVsAi = new JButton("Mensch vs KI");
+		final JButton jbtnAiVsAi = new JButton("KI vs KI");
 		
-		//todo: zur Übersicht Funktion anlegen, die GridBagConstraints erzeugt
+		addToGBPanel(0, 0, 1, 1, 0.5, 0.5, Box.createGlue(), jpnlStartMenu);
+		addToGBPanel(1, 1, 1, 1, 0.5, 0.5, jbtnHumanVsHuman, jpnlStartMenu);
+		addToGBPanel(1, 2, 1, 1, 0.5, 0.5, jbtnHumanVsAi, jpnlStartMenu);
+		addToGBPanel(1, 3, 1, 1, 0.5, 0.5, jbtnAiVsAi, jpnlStartMenu);
+		addToGBPanel(2, 4, 1, 1, 0.5, 0.5, Box.createGlue(), jpnlStartMenu);
 		
-		GridBagConstraints gbc= new GridBagConstraints();
-		Component glue= Box.createGlue();
-		
-		gbc.gridx= 1;
-		gbc.fill= GridBagConstraints.BOTH;
-		gbc.weightx=0.5;
-		gbc.weighty=0.5;
-		
-		gbc.gridy= 1;
-		jpnlStartMenu.add(jbtnHumanVsHuman, gbc);
-		
-		gbc.gridx=0; gbc.gridy=0;
-		jpnlStartMenu.add(Box.createGlue(), gbc);
-		
-		gbc.gridx=2; gbc.gridy=4;
-		jpnlStartMenu.add(glue, gbc);
-		
-		
-		gbc.gridx=1;
-		
-		gbc.gridy= 2;
-		jpnlStartMenu.add(jbtnHumanVsAI, gbc);
-		
-		gbc.gridy= 3;
-		jpnlStartMenu.add(jbtnAIVsAI, gbc);
+		jbtnHumanVsHuman.addKeyListener(enterListener);
+		jbtnHumanVsAi.addKeyListener(enterListener);
+		jbtnAiVsAi.addKeyListener(enterListener);
 		
 		jpnlStartMenu.addComponentListener(new ComponentAdapter() {
 			@Override public void componentResized(ComponentEvent e) {
 				int fontSize= jbtnHumanVsHuman.getHeight()/3;
 				jbtnHumanVsHuman.setFont(new Font("Arial", Font.BOLD, fontSize));
-				jbtnHumanVsAI.setFont(new Font("Arial", Font.BOLD, fontSize));
-				jbtnAIVsAI.setFont(new Font("Arial", Font.BOLD, fontSize));
+				jbtnHumanVsAi.setFont(new Font("Arial", Font.BOLD, fontSize));
+				jbtnAiVsAi.setFont(new Font("Arial", Font.BOLD, fontSize));
+			}
+		});
+		
+		jbtnHumanVsHuman.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				cardLO.show(cardLOContainer, "Human vs Human");
+				jpnlHumanVsHuman.requestFocus();
 			}
 		});
 		
 	}
 
-	private void buildPlayerKISelection() {
-		jpnlPlayerKISelection= new JPanel();
+	private void buildHumanVsHuman() {
+		jpnlHumanVsHuman= new JPanel();
+		
+		final JLabel jlbPlayer1= new JLabel("Angreifer:");
+		final JLabel jlbPlayer2= new JLabel("Verteidiger:");
+		final JTextField jtfPlayer1= new JTextField("   Spieler 1   ");
+		final JTextField jtfPlayer2= new JTextField("   Spieler 2   ");
+		final JButton jbtnStart= new JButton("Spiel starten");
+		jpnlHumanVsHuman.setLayout(new GridBagLayout());
+		addToGBPanel(0, 0, 1, 1, 0.5, 0.5, Box.createGlue(), jpnlHumanVsHuman);
+		addToGBPanel(1, 1, 1, 1, 0.5, 0.5, jlbPlayer1, jpnlHumanVsHuman);
+		addToGBPanel(2, 1, 1, 1, 0.5, 0.5, jtfPlayer1, jpnlHumanVsHuman);
+		addToGBPanel(0, 2, 1, 1, 0.5, 0.5, Box.createGlue(), jpnlHumanVsHuman);
+		addToGBPanel(1, 3, 1, 1, 0.5, 0.5, jlbPlayer2, jpnlHumanVsHuman);
+		addToGBPanel(2, 3, 1, 1, 0.5, 0.5, jtfPlayer2, jpnlHumanVsHuman);
+		addToGBPanel(0, 4, 1, 1, 0.5, 0.5, Box.createGlue(), jpnlHumanVsHuman);
+		addToGBPanel(1, 5, 2, 1, 0.5, 0.5, jbtnStart, jpnlHumanVsHuman);
+		addToGBPanel(3, 6, 1, 1, 0.5, 0.5, Box.createGlue(), jpnlHumanVsHuman);
+		
+		jpnlHumanVsHuman.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent arg0) {
+				jtfPlayer1.setText("Spieler 1");
+				jtfPlayer2.setText("Spieler 2");
+				jtfPlayer1.requestFocus();
+				
+			}
+		});
+		
+		FocusListener markOnFocus= new FocusListener() {
+			
+			@Override
+			public void focusLost(FocusEvent arg0) {}
+			
+			@Override
+			public void focusGained(FocusEvent fe) {
+				JTextField field= (JTextField)fe.getSource();
+				field.setSelectionStart(0);
+				field.setSelectionEnd(field.getText().length());
+			}
+		};
+		
+		jtfPlayer1.addFocusListener(markOnFocus);
+		jtfPlayer2.addFocusListener(markOnFocus);
+		
+		KeyAdapter enterToTabListener= new KeyAdapter() {
+			
+			@Override
+			public void keyPressed(KeyEvent e) {
+				((JTextField)e.getSource()).transferFocus();
+			}
+		};
+		
+		jtfPlayer1.addKeyListener(enterToTabListener);
+		jtfPlayer2.addKeyListener(enterToTabListener);
+		jbtnStart.addKeyListener(enterListener);
+		jbtnStart.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				//TODO: Namen speichern
+				cardLO.show(cardLOContainer, "Game Panel");
+			}
+		});
+
+		jpnlStartMenu.addComponentListener(new ComponentAdapter() {
+			@Override public void componentResized(ComponentEvent e) {
+				int fontSize= jtfPlayer1.getHeight()/3;
+				jtfPlayer1.setFont(new Font("Arial", Font.BOLD, fontSize));
+				jtfPlayer2.setFont(new Font("Arial", Font.BOLD, fontSize));
+				jlbPlayer1.setFont(new Font("Arial", Font.PLAIN, fontSize));
+				jlbPlayer2.setFont(new Font("Arial", Font.PLAIN, fontSize));
+				jbtnStart.setFont(new Font("Arial", Font.BOLD, fontSize));
+			
+			}
+		});
+		
+	}
+	
+	private void buildHumanVsAi() {
+		jpnlHumanVsAi= new JPanel();
+		
+	}
+	
+	private void buildAiVsAi() {
+		jpnlAiVsAi= new JPanel();
 		
 	}
 
@@ -167,7 +236,6 @@ public class GameGui extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Programm beenden
 				
 			}
 		});
@@ -185,17 +253,31 @@ public class GameGui extends JFrame {
 		jmbMenuBar.add(jmHilfe);			
 		
 		/*######### ######### #########*/
+		ActionListener devListener= new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				cardLO.show(cardLOContainer, ((JMenuItem)e.getSource()).getActionCommand());
+			}
+		};
+		
 		JMenu jmDevelopment= new JMenu("DevButton");
 		JMenuItem jmiStartMenu= new JMenuItem("Start Menu");
-		JMenuItem jmiSelectionMenu= new JMenuItem("Selection Menu");
+		JMenuItem jmiHvH= new JMenuItem("Human vs Human");
+		JMenuItem jmiHvA= new JMenuItem("Human vs AI");
+		JMenuItem jmiAvA= new JMenuItem("AI vs AI");
 		JMenuItem jmiGamePanel= new JMenuItem("Game Panel");
 		
-		jmiStartMenu.addActionListener(new DevActionListener(getContentPane(), cardLO, "Start Menu"));
-		jmiSelectionMenu.addActionListener(new DevActionListener(getContentPane(), cardLO, "Selection Menu"));
-		jmiGamePanel.addActionListener(new DevActionListener(getContentPane(), cardLO, "Game Panel"));
+		jmiStartMenu.addActionListener(devListener);
+		jmiHvH.addActionListener(devListener);
+		jmiHvA.addActionListener(devListener);
+		jmiAvA.addActionListener(devListener);
+		jmiGamePanel.addActionListener(devListener);
 		
 		jmDevelopment.add(jmiStartMenu);
-		jmDevelopment.add(jmiSelectionMenu);
+		jmDevelopment.add(jmiHvH);
+		jmDevelopment.add(jmiHvA);
+		jmDevelopment.add(jmiAvA);
 		jmDevelopment.add(jmiGamePanel);
 		
 		jmbMenuBar.add(jmDevelopment);
@@ -225,21 +307,33 @@ public class GameGui extends JFrame {
 			}
 		});
 	}
-}
 
-class DevActionListener implements ActionListener {
-	private Container ct;
-	private CardLayout cl;
-	private String name;
+	protected void redraw() {
+		SwingUtilities.invokeLater(new Runnable() {
+			
+			@Override
+			public void run() {
+				jpnlBoardDisplay.repaint();
+			}
+		});
+		
+	}
 	
-	public DevActionListener(Container ct, CardLayout cl, String name) {
-		this.ct= ct;
-		this.cl= cl;
-		this.name= name;
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		cl.show(ct, name);
+	private static void addToGBPanel(int x, int y, int width, int height, double weightx, double weighty, Component comp, JPanel targetPnl) {
+		GridBagConstraints gbc= new GridBagConstraints();
+		gbc.fill=GridBagConstraints.BOTH;
+		gbc.gridx=x;
+		gbc.gridy=y;
+		gbc.gridwidth=width;
+		gbc.gridheight=height;
+		gbc.weightx=weightx;
+		gbc.weighty=weighty;
+		
+		targetPnl.add(comp, gbc);
 	}
 }
+
+	
+
+
+	
