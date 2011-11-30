@@ -29,8 +29,10 @@ public class Cell implements de.fhhannover.inform.hnefatafl.vorgaben.Cell {
 		return row;
 	}
 	
+	
 	@Override
 	public String toString(){
 		return "Spalte: " + col + " Zeile: " + row + " Inhalt: " + boardContent.toString();
-	}	
+	}
+	
 }
