@@ -1,5 +1,6 @@
 package de.gruppe12.ki;
 
+import de.fhhannover.inform.hnefatafl.vorgaben.BoardContent;
 import de.gruppe12.shared.*;
 
 
@@ -8,14 +9,15 @@ import de.gruppe12.shared.*;
 * Copyright: (c) 2011 <p>
 * Company: Gruppe 12 <p>
 * @author Markus
-* @version 0.0.3 23.11.2011
-* Änderungen: 24.11. 2Methoden für calculate Berechnung + Erweiterung von calculate
+* @version 0.5.0 28.11.2011
+* Änderungen: 28.11. erste implementierung von calcMoves und calcValue
 */
 
 public class NormalStrategy implements MoveStrategy {
 	private int getNr;
 	private String name;
-	private Node<Move> verlauf;
+	//private Node<Move> verlauf;
+	private Board b;
 	
 	public NormalStrategy(int grpNr){
 		name = "normal";
@@ -40,18 +42,24 @@ public class NormalStrategy implements MoveStrategy {
 		//zeit abgelaufen -> Spiel vorbei ?
 		//} else {
 		//Hauptcode zur Berechnung nächster Schritt
-	    Move[] moves = GenerateMoves();
+	    Move[] moves = GenerateMoves(BoardContent.DEFENDER);
 	    Move move;
 	    Move best_move=moves[0];
-	    for(int i=0; i<=moves.length; i++) {
+	    Move last_bm=best_move;
+	    for(int i=1; i<=moves.length; i++) {
 	       move = moves[i];
 	       if (calculateValue(move) > calculateValue(best_move)) {
-	          best_move = move;
+	          last_bm = best_move;
+	    	   best_move = move;
 	       }
 	    }
+	    if(best_move!=lastMove){
 	    return best_move;
+	    } else { 
+	    	return last_bm;
+	    }
 		//}	
-	}
+		}
 	
 
 	
@@ -64,16 +72,22 @@ public class NormalStrategy implements MoveStrategy {
 		//zeit abgelaufen -> Spiel vorbei ?
 		//} else {
 		//Hauptcode zur Berechnung nächster Schritt
-	    Move[] moves = GenerateMoves();
+	    Move[] moves = GenerateMoves(BoardContent.ATTACKER);
 	    Move move;
 	    Move best_move=moves[0];
+	    Move last_bm=best_move;
 	    for(int i=1; i<=moves.length; i++) {
 	       move = moves[i];
 	       if (calculateValue(move) > calculateValue(best_move)) {
-	          best_move = move;
+	          last_bm = best_move;
+	    	   best_move = move;
 	       }
 	    }
+	    if(best_move!=lastMove){
 	    return best_move;
+	    } else { 
+	    	return last_bm;
+	    }
 		//}	
 		}
 	
@@ -84,9 +98,36 @@ public class NormalStrategy implements MoveStrategy {
 	 * 
 	 * @return ein Array mit allen möglichen Moves
 	 */
-	//muss noch implementiert werden
-	private Move[] GenerateMoves() {
-		return null;
+	private Move[] GenerateMoves(BoardContent type) {
+		Move[] mList = new Move[500]; 
+		Cell[] cList = new Cell[24];
+		Cell c = null;
+		int m1=0;
+		int c1=0;
+		
+		//prüft wo Steine sind
+		for(int i=0;i<=13;i++){
+			for(int j=0;j<=13;j++){
+				//speichert nur wenn Typ gleich ist
+				if(c.getCell(i, j).getContent() == type)
+				cList[c1]=c.getCell(i,j);
+				c1++;
+			}
+		}
+		for(int i=0;i<=cList.length;i++){
+			int r=13-cList[i].getCol();
+			int l=13-cList[i].getRow();
+			for(int j=0;j<=r;j++){
+				mList[m1]=new Move(cList[i],new Cell(cList[i].getCol()+1,cList[i].getRow(), cList[i].getContent()));
+				m1++;
+			}
+			for(int h=0;h<=l;h++){
+				mList[m1]=new Move(cList[i],new Cell(cList[i].getCol(),cList[i].getRow()+1, cList[i].getContent()));
+				m1++;		
+			}
+		}
+		
+		return mList;
 	}
 
 	/**
@@ -96,7 +137,32 @@ public class NormalStrategy implements MoveStrategy {
 	 */
 	   private int calculateValue(Move m) {
 		      int value=0;
-		     //implementierung von Bewertung eines Moves fehlt hier noch
+		      //Figur die Bewegt wird
+		      BoardContent p = m.getFromCell().getContent();
+		      //Felder in umgebung
+		      BoardContent c1 = b.get(m.getToCell().getCol()+1,m.getToCell().getRow());
+			  BoardContent c2 = b.get(m.getToCell().getCol()+2,m.getToCell().getRow());
+			  BoardContent c3 = b.get(m.getToCell().getCol(),m.getToCell().getRow()+1);
+			  BoardContent c4 = b.get(m.getToCell().getCol(),m.getToCell().getRow()+2);
+		      
+			  
+			  //testet, wenn Gegner und kein leeres Feld steigt Value
+		      if((c1 != p)&&(c1!=BoardContent.EMPTY)){
+		    	  value++;
+		      }
+		      if((c2 != p)&&(c1!=BoardContent.EMPTY)){
+		    	  value++;
+		      }
+		      if((c3 != p)&&(c1!=BoardContent.EMPTY)){
+		    	  value++;
+		      }
+		      if((c4 != p)&&(c1!=BoardContent.EMPTY)){
+		    	  value++;
+		      }
+		      //checkt ob Move zulässig
+		      if(MoveCheck.check(m,b)){
+		    	  return -1;
+		      }
 		      return value;
 		   }
 	
@@ -120,5 +186,4 @@ public class NormalStrategy implements MoveStrategy {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 }
