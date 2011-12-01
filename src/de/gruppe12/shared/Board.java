@@ -132,7 +132,7 @@ public class Board {
 		StringBuilder sb = new StringBuilder();
 		
 		for(int i = 0;i < board.length; i++){
-			for(int j= 0; i < board[i].length; j++){
+			for(int j= 0; j < board[i].length; j++){
 				switch(board[i][j]){
 					case INVALID:
 						sb.append("I ");
@@ -146,12 +146,14 @@ public class Board {
 					case KING:
 						sb.append("K ");
 						break;
-					default:
+					case EMPTY:
 						sb.append("  ");
 						break;
-				}
-				sb.append("\n");
+					default:
+						break;
+				}				
 			}
+			sb.append("\n");
 		}
 		return sb.toString();
 	}
