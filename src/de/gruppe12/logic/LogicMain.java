@@ -7,7 +7,6 @@ import de.gruppe12.shared.*;
 
 public class LogicMain extends Observable {
 	
-	private GameLog logger;
 	private Board board;
 	private MoveStrategy attacker, defender;
 	private Move currentMove, lastMove;
@@ -15,62 +14,63 @@ public class LogicMain extends Observable {
 	private int thinkTime;
 	private boolean humanAttacker, humanDefender;
 	private long sleepTime = 10000;
+	private String lastGameLogEvent;
+	private String strAttacker = "Angreifer";
+	private String strDefender = "Verteidiger";
 	
 	// Konstruktoren für die unterschiedlichen Spielersituationen
 	
-		
-	public LogicMain (MoveStrategy attacker, MoveStrategy defender, int thinkTime){
+	
+	public LogicMain(){
+		initLogicMain();			
+	}
+	
+	public void humanAttKiDef(MoveStrategy defender, int thinkTime){
+		setDefender(defender);
+		this.humanDefender = false;
+		this.humanAttacker = true;	
+		this.thinkTime = thinkTime;
+		initLogicMain();
+		move();
+	}
+	
+	public void humanDefKiAtt(MoveStrategy attacker, int thinkTime){
+		setAttacker(attacker);
+		this.humanDefender = true;
+		this.humanAttacker = false;	
+		this.thinkTime = thinkTime;
+		initLogicMain();
+		move();
+	}
+	
+	public void humanDefHumanAtt(int thinkTime){
+		this.humanDefender = true;
+		this.humanAttacker = true;
+		this.thinkTime = thinkTime;
+		initLogicMain();
+		move();
+	}
+	
+	public void KiDefKiAtt(MoveStrategy defender, MoveStrategy attacker, int thinkTime){
 		setDefender(defender);
 		setAttacker(attacker);
 		this.humanDefender = false;
 		this.humanAttacker = false;
-		initLogicMain(thinkTime);
-	}
-	
-	public LogicMain (boolean humanAttacker, MoveStrategy defender, int thinkTime){
-		setDefender(defender);
-		this.humanDefender = false;
-		this.humanAttacker = true;			
-		initLogicMain(thinkTime);		
-	}
-	
-	public LogicMain (MoveStrategy attacker, boolean humanDefender, int thinkTime){
-		setAttacker(attacker);
-		this.humanDefender = true;
-		this.humanAttacker = false;		
-		initLogicMain(thinkTime);
-	}
-	
-	public LogicMain (boolean humanAttacker, boolean humanDefender, int thinkTime){
-		this.humanDefender = true;
-		this.humanAttacker = true;
-		initLogicMain(thinkTime);
-	}
-	
-	private void initLogicMain(int thinkTime){
-		this.board = new Board();
-		this.board.init();
-		
-		this.waitForMove = false;
-		this.thinkTime=thinkTime;
-		
-		this.currentMove = null;
-		this.lastMove = null;
-		
-		this.defPlayerTurn = true;
-		
+		this.thinkTime = thinkTime;
+		initLogicMain();
 		move();
 	}
 	
-	// Ende der Konstruktoren	
-	
-	public void init(){
-		//Alles auf Anfang
+	private void initLogicMain(){
+		this.board = new Board();
 		this.board.init();
+		this.waitForMove = false;
 		this.currentMove = null;
 		this.lastMove = null;
-		this.waitForMove = false;		
+		this.defPlayerTurn = true;
 	}
+	
+	// Ende der Konstruktoren	
 	
 	private void setDefender(MoveStrategy player){
 		this.defender = player;		
@@ -82,13 +82,8 @@ public class LogicMain extends Observable {
 	
 	public Board getBoard(){
 		return this.board;
-	}	
-	
-	public String getLog() {
-		//TODO: logger to String Funktion schreiben
-		return this.logger.toString();
-	}
-		
+	}		
+
 	void finish(boolean player){
 		
 	}	
@@ -104,6 +99,21 @@ public class LogicMain extends Observable {
 		this.currentMove = move;
 	}
 	
+	private void logGameEvent(String event){
+		if (this.defPlayerTurn){
+			GameLog.logGameEvent(strDefender, event);
+			this.lastGameLogEvent = strDefender + ": " + event;
+		}
+		else{
+			GameLog.logGameEvent(strAttacker, event);
+			this.lastGameLogEvent = strAttacker + ": " + event;
+		}
+	}
+	
+	public String getLastGameLogEvent(){
+		return this.lastGameLogEvent;
+	}
+	
 	private void move(){
 		
 		// Wenn der nächste Spieler eine KI ist, läuft die Schleife weiter
@@ -111,10 +121,9 @@ public class LogicMain extends Observable {
 		// wird die Schleife beendet und muss erneut von der GUI aufgerufen werden
 		
 		while ((this.defPlayerTurn && !this.humanDefender) || 
-				(!this.defPlayerTurn && !this.humanAttacker)){
-			
+				(!this.defPlayerTurn && !this.humanAttacker)){			
 			try {
-				Thread.sleep(this.sleepTime);
+				Thread.sleep(0);
 			} catch (InterruptedException e) {}
 			
 			// Wenn die Verteidiger KI am Zug ist
@@ -130,40 +139,41 @@ public class LogicMain extends Observable {
 		}	
 	}
 	
-	private void update(Move move){
-		String strPlayer;
-		if (this.defPlayerTurn){
-			strPlayer = "Verteidiger";
-		}
-		else {
-			strPlayer = "Angreifer";
-		}
-		
-		// Spieler wechseln
-		this.defPlayerTurn = !this.defPlayerTurn;
-		
-		//Erst prüfen ob der Zug erlaubt ist
-		
-		if (MoveCheck.check(move, this.board)) {
-			
+	private void update(Move move){	
+		System.out.println(this.board.toString());
+		//Erst prüfen ob der Zug erlaubt ist	
+		if (MoveCheck.check(move, this.board)) {			
 			//Dann prüfen ob Steine geschlagen wurden und neues Bord setzen
 			this.board = RemoveCheck.checkForRemove(move, this.board);
 			
 			//Und anschließend das Event loggen
-			GameLog.logGameEvent(strPlayer, 
-					"Gezogen von: " + move.getFromCell().getCol() + ";" + move.getFromCell().getRow() + 
-					" nach: " + move.getToCell().getCol() + ";" + move.getToCell().getRow()
-					);
+			logGameEvent("Gezogen von: " + move.getFromCell().getCol() + "," + move.getFromCell().getRow() + 
+					" nach: " + move.getToCell().getCol() + "," + move.getToCell().getRow());
+			
+			// Spieler wechseln
+			this.defPlayerTurn = !this.defPlayerTurn;
 		}
 		else {
-			//KI wegen Betruges disqualifizieren
-			
-		}
-		
+			//Wenn KI am Zug ist
+			if ((this.defPlayerTurn && !this.humanDefender) ||
+						!this.defPlayerTurn && !this.humanAttacker){
+				//KI wegen Betruges disqualifizieren	
+			}
+			//Wenn Mensch am zu ist
+			else{
+				// Zug ignorieren und eventuell Meldung an KI
+			}	
+		}		
+		System.out.println(this.board.toString());
 		//Oberserver benachrichtigen
 		setChanged();
-		notifyObservers();
-		
+		notifyObservers(currentMove);
+		try {
+			Thread.sleep(0);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
 
