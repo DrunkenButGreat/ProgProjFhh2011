@@ -217,7 +217,7 @@ public class GameGui extends JFrame {
 		final JTextField jtfPlayer1= new JTextField("   Spieler 1   ");
 		final JComboBox jcbKI= new JComboBox();
 		final JRadioButton jrbSpieler= new JRadioButton("Spieler");
-		final JRadioButton jrbKI= new JRadioButton("Künstliche Intelligenz");
+		final JRadioButton jrbKI= new JRadioButton("Kuenstliche Intelligenz");
 		ActionListener buttonToggle= new ActionListener() {
 			
 			@Override
@@ -238,7 +238,7 @@ public class GameGui extends JFrame {
 		String[] files= dir.list();
 		for (int i= 0; i< files.length; i++) {
 			if (files[i].endsWith(".class")) {
-				jcbKI.addItem(files[i]);
+				jcbKI.addItem(files[i].substring(0, files[i].lastIndexOf('.')));
 			}
 		}
 		final JButton jbtnStart= new JButton("Spiel starten");
