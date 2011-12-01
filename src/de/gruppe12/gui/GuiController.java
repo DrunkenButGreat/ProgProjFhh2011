@@ -6,14 +6,18 @@ import java.util.Observer;
 
 import javax.swing.SwingUtilities;
 
+import de.gruppe12.ki.MoveStrategy;
+import de.gruppe12.logic.LogicMain;
 import de.gruppe12.shared.Cell;
 import de.gruppe12.shared.Move;
 
 public class GuiController extends Observable implements Observer{
-	private int[][] dummyBoard;
-	boolean defendersTurn;
+	private int[][] dummyBoard; //to be removed
+	boolean defendersTurn; // dito
 	private final MoveAnimation anim;
 	private GameGui gui;
+	private LogicMain logic;
+	private MoveStrategy[] moveStrats;
 	
 	public GuiController() {
 		addObserver(this);
@@ -23,8 +27,8 @@ public class GuiController extends Observable implements Observer{
 		int k= 1;
 		int d= 2;
 		int a= 3;
-		dummyBoard= new int[13][];
 		
+		dummyBoard= new int[13][];
 		dummyBoard[0]=  new int[]{0,0,0,0,a,a,a,a,a,0,0,0,0};
 		dummyBoard[1]=  new int[]{0,0,0,0,0,0,a,0,0,0,0,0,0};
 		dummyBoard[2]=  new int[]{0,0,0,0,0,0,0,0,0,0,0,0,0};
@@ -44,6 +48,11 @@ public class GuiController extends Observable implements Observer{
 		this.gui= gui;
 	}
 	
+	public void setLogicMain(LogicMain logic) {
+		this.logic= logic;
+		logic.addObserver(this);
+	}
+	
 	protected boolean isPlayersTurn(int cellX, int cellY) {
 		boolean result=false;
 		if (((dummyBoard[cellX][cellY]==2 || dummyBoard[cellX][cellY]==1) && defendersTurn) || (
@@ -55,11 +64,12 @@ public class GuiController extends Observable implements Observer{
 	}
 	
 	protected int[][] getBoard() {
+		//kann auch ein BoardContent[][] zurueckgeben, muss dann nur ein wenig anpassen
+		//logic.getBoard();
 		return dummyBoard;
 	}
 	
 	protected String getLog() {
-		//TODO: zeug
 		return null;
 	}
 	
@@ -72,6 +82,7 @@ public class GuiController extends Observable implements Observer{
 		notifyObservers(new Move(new Cell(srcX, srcY, null), new Cell(destX, destY, null)));
 		defendersTurn= !defendersTurn;
 		//###############
+		//logic.doMove(new Move(new Cell(srcX, srcY, null), new Cell(destX, destY, null)));
 	}
 
 	@Override
@@ -84,12 +95,43 @@ public class GuiController extends Observable implements Observer{
 		}
 	}
 	
+	/**
+	 * getMoveStratNames
+	 * 
+	 * @return gibt ein Array mit den Namen der vorhandenen MoveStrategies zurück
+	 */
+	protected String[] getMoveStratNames() {
+		return null;
+	}
+	
+	protected boolean logicAwaitsPlayerMove() {
+		//return logic.isWaiting();
+		return true;
+	}
+	
 	protected void update() {
 		gui.redraw();
 	}
 	
 	protected MoveAnimation getAnimation() {
 		return anim;
+	}
+	
+	protected void initHvHGame() {
+		//logic.initHumanVsHumanGame();
+	}
+	
+	protected void initHvAGame(boolean humanIsAttacker, String aiMoveStrategyName) {
+		MoveStrategy mStrat;
+		//mStrat aus MoveStrategy Array bestimmen
+		//logic.initHumanVsAiGame(humanIsAttacker, mStrat);
+	}
+	
+	protected void initAvAGame(String offenderMoveStrategyName, String defenderMoveStrategyName) {
+		MoveStrategy offStrat;
+		MoveStrategy defStrat;
+		//MoveStrategies aus MoveStrategy Array bestimmen
+		//logic.initAiVsAiGame(offStrat, defStrat);
 	}
 
 }

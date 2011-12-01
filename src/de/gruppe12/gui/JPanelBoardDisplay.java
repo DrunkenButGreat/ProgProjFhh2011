@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 public class JPanelBoardDisplay extends JPanel {
+	private static final long serialVersionUID = 1L;
 	private GuiController gc;
 	private int fieldSize;
 	private int boardStartX;
@@ -25,12 +26,19 @@ public class JPanelBoardDisplay extends JPanel {
 		
 		repaint();
 		
-		
+		/**
+		 * Mouse Listener
+		 * 
+		 * ermoeglicht das Auswaehlen und Bewegen von Spielfiguren
+		 * prueft vor Markierung einer Zelle, ob die Logik ueberhaupt Spielerzug erwartet
+		 * 
+		 */
 		
 		addMouseListener(new MouseAdapter() {
 			@Override public void mouseClicked(MouseEvent e) {
+				if (!gc.logicAwaitsPlayerMove()) return;
 				Point cell= getCellOf(e.getX(), e.getY());
-				if (cell==null) return;
+				if (cell==null ) return;
 				
 				if (gc.isPlayersTurn(cell.x, cell.y)) {
 					selectedCell.setLocation(cell);
@@ -44,6 +52,13 @@ public class JPanelBoardDisplay extends JPanel {
 				repaint();
 				
 			}
+			/**
+			 * grober Test ob Pfad existiert
+			 * 
+			 * @param selectedCell
+			 * @param cell
+			 * @return boolean: true, wenn Pfad existiert, false wenn nicht
+			 */
 
 			private boolean pathExists(Point selectedCell, Point cell) {
 				if (selectedCell.x != cell.x && selectedCell.y != cell.y) {
@@ -53,6 +68,17 @@ public class JPanelBoardDisplay extends JPanel {
 			}	
 		});
 	}
+	
+	/**
+	 * getCellOf
+	 * 
+	 * berechnet zu einem Punkt auf dem JPanel die zugehoerige Spielfeldzelle
+	 * 
+	 * @param x	: x-Koordinate auf JPanel
+	 * @param y : y-Koordinate auf JPanel
+	 * @return Point mit Spalte und Zeile der Zelle, null wenn ausserhalb des Felds
+	 * 
+	 */
 	
 	protected Point getCellOf(int x, int y) {
 		Point result= new Point();
@@ -64,7 +90,14 @@ public class JPanelBoardDisplay extends JPanel {
 			return result;
 		return null;
 	}
-
+	
+	/**
+	 * paintComponent
+	 * 
+	 * paint-Aufruf der ausgefuehrt wird, wenn das JPanel groessenveraendert wird, oder durch expliziten repaint()-Aufruf
+	 * 
+	 * bestimmt anhand der Groesse des JPanels die Seitenlaenge des Spielfelds, zeichnet es 
+	 */
 	@Override public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		
@@ -88,6 +121,10 @@ public class JPanelBoardDisplay extends JPanel {
 		tempg.drawRect(boardStartX+13*fieldSize, boardStartY, towerSize, towerSize);
 		tempg.drawRect(boardStartX,boardStartY+13*fieldSize, towerSize, towerSize);
 		tempg.drawRect(boardStartX+13*fieldSize, boardStartY+13*fieldSize, towerSize, towerSize);
+		
+		//Tron markieren
+		tempg.drawLine(boardStartX+7*fieldSize, boardStartY+7*fieldSize, boardStartX+8*fieldSize, boardStartY+8*fieldSize);
+		tempg.drawLine(boardStartX+7*fieldSize, boardStartY+8*fieldSize, boardStartX+8*fieldSize, boardStartY+7*fieldSize);
 		
 		for (int i=0; i<13; i++) {
 			for (int j=0; j<13; j++) {
