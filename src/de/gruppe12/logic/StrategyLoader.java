@@ -2,11 +2,14 @@ package de.gruppe12.logic;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -55,33 +58,13 @@ public class StrategyLoader {
 	 */
     public static ArrayList<String> filterExtension(ArrayList<String> ar, String filter){
     	
-    	int len = filter.length(), endIndex, startIndex;
-    	String temp;
-    	
     	for(int i=0; i<ar.size(); i++){
-    		//Dateiendung ermitteln
-    		temp = ar.get(i);
-    		endIndex = temp.length();
-    		startIndex = endIndex -len;
-   	 		temp =temp.substring(startIndex, endIndex);
-   	 		
    	 		//Wenn nicht Dateityp dann entfernen
-   	 		if(!temp.equals(filter)) ar.remove(i);
+   	 		if(!ar.get(i).endsWith(filter)) ar.remove(i);
    	 	}
    	 	
    	 	return ar;
     }
-    
-    static Class getClass( String path, String classname ) throws Exception 
-    { 
-    	 @SuppressWarnings("deprecation")
-		URL jarURL = new File(path).toURI().toURL();
-         
-         //Entweder so
-         ClassLoader classLoader =    new URLClassLoader(new URL[]{jarURL});
-                 
-         return classLoader.loadClass(classname);
-    } 
     
     
     /** getStrategy
@@ -95,7 +78,12 @@ public class StrategyLoader {
      */
     static MoveStrategy getStrategy( String path, String classname ) throws Exception 
     {
-    	return (MoveStrategy) getClass( path, classname ).newInstance();
+    	 @SuppressWarnings("deprecation")
+ 		URL jarURL = new File(path).toURI().toURL();
+          
+          ClassLoader classLoader =    new URLClassLoader(new URL[]{jarURL});
+                  
+          return (MoveStrategy) classLoader.loadClass(classname).newInstance();
     }
     
     /**getFromClassPath
@@ -111,5 +99,5 @@ public class StrategyLoader {
     static MoveStrategy getFromClassPath(String name) throws ClassNotFoundException, InstantiationException, IllegalAccessException{
     	final Class<?> clazz = Class.forName(name);
 		return (MoveStrategy) clazz.newInstance();
-    }
+    }       
 }
