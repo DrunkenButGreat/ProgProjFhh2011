@@ -1,6 +1,10 @@
 package de.gruppe12.logic;
 
+import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Method;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
@@ -68,9 +72,44 @@ public class StrategyLoader {
    	 	return ar;
     }
     
-    static MoveStrategy getStrategy( String path, String classname ) throws Exception 
+    static Class getClass( String path, String classname ) throws Exception 
     { 
-
-      return null;
+    	 @SuppressWarnings("deprecation")
+		URL jarURL = new File(path).toURI().toURL();
+         
+         //Entweder so
+         ClassLoader classLoader =    new URLClassLoader(new URL[]{jarURL});
+                 
+         return classLoader.loadClass(classname);
     } 
+    
+    
+    /** getStrategy
+     * 
+     * Aus der Class eine MoveStrategy Casten
+     * 
+     * @param path
+     * @param classname
+     * @return
+     * @throws Exception
+     */
+    static MoveStrategy getStrategy( String path, String classname ) throws Exception 
+    {
+    	return (MoveStrategy) getClass( path, classname ).newInstance();
+    }
+    
+    /**getFromClassPath
+     * 
+     * Simple way um Classen aus dem Classpath zu laden.
+     * 
+     * @param name
+     * @return
+     * @throws ClassNotFoundException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     */
+    static MoveStrategy getFromClassPath(String name) throws ClassNotFoundException, InstantiationException, IllegalAccessException{
+    	final Class<?> clazz = Class.forName(name);
+		return (MoveStrategy) clazz.newInstance();
+    }
 }
