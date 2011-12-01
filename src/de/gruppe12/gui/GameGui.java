@@ -9,7 +9,8 @@ import javax.imageio.ImageIO;
 
 
 public class GameGui extends JFrame {
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 2L;
+	private static final String fonttype= "Arial";
 	
 	private JMenuBar jmbMenuBar;
 
@@ -93,9 +94,10 @@ public class GameGui extends JFrame {
 		jpnlStartMenu.addComponentListener(new ComponentAdapter() {
 			@Override public void componentResized(ComponentEvent e) {
 				int fontSize= jbtnHumanVsHuman.getHeight()/3;
-				jbtnHumanVsHuman.setFont(new Font("Arial", Font.BOLD, fontSize));
-				jbtnHumanVsAi.setFont(new Font("Arial", Font.BOLD, fontSize));
-				jbtnAiVsAi.setFont(new Font("Arial", Font.BOLD, fontSize));
+				if (fontSize==0) return;
+				jbtnHumanVsHuman.setFont(new Font(fonttype, Font.BOLD, fontSize));
+				jbtnHumanVsAi.setFont(new Font(fonttype, Font.BOLD, fontSize));
+				jbtnAiVsAi.setFont(new Font(fonttype, Font.BOLD, fontSize));
 			}
 		});
 		
@@ -105,6 +107,24 @@ public class GameGui extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				cardLO.show(cardLOContainer, "Human vs Human");
 				jpnlHumanVsHuman.requestFocus();
+			}
+		});
+		
+		jbtnHumanVsAi.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				cardLO.show(cardLOContainer, "Human vs AI");
+				jpnlHumanVsAi.requestFocus();
+			}
+		});
+		
+		jbtnAiVsAi.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				cardLO.show(cardLOContainer, "AI vs AI");
+				jpnlAiVsAi.requestFocus();
 			}
 		});
 		
@@ -170,20 +190,19 @@ public class GameGui extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				//TODO: Namen speichern
 				cardLO.show(cardLOContainer, "Game Panel");
 			}
 		});
 
-		jpnlStartMenu.addComponentListener(new ComponentAdapter() {
+		jpnlHumanVsHuman.addComponentListener(new ComponentAdapter() {
 			@Override public void componentResized(ComponentEvent e) {
 				int fontSize= jtfPlayer1.getHeight()/3;
-				jtfPlayer1.setFont(new Font("Arial", Font.BOLD, fontSize));
-				jtfPlayer2.setFont(new Font("Arial", Font.BOLD, fontSize));
-				jlbPlayer1.setFont(new Font("Arial", Font.PLAIN, fontSize));
-				jlbPlayer2.setFont(new Font("Arial", Font.PLAIN, fontSize));
-				jbtnStart.setFont(new Font("Arial", Font.BOLD, fontSize));
-			
+				if (fontSize==0) return;
+				jtfPlayer1.setFont(new Font(fonttype, Font.BOLD, fontSize));
+				jtfPlayer2.setFont(new Font(fonttype, Font.BOLD, fontSize));
+				jlbPlayer1.setFont(new Font(fonttype, Font.PLAIN, fontSize));
+				jlbPlayer2.setFont(new Font(fonttype, Font.PLAIN, fontSize));
+				jbtnStart.setFont(new Font(fonttype, Font.BOLD, fontSize));
 			}
 		});
 		
@@ -191,6 +210,66 @@ public class GameGui extends JFrame {
 	
 	private void buildHumanVsAi() {
 		jpnlHumanVsAi= new JPanel();
+		
+		final JLabel jlbPlayer1= new JLabel("Spieler:");
+		final JLabel jlbPlayer2= new JLabel("KI:");
+		final JLabel jlbAngreifer= new JLabel("Angreifer:");
+		final JTextField jtfPlayer1= new JTextField("   Spieler 1   ");
+		final JComboBox jcbKI= new JComboBox();
+		final JRadioButton jrbSpieler= new JRadioButton("Spieler");
+		final JRadioButton jrbKI= new JRadioButton("Kuenstliche Intelligenz");
+		ActionListener buttonToggle= new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				if (arg0.getSource().equals(jrbSpieler)) {
+					jrbKI.setSelected(!jrbSpieler.isSelected());
+				} else {
+					jrbSpieler.setSelected(!jrbKI.isSelected());
+				}
+			}
+		};
+		
+		jrbSpieler.addActionListener(buttonToggle);
+		jrbKI.addActionListener(buttonToggle);
+		jrbSpieler.setSelected(true);
+		
+		File dir = new File("MoveStrategies");
+		String[] files= dir.list();
+		for (int i= 0; i< files.length; i++) {
+			if (files[i].endsWith(".class")) {
+				jcbKI.addItem(files[i].substring(0, files[i].lastIndexOf('.')));
+			}
+		}
+		final JButton jbtnStart= new JButton("Spiel starten");
+		jpnlHumanVsAi.setLayout(new GridBagLayout());
+		addToGBPanel(0, 0, 1, 1, 0.5, 0.5, Box.createGlue(), jpnlHumanVsAi);
+		addToGBPanel(1, 1, 1, 1, 0.5, 0.5, jlbPlayer1, jpnlHumanVsAi);
+		addToGBPanel(2, 1, 2, 1, 0.5, 0.5, jtfPlayer1, jpnlHumanVsAi);
+		addToGBPanel(0, 2, 1, 1, 0.5, 0.5, Box.createGlue(), jpnlHumanVsAi);
+		addToGBPanel(1, 3, 1, 1, 0.5, 0.5, jlbPlayer2, jpnlHumanVsAi);
+		addToGBPanel(2, 3, 2, 1, 0.5, 0.5, jcbKI, jpnlHumanVsAi);
+		addToGBPanel(0, 4, 1, 1, 0.5, 0.5, Box.createGlue(), jpnlHumanVsAi);
+		addToGBPanel(1, 5, 1, 1, 0.5, 0.5, jlbAngreifer, jpnlHumanVsAi);
+		addToGBPanel(2, 5, 1, 1, 0.5, 0.5, jrbSpieler , jpnlHumanVsAi);
+		addToGBPanel(3, 5, 1, 1, 0.5, 0.5, jrbKI, jpnlHumanVsAi);
+		addToGBPanel(1, 6, 3, 1, 0.5, 0.5, jbtnStart, jpnlHumanVsAi);
+		addToGBPanel(4, 7, 1, 1, 0.5, 0.5, Box.createGlue(), jpnlHumanVsAi);
+		
+		jpnlHumanVsAi.addComponentListener(new ComponentAdapter() {
+			@Override public void componentResized(ComponentEvent e) {
+				int fontSize= jtfPlayer1.getHeight()/3;
+				if (fontSize==0) return;
+				jtfPlayer1.setFont(new Font(fonttype, Font.BOLD, fontSize));
+				jcbKI.setFont(new Font(fonttype, Font.BOLD, fontSize));
+				jlbPlayer1.setFont(new Font(fonttype, Font.PLAIN, fontSize));
+				jlbPlayer2.setFont(new Font(fonttype, Font.PLAIN, fontSize));
+				jlbAngreifer.setFont(new Font(fonttype, Font.PLAIN, fontSize));
+				jbtnStart.setFont(new Font(fonttype, Font.BOLD, fontSize));
+				jrbSpieler.setFont(new Font(fonttype, Font.PLAIN, fontSize));
+				jrbKI.setFont(new Font(fonttype, Font.PLAIN, fontSize));
+			}
+		});
 		
 	}
 	
