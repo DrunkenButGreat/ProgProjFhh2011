@@ -10,6 +10,8 @@ import java.awt.event.MouseEvent;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import de.fhhannover.inform.hnefatafl.vorgaben.BoardContent;
+
 public class JPanelBoardDisplay extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private GuiController gc;
@@ -17,7 +19,7 @@ public class JPanelBoardDisplay extends JPanel {
 	private int boardStartX;
 	private int boardStartY;
 	private final Point selectedCell; 
-	private int[][] board;
+	private BoardContent[][] board;
 	
 	public JPanelBoardDisplay(final GuiController gc) {
 		this.gc= gc;
@@ -131,7 +133,7 @@ public class JPanelBoardDisplay extends JPanel {
 				if (!( (i==j && (i==0 || i==12)) || (i==0 && j==12) || (i==12 && j==0) )){
 					tempg.setColor(Color.GREEN);
 					tempg.drawRect(boardStartX+fieldSize*(i+1), boardStartY+fieldSize*(j+1), fieldSize, fieldSize);
-					if (board[i][j]>0) {
+					if (board[i][j]!=BoardContent.EMPTY) {
 						drawStone(i, j, tempg);
 					}
 				}
@@ -150,8 +152,8 @@ public class JPanelBoardDisplay extends JPanel {
 	}
 
 	private void drawStone(int i, int j, Graphics2D g) {
-		if (board[i][j]==3) g.setColor(Color.RED);
-		else if (board[i][j]==2) g.setColor(Color.BLUE);
+		if (board[i][j]==BoardContent.ATTACKER) g.setColor(Color.RED);
+		else if (board[i][j]==BoardContent.DEFENDER) g.setColor(Color.BLUE);
 		else g.setColor(Color.CYAN);
 		
 		if (gc.getAnimation().isRunning()) {

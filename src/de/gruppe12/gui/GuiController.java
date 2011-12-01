@@ -6,42 +6,27 @@ import java.util.Observer;
 
 import javax.swing.SwingUtilities;
 
+import de.fhhannover.inform.hnefatafl.vorgaben.BoardContent;
 import de.gruppe12.ki.MoveStrategy;
 import de.gruppe12.logic.LogicMain;
+import de.gruppe12.shared.Board;
 import de.gruppe12.shared.Cell;
 import de.gruppe12.shared.Move;
 
 public class GuiController extends Observable implements Observer{
-	private int[][] dummyBoard; //to be removed
-	boolean defendersTurn; // dito
 	private final MoveAnimation anim;
 	private GameGui gui;
 	private LogicMain logic;
 	private MoveStrategy[] moveStrats;
+	private static int thinkTime= 5000;
 	
 	public GuiController() {
 		addObserver(this);
-		defendersTurn= false;
 		anim= new MoveAnimation(this);
 		
 		int k= 1;
 		int d= 2;
 		int a= 3;
-		
-		dummyBoard= new int[13][];
-		dummyBoard[0]=  new int[]{0,0,0,0,a,a,a,a,a,0,0,0,0};
-		dummyBoard[1]=  new int[]{0,0,0,0,0,0,a,0,0,0,0,0,0};
-		dummyBoard[2]=  new int[]{0,0,0,0,0,0,0,0,0,0,0,0,0};
-		dummyBoard[3]=  new int[]{0,0,0,0,0,0,0,0,0,0,0,0,0};
-		dummyBoard[4]=  new int[]{a,0,0,0,0,0,d,0,0,0,0,0,a};
-		dummyBoard[5]=  new int[]{a,0,0,0,0,d,d,d,0,0,0,0,a};
-		dummyBoard[6]=  new int[]{a,a,0,0,d,d,k,d,d,0,0,a,a};
-		dummyBoard[7]=  new int[]{a,0,0,0,0,d,d,d,0,0,0,0,a};
-		dummyBoard[8]=  new int[]{a,0,0,0,0,0,d,0,0,0,0,0,a};
-		dummyBoard[9]=  new int[]{0,0,0,0,0,0,0,0,0,0,0,0,0};
-		dummyBoard[10]= new int[]{0,0,0,0,0,0,0,0,0,0,0,0,0};
-		dummyBoard[11]= new int[]{0,0,0,0,0,0,a,0,0,0,0,0,0};
-		dummyBoard[12]= new int[]{0,0,0,0,a,a,a,a,a,0,0,0,0};
 	}
 	
 	protected void setGameGui(GameGui gui) {
@@ -55,18 +40,17 @@ public class GuiController extends Observable implements Observer{
 	
 	protected boolean isPlayersTurn(int cellX, int cellY) {
 		boolean result=false;
-		if (((dummyBoard[cellX][cellY]==2 || dummyBoard[cellX][cellY]==1) && defendersTurn) || (
-		dummyBoard[cellX][cellY]==3 && !defendersTurn))
+		/*if (((board[cellX][cellY]==BoardContent.DEFENDER || dummyBoard[cellX][cellY]==BoardContent.KING) && defendersTurn) || (
+		dummyBoard[cellX][cellY]==BoardContent.ATTACKER && !defendersTurn))
 		{
 			result= true;
-		}
+		}*/
 		return result;
 	}
 	
-	protected int[][] getBoard() {
-		//kann auch ein BoardContent[][] zurueckgeben, muss dann nur ein wenig anpassen
-		//logic.getBoard();
-		return dummyBoard;
+	protected BoardContent[][] getBoard() {
+		//return logic.getBoard().get();
+		return new Board().get();
 	}
 	
 	protected String getLog() {
@@ -75,14 +59,14 @@ public class GuiController extends Observable implements Observer{
 	
 	protected void doMove(int srcX, int srcY, int destX, int destY) {
 		//###############
-		dummyBoard[destX][destY]= dummyBoard[srcX][srcY];
+		/*[destX][destY]= dummyBoard[srcX][srcY];
 		dummyBoard[srcX][srcY]= 0;
 		
 		setChanged();
 		notifyObservers(new Move(new Cell(srcX, srcY, null), new Cell(destX, destY, null)));
 		defendersTurn= !defendersTurn;
-		//###############
-		//logic.doMove(new Move(new Cell(srcX, srcY, null), new Cell(destX, destY, null)));
+		//###############*/
+		logic.move(new Move(new Cell(srcX, srcY, null), new Cell(destX, destY, null)));
 	}
 
 	@Override
@@ -118,20 +102,21 @@ public class GuiController extends Observable implements Observer{
 	}
 	
 	protected void initHvHGame() {
-		//logic.initHumanVsHumanGame();
+		logic.humanDefHumanAtt(thinkTime);
 	}
 	
 	protected void initHvAGame(boolean humanIsAttacker, String aiMoveStrategyName) {
-		MoveStrategy mStrat;
+		MoveStrategy mStrat=null;
 		//mStrat aus MoveStrategy Array bestimmen
-		//logic.initHumanVsAiGame(humanIsAttacker, mStrat);
+		if (humanIsAttacker) logic.humanAttKiDef(mStrat, thinkTime);
+		else logic.humanDefKiAtt(mStrat, thinkTime);
 	}
 	
 	protected void initAvAGame(String offenderMoveStrategyName, String defenderMoveStrategyName) {
-		MoveStrategy offStrat;
-		MoveStrategy defStrat;
+		MoveStrategy offStrat= null;
+		MoveStrategy defStrat= null;
 		//MoveStrategies aus MoveStrategy Array bestimmen
-		//logic.initAiVsAiGame(offStrat, defStrat);
+		logic.KiDefKiAtt(defStrat, offStrat, thinkTime);
 	}
 
 }
