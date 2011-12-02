@@ -171,15 +171,40 @@ public class Board {
 		return finish;
 	}
 	
+	
+	/** getCell
+	 * 
+	 * Es kann eine gesammt Cell abgerufen werden
+	 * 
+	 * @param x : Spalte des Boards
+	 * @param y : Reihe des Boards
+	 * @return	Überibt die Zelle mit Inhalt
+	 */
 	public Cell getCell(int x, int y){
 		return new Cell(x,y,board[x][y]);
 	}
 	
+	
+	/** setCell
+	 * 
+	 * Setzte den Inhalt des Boardes ueber die Zelle
+	 * 
+	 * @param cell : Zelle zum einfügen ins Board
+	 */
 	public void setCell(Cell cell){
 		int x = cell.getCol(), y=cell.getRow();
 		BoardContent bc = cell.getContent();
 		board[x][y]= bc;
 	}
+	
+	/**getCellBC
+	 * 
+	 * Liefert den BoardContentWert vom Board der Zelle. 
+	 * Praktisch um zu überprüfen ob auch die richtigen Informationen getestet werden
+	 * 
+	 * @param cell : Zelle -> Zelle auf Board
+	 * @return Einen Boardcontent
+	 */
 	public BoardContent getCellBC(Cell cell){
 		return board[cell.getCol()][cell.getRow()];
 	}
