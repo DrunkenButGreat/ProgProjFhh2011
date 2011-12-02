@@ -138,7 +138,7 @@ public class Board {
 		
 		for(int i = 0;i < board.length; i++){
 			for(int j= 0; j < board[i].length; j++){
-				switch(board[i][j]){
+				switch(board[j][i]){
 					case INVALID:
 						sb.append("I ");
 						break;
@@ -178,7 +178,7 @@ public class Board {
 	 * 
 	 * @param x : Spalte des Boards
 	 * @param y : Reihe des Boards
-	 * @return	Überibt die Zelle mit Inhalt
+	 * @return	ï¿½beribt die Zelle mit Inhalt
 	 */
 	public Cell getCell(int x, int y){
 		return new Cell(x,y,board[x][y]);
@@ -189,7 +189,7 @@ public class Board {
 	 * 
 	 * Setzte den Inhalt des Boardes ueber die Zelle
 	 * 
-	 * @param cell : Zelle zum einfügen ins Board
+	 * @param cell : Zelle zum einfï¿½gen ins Board
 	 */
 	public void setCell(Cell cell){
 		int x = cell.getCol(), y=cell.getRow();
@@ -200,7 +200,7 @@ public class Board {
 	/**getCellBC
 	 * 
 	 * Liefert den BoardContentWert vom Board der Zelle. 
-	 * Praktisch um zu überprüfen ob auch die richtigen Informationen getestet werden
+	 * Praktisch um zu ï¿½berprï¿½fen ob auch die richtigen Informationen getestet werden
 	 * 
 	 * @param cell : Zelle -> Zelle auf Board
 	 * @return Einen Boardcontent
