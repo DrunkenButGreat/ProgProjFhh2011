@@ -156,6 +156,10 @@ public class LogicMain extends Observable {
 			
 			// Spieler wechseln
 			this.defPlayerTurn = !this.defPlayerTurn;
+			
+			//Oberserver benachrichtigen
+			setChanged();
+			notifyObservers(move);
 		}
 		else {
 			logGameEvent("Ungültig");
@@ -170,9 +174,7 @@ public class LogicMain extends Observable {
 			}	
 		}		
 		System.out.println(this.board.toString());
-		//Oberserver benachrichtigen
-		setChanged();
-		notifyObservers(currentMove);
+		
 		try {
 			Thread.sleep(0);
 		} catch (InterruptedException e) {
