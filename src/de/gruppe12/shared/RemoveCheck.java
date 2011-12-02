@@ -142,7 +142,10 @@ public class RemoveCheck {
 			sur++;
 		}
 		
-		if(sur==4) tb.setFinish();
+		if(sur==4) {
+			GameLog.logDebugEvent("Spielende");
+			tb.setFinish();
+		}
 		
 		return tb;		
 		

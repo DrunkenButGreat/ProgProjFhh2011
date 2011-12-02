@@ -135,8 +135,10 @@ public class Board {
 	 */
 	public String toString(){
 		StringBuilder sb = new StringBuilder();
-		
+		sb.append("\t" + "0 1 2 3 4 5 6 7 8 9 A B C" + "\n\n\n");
 		for(int i = 0;i < board.length; i++){
+			sb.append(i + "\t");
+			
 			for(int j= 0; j < board[i].length; j++){
 				switch(board[j][i]){
 					case INVALID:

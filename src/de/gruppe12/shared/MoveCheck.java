@@ -35,14 +35,14 @@ public class MoveCheck {
 	}
 	
 	private static boolean checkCorrectPlayer(Move move, Board board, Boolean isDefTurn){
-		if (isDefTurn && move.getFromCell().getContent() != BoardContent.DEFENDER){
-			GameLog.logDebugEvent("Spielstein vom Gegner gezogen");
-			return false;
+		if (isDefTurn && (move.getFromCell().getContent() == BoardContent.DEFENDER || 
+							move.getFromCell().getContent() == BoardContent.KING)){
+			return true;
 		}
-		if (!isDefTurn && move.getFromCell().getContent() != BoardContent.ATTACKER){
-			GameLog.logDebugEvent("Spielstein vom Gegner gezogen");
-			return false;
+		if (!isDefTurn && move.getFromCell().getContent() == BoardContent.ATTACKER){
+			return true;
 		}
+		GameLog.logDebugEvent("Spielstein vom Gegner gezogen");
 		return true;		
 	}
 	
@@ -55,6 +55,11 @@ public class MoveCheck {
 	 * @return
 	 */
 	private static boolean checkFreeWay(Move move, Board board){
+		boolean isKing = false;
+		if (move.getFromCell().getContent() == BoardContent.KING){
+			isKing = true;
+		}	
+		
 		/* Bewegungsrichtung ermitteln */
 		if(move.getFromCell().getCol()!=move.getToCell().getCol()){
 			
@@ -63,23 +68,31 @@ public class MoveCheck {
 				
 				/* von  rechts nach links */
 				for(int i = move.getFromCell().getCol() - 1; i>=move.getToCell().getCol(); i--){
-					if(board.get()[i][move.getToCell().getRow()]!=BoardContent.EMPTY) {
-						GameLog.logDebugEvent("Weg blockiert");
-						return false;
+						if(!isKing && board.get()[i][move.getToCell().getRow()]!=BoardContent.EMPTY) {
+							GameLog.logDebugEvent("Weg blockiert");
+							return false;
+						}
+						if (isKing && !(board.get()[i][move.getToCell().getRow()] == BoardContent.EMPTY || board.get()[i][move.getToCell().getRow()] == BoardContent.INVALID)){
+							GameLog.logDebugEvent("Weg blockiert");
+							return false;
+						}							
 					}
-				}
-				
+								
 				return true;
+				
 			} else {
 				
 				/* von links nach rechts */
 				for(int i = move.getFromCell().getCol() + 1; i<=move.getToCell().getCol(); i++){
-					if(board.get()[i][move.getToCell().getRow()]!=BoardContent.EMPTY) {
+					if(!isKing && board.get()[i][move.getToCell().getRow()]!=BoardContent.EMPTY) {
 						GameLog.logDebugEvent("Weg blockiert");
 						return false;
 					}
-				}
-				
+					if (isKing && !(board.get()[i][move.getToCell().getRow()]==BoardContent.EMPTY || board.get()[i][move.getToCell().getRow()]==BoardContent.INVALID)){
+						GameLog.logDebugEvent("Weg blockiert");
+						return false;
+					}		
+				}				
 				return true;
 			}
 			
@@ -90,10 +103,14 @@ public class MoveCheck {
 				
 				/* von  unten nach oben */
 				for(int i = move.getFromCell().getRow() - 1; i>=move.getToCell().getRow(); i--){
-					if(board.get()[move.getToCell().getCol()][i]!=BoardContent.EMPTY) {
+					if(!isKing && board.get()[move.getToCell().getCol()][i]!=BoardContent.EMPTY) {
 						GameLog.logDebugEvent("Weg blockiert");
 						return false;
 					}
+					if (isKing && !(board.get()[move.getToCell().getCol()][i]==BoardContent.EMPTY || board.get()[move.getToCell().getCol()][i]==BoardContent.INVALID)){
+						GameLog.logDebugEvent("Weg blockiert");
+						return false;
+					}		
 				}
 				
 				return true;
@@ -102,10 +119,14 @@ public class MoveCheck {
 				
 				/* von  oben nach unten */
 				for(int i = move.getFromCell().getRow() + 1; i<=move.getToCell().getRow(); i++){
-					if(board.get()[move.getToCell().getCol()][i]!=BoardContent.EMPTY) {
+					if(!isKing && board.get()[move.getToCell().getCol()][i]!=BoardContent.EMPTY) {
 						GameLog.logDebugEvent("Weg blockiert");
 						return false;
 					}
+					if (isKing && !(board.get()[move.getToCell().getCol()][i]==BoardContent.EMPTY || board.get()[move.getToCell().getCol()][i]==BoardContent.INVALID)){
+						GameLog.logDebugEvent("Weg blockiert");
+						return false;
+					}		
 				}
 				
 				return true;
@@ -148,16 +169,16 @@ public class MoveCheck {
 	 * @return
 	 */
 	private static boolean checkInBoard(Move move, Board board){
-		if(		move.getFromCell().getCol()>= boardSize ||
+		if(		move.getFromCell().getCol()>boardSize ||
 				move.getFromCell().getCol()<0 ||
 				
-				move.getToCell().getCol()>=boardSize ||
+				move.getToCell().getCol()>boardSize ||
 				move.getToCell().getCol()<0 ||
 				
-				move.getFromCell().getRow()>=boardSize ||
+				move.getFromCell().getRow()>boardSize ||
 				move.getFromCell().getRow()<0 ||
 				
-				move.getToCell().getRow()>=boardSize ||
+				move.getToCell().getRow()>boardSize ||
 				move.getToCell().getRow()<0)
 		{
 			GameLog.logDebugEvent("Move außerhalb vom Board");

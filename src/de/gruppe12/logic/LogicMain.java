@@ -69,7 +69,7 @@ public class LogicMain extends Observable {
 		this.lastMove = null;
 		this.defPlayerTurn = true;
 	}
-	
+
 	// Ende der Konstruktoren	
 	
 	private void setDefender(MoveStrategy player){
@@ -82,7 +82,11 @@ public class LogicMain extends Observable {
 	
 	public Board getBoard(){
 		return this.board;
-	}		
+	}	
+	
+	public boolean getDefPlayerTurn(){
+		return this.defPlayerTurn;
+	}
 
 	void finish(boolean player){
 		
@@ -140,7 +144,7 @@ public class LogicMain extends Observable {
 	}
 	
 	private void update(Move move){	
-		System.out.println(this.board.toString());
+		//System.out.println(this.board.toString());
 		//Erst prüfen ob der Zug erlaubt ist	
 		if (MoveCheck.check(move, this.board, this.defPlayerTurn)) {			
 			//Dann prüfen ob Steine geschlagen wurden und neues Bord setzen
