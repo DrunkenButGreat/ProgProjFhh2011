@@ -183,6 +183,7 @@ public class Board {
 	 * @return	�beribt die Zelle mit Inhalt
 	 */
 	public Cell getCell(int x, int y){
+		if (x<0 || x>12 || y<0 || y>12) return new Cell(x,y, BoardContent.INVALID);
 		return new Cell(x,y,board[x][y]);
 	}
 	
