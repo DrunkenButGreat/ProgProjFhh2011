@@ -78,6 +78,9 @@ public class Board {
 	}
 	
 	/** empty
+	 * 
+	 * @deprecated
+	 * 
 	 * Leert das komplette board
 	 */
 	private void empty(){
@@ -89,6 +92,7 @@ public class Board {
 	}
 	
 	/** get
+	 * @deprecated
 	 * 
 	 * gibt den Paramenter der Position des Arrays aus
 	 * 
@@ -114,6 +118,7 @@ public class Board {
 	}
 	
 	/** set
+	 * @deprecated
 	 * 
 	 * @param x: X-Koordinate
 	 * @param y: Y-Koordinate
@@ -164,5 +169,15 @@ public class Board {
 	
 	public boolean isFinished(){
 		return finish;
+	}
+	
+	public Cell getCell(int x, int y){
+		return new Cell(x,y,board[x][y]);
+	}
+	
+	public void setCell(Cell cell){
+		int x = cell.getCol(), y=cell.getRow();
+		BoardContent bc = cell.getContent();
+		board[x][y]= bc;
 	}
 }
