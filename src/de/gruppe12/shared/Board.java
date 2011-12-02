@@ -180,4 +180,7 @@ public class Board {
 		BoardContent bc = cell.getContent();
 		board[x][y]= bc;
 	}
+	public BoardContent getCellBC(Cell cell){
+		return board[cell.getCol()][cell.getRow()];
+	}
 }
