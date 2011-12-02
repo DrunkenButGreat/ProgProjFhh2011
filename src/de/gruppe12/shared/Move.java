@@ -1,6 +1,6 @@
 package de.gruppe12.shared;
 
-import de.fhhannover.inform.hnefatafl.vorgaben.Cell;
+import de.gruppe12.shared.Cell;
 
 public class Move implements de.fhhannover.inform.hnefatafl.vorgaben.Move {
 	

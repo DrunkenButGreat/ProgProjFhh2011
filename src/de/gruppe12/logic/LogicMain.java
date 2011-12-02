@@ -142,7 +142,7 @@ public class LogicMain extends Observable {
 	private void update(Move move){	
 		System.out.println(this.board.toString());
 		//Erst prüfen ob der Zug erlaubt ist	
-		if (MoveCheck.check(move, this.board)) {			
+		if (MoveCheck.check(move, this.board, this.defPlayerTurn)) {			
 			//Dann prüfen ob Steine geschlagen wurden und neues Bord setzen
 			this.board = RemoveCheck.checkForRemove(move, this.board);
 			
@@ -154,6 +154,7 @@ public class LogicMain extends Observable {
 			this.defPlayerTurn = !this.defPlayerTurn;
 		}
 		else {
+			logGameEvent("Ungültig");
 			//Wenn KI am Zug ist
 			if ((this.defPlayerTurn && !this.humanDefender) ||
 						!this.defPlayerTurn && !this.humanAttacker){

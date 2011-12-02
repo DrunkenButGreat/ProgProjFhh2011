@@ -20,7 +20,11 @@ public class main {
 			NormalStrategy n = new NormalStrategy();			
 			LogicMain main = new LogicMain();
 			main.humanDefHumanAtt(1000);
-			main.move(new Move(new Cell(6,5, BoardContent.DEFENDER), new Cell(7,5, BoardContent.DEFENDER)));
+			main.move(new Move(new Cell(7,5, BoardContent.DEFENDER), new Cell(11,5, BoardContent.DEFENDER)));
+			
+			main.move(new Move(new Cell(4,0, BoardContent.ATTACKER), new Cell(4,1, BoardContent.ATTACKER)));
+			
+			main.move(new Move(new Cell(7,7, BoardContent.DEFENDER), new Cell(11,7, BoardContent.DEFENDER)));
 			System.out.println(main.getLastGameLogEvent());
 			
 			System.out.println("Was ist in der Datei");

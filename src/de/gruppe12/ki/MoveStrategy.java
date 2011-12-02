@@ -1,14 +1,14 @@
 package de.gruppe12.ki;
 
-import de.fhhannover.inform.hnefatafl.vorgaben.Move;
+import de.gruppe12.shared.Move;;
 
 /**
-* Das Interface MoveStrategy ist das Interface über den verschiedenen Strategien <p>
+* Das Interface MoveStrategy ist das Interface ï¿½ber den verschiedenen Strategien <p>
 * Copyright: (c) 2011 <p>
 * Company: Gruppe 12 <p>
 * @author Markus
 * @version 1.0.0 19.11.2011
-* Änderungen: 19.11. javadoc eingefügt
+* ï¿½nderungen: 19.11. javadoc eingefï¿½gt
 */
 
 public interface MoveStrategy {

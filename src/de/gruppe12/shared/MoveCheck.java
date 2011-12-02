@@ -8,8 +8,10 @@
 package de.gruppe12.shared;
 
 import de.fhhannover.inform.hnefatafl.vorgaben.BoardContent;
+import de.gruppe12.logic.GameLog;
 
 public class MoveCheck {
+	static final int boardSize = 12;
 	
 	//TODO: Funktionstest ob die Funktionen richtig funktionieren
 	
@@ -21,17 +23,27 @@ public class MoveCheck {
 	 * @param move
 	 * @return
 	 */
-	public static Boolean check (Move move, Board board){ 
-		
-			
-		if(
-				checkMoveDirection(move, board)&&
-				checkForFortress(move, board)&&
-				checkBoardContent(move)&&
-				checkFreeWay(move, board)&&				
-				checkInBoard(move, board)				
-		) return true;
-		else return false;
+	public static Boolean check (Move move, Board board, Boolean isDefTurn){ 			
+		if (!checkInBoard(move, board)) return false;
+		if (!checkCorrectPlayer(move, board, isDefTurn)) return false;
+		if (!checkMoveDirection(move, board)) return false;
+		if (!checkForFortress(move, board)) return false;
+		if (!checkBoardContent(move, board)) return false;
+		if (!checkFreeWay(move, board)) return false;
+	
+		return true;
+	}
+	
+	private static boolean checkCorrectPlayer(Move move, Board board, Boolean isDefTurn){
+		if (isDefTurn && move.getFromCell().getContent() != BoardContent.DEFENDER){
+			GameLog.logDebugEvent("Spielstein vom Gegner gezogen");
+			return false;
+		}
+		if (!isDefTurn && move.getFromCell().getContent() != BoardContent.ATTACKER){
+			GameLog.logDebugEvent("Spielstein vom Gegner gezogen");
+			return false;
+		}
+		return true;		
 	}
 	
 	/**checkFreeWay
@@ -50,16 +62,22 @@ public class MoveCheck {
 			if(move.getFromCell().getCol()>move.getToCell().getCol()){
 				
 				/* von  rechts nach links */
-				for(int i = move.getFromCell().getCol(); i>=move.getToCell().getCol(); i--){
-					if(board.get()[i][move.getToCell().getRow()]!=BoardContent.EMPTY) return false;
+				for(int i = move.getFromCell().getCol() - 1; i>=move.getToCell().getCol(); i--){
+					if(board.get()[i][move.getToCell().getRow()]!=BoardContent.EMPTY) {
+						GameLog.logDebugEvent("Weg blockiert");
+						return false;
+					}
 				}
 				
 				return true;
 			} else {
 				
 				/* von links nach rechts */
-				for(int i = move.getFromCell().getCol(); i<=move.getToCell().getCol(); i++){
-					if(board.get()[i][move.getToCell().getRow()]!=BoardContent.EMPTY) return false;
+				for(int i = move.getFromCell().getCol() + 1; i<=move.getToCell().getCol(); i++){
+					if(board.get()[i][move.getToCell().getRow()]!=BoardContent.EMPTY) {
+						GameLog.logDebugEvent("Weg blockiert");
+						return false;
+					}
 				}
 				
 				return true;
@@ -71,8 +89,11 @@ public class MoveCheck {
 			if(move.getFromCell().getRow()>move.getToCell().getRow()){
 				
 				/* von  unten nach oben */
-				for(int i = move.getFromCell().getRow(); i>=move.getToCell().getRow(); i--){
-					if(board.get()[move.getToCell().getCol()][i]!=BoardContent.EMPTY) return false;
+				for(int i = move.getFromCell().getRow() - 1; i>=move.getToCell().getRow(); i--){
+					if(board.get()[move.getToCell().getCol()][i]!=BoardContent.EMPTY) {
+						GameLog.logDebugEvent("Weg blockiert");
+						return false;
+					}
 				}
 				
 				return true;
@@ -80,8 +101,11 @@ public class MoveCheck {
 			} else {
 				
 				/* von  oben nach unten */
-				for(int i = move.getFromCell().getRow(); i<=move.getToCell().getRow(); i++){
-					if(board.get()[move.getToCell().getCol()][i]!=BoardContent.EMPTY) return false;
+				for(int i = move.getFromCell().getRow() + 1; i<=move.getToCell().getRow(); i++){
+					if(board.get()[move.getToCell().getCol()][i]!=BoardContent.EMPTY) {
+						GameLog.logDebugEvent("Weg blockiert");
+						return false;
+					}
 				}
 				
 				return true;
@@ -93,14 +117,21 @@ public class MoveCheck {
 	
 	/** checkBoardContent
 	 * 
-	 * Prüt ob der Boardcontent der Quell-Zelle und der Zielzelle gleich ist.
+	 * Prï¿½t ob der Boardcontent der Quell-Zelle und der Zielzelle gleich ist.
 	 * Sonst Betrugsversuch
 	 * 
 	 * @param move: Der zu Analysierende Zug
 	 * @return
 	 */
-	private static boolean checkBoardContent(Move move){
-		if(move.getFromCell().getContent()!=move.getToCell().getContent()) return false;
+	private static boolean checkBoardContent(Move move, Board board){
+		if(move.getFromCell().getContent() != board.getCellBC(move.getFromCell())){
+			GameLog.logDebugEvent("BoardContent stimmt nicht");
+			return false;
+		}
+		if(move.getFromCell().getContent()!=move.getToCell().getContent()) {
+			GameLog.logDebugEvent("BoardContent nicht gleich");
+			return false;
+		}		
 		else return true;
 	}
 	
@@ -117,25 +148,29 @@ public class MoveCheck {
 	 * @return
 	 */
 	private static boolean checkInBoard(Move move, Board board){
-		if(		move.getFromCell().getCol()>=board.get().length &&
-				move.getFromCell().getCol()<0 &&
+		if(		move.getFromCell().getCol()>= boardSize ||
+				move.getFromCell().getCol()<0 ||
 				
-				move.getToCell().getCol()>=board.get().length &&
-				move.getToCell().getCol()<0 &&
+				move.getToCell().getCol()>=boardSize ||
+				move.getToCell().getCol()<0 ||
 				
-				move.getFromCell().getRow()>=board.get()[0].length &&
-				move.getFromCell().getRow()<0 &&
+				move.getFromCell().getRow()>=boardSize ||
+				move.getFromCell().getRow()<0 ||
 				
-				move.getToCell().getRow()>=board.get()[0].length &&
+				move.getToCell().getRow()>=boardSize ||
 				move.getToCell().getRow()<0)
-		return false;
+		{
+			GameLog.logDebugEvent("Move auÃŸerhalb vom Board");
+			return false;
+		}
+		
 		else return true;
 	}
 	
 	
 	/** checkForFortress
 	 * 
-	 * Prüft ob von oder auf ein INVALID feld gezogen wird
+	 * Prï¿½ft ob von oder auf ein INVALID feld gezogen wird
 	 * 
 	 * @param board
 	 * @param move
@@ -143,7 +178,7 @@ public class MoveCheck {
 	 */
 	private static boolean checkForFortress(Move move, Board board){
 		
-		/* König darf von daher erst prüfen ob Content King */
+		/* Kï¿½nig darf von daher erst prï¿½fen ob Content King */
 		if(move.getFromCell().getContent()!=BoardContent.KING){
 			
 			/* Test von Quelle und Ziel Move / Test anhand des Boardcontents */
@@ -151,8 +186,14 @@ public class MoveCheck {
 			if(
 					board.get()[move.getToCell().getCol()][move.getToCell().getRow()]!=BoardContent.INVALID &&
 					board.get()[move.getFromCell().getCol()][move.getFromCell().getRow()]!= BoardContent.INVALID
-			) return true;
-			else return false;
+			) {
+				return true;
+			}
+			else {
+				GameLog.logDebugEvent("Normale Spielfigur in Festung gezogen");
+				return false;
+			}
+				
 			
 		} else return true;
 		
@@ -161,8 +202,11 @@ public class MoveCheck {
 	private static boolean checkMoveDirection(Move move, Board board){
 		/* Teste ob Zugrichtung korrekt */
 		if(move.getFromCell().getCol()!=move.getToCell().getCol() &&
-				move.getFromCell().getRow()!=move.getToCell().getRow()) 
-		return false;
+				move.getFromCell().getRow()!=move.getToCell().getRow()) {
+			GameLog.logDebugEvent("Falsche Bewegungsrichtung");
+			return false;
+		}
+		
 		
 		else return true;
 	}

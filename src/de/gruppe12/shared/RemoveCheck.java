@@ -7,12 +7,14 @@
 package de.gruppe12.shared;
 
 import de.fhhannover.inform.hnefatafl.vorgaben.BoardContent;
+import de.gruppe12.logic.GameLog;
 
 public class RemoveCheck {
 	
 	public static Board checkForRemove(Move move, Board board){
 		
 		Board temp = new Board();
+		board = doMove(move, board);
 		
 		temp.set(checkSurround(move,board));
 		temp = checkForEnd(move, board);
@@ -21,20 +23,27 @@ public class RemoveCheck {
 		
 	}
 	
+	private static Board doMove(Move move, Board board){
+		board.setCell(new Cell(move.getFromCell().getCol(), move.getFromCell().getRow(), BoardContent.EMPTY));
+		board.setCell(new Cell(move.getToCell().getCol(), move.getToCell().getRow(), move.getToCell().getContent()));
+		return board;
+	}
+	
 	private static BoardContent[][] checkSurround(Move move, Board board){
 		int x=move.getToCell().getCol(),y=move.getToCell().getRow();
 		BoardContent me = move.getToCell().getContent();
 		BoardContent tboard[][] = board.get();
 		
 		
-		/* Ab hier Try-Catch weil es sein könnte das ein Stein sich an der Seite befindet 
-		 * Es gäbe sonst eine Index out of Bound Exception
+		/* Ab hier Try-Catch weil es sein kï¿½nnte das ein Stein sich an der Seite befindet 
+		 * Es gï¿½be sonst eine Index out of Bound Exception
 		 */
 		
 		// Links gucken und evtl entfernen
 		try{
 			if(tboard[x-1][y]==opposite(me)&&tboard[x-2][y]==me){
 				tboard[x-1][y] = BoardContent.EMPTY;
+				GameLog.logDebugEvent(opposite(me).toString() + " entfernt: " + (x - 1) + ", " + y);
 			}
 		} catch (Exception e){
 			
@@ -44,6 +53,7 @@ public class RemoveCheck {
 			try{
 				if(tboard[x+1][y]==opposite(me)&&tboard[x+2][y]==me){
 					tboard[x+1][y] = BoardContent.EMPTY;
+					GameLog.logDebugEvent(opposite(me).toString() + " entfernt: " + (x + 1) + ", " + y);
 				}
 			} catch (Exception e){
 				
@@ -53,6 +63,7 @@ public class RemoveCheck {
 			try{
 				if(tboard[x][y+1]==opposite(me)&&tboard[x][y+2]==me){
 					tboard[x][y+1] = BoardContent.EMPTY;
+					GameLog.logDebugEvent(opposite(me).toString() + " entfernt: " + x + ", " + (y + 1));
 				}
 			} catch (Exception e){
 				
@@ -62,6 +73,7 @@ public class RemoveCheck {
 			try{
 				if(tboard[x][y-1]==opposite(me)&&tboard[x][y-2]==me){
 					tboard[x][y-1] = BoardContent.EMPTY;
+					GameLog.logDebugEvent(opposite(me).toString() + " entfernt: " + x + ", " + (y - 1));
 				}
 			} catch (Exception e){
 				
@@ -77,16 +89,17 @@ public class RemoveCheck {
 		Board tb = board;
 		
 		
-		// König zieht auf Burg beendet die Methode und setzt das Finish Flag
+		// Kï¿½nig zieht auf Burg beendet die Methode und setzt das Finish Flag
 		if(move.getToCell().getContent()==BoardContent.KING &&
 				((x==0&&y==0) || (x==0&&y==tboard[0].length-1) || (x==tboard.length-1&&y==0) || (x==tboard.length-1&&y==tboard[0].length-1))
 		) {
 			tb.setFinish();
+			GameLog.logDebugEvent("Spielende");
 			return tb;
 		}
 		
 		
-		/* Suche König
+		/* Suche Kï¿½nig
 		 * JA ist ineffizient
 		 */
 		for(int i=0; i<tboard.length;i++){
@@ -98,7 +111,7 @@ public class RemoveCheck {
 			}
 		}
 		
-		//Ist der König umzingelt wenn ja su = 4
+		//Ist der Kï¿½nig umzingelt wenn ja su = 4
 		int sur = 0;
 		
 		//links

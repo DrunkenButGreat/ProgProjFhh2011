@@ -10,38 +10,38 @@ import de.gruppe12.shared.*;
 * Company: Gruppe 12 <p>
 * @author Markus
 * @version 0.5.0 28.11.2011
-* Änderungen: 28.11. erste implementierung von calcMoves und calcValue
+* ï¿½nderungen: 28.11. erste implementierung von calcMoves und calcValue
 */
 
 public class NormalStrategy implements MoveStrategy {
-	private int getNr;
+	private int grpNr;
 	private String name;
 	//private Node<Move> verlauf;
-	private Board b;
+	private Board b;	
 	
-	public NormalStrategy(int grpNr){
+	public NormalStrategy(){
+		grpNr = 12;
 		name = "normal";
-		getNr = grpNr;
 	}
 	
 	public int getGroupNr() {
-		return getNr;
+		return grpNr;
 	}
 
 	public String getStrategyName() {
 		return name;
 	}
 
-	//ein erster Versuch, noch nicht ganz der MinMax Algo. Müsste aber fürs Erste reichen.
+	//ein erster Versuch, noch nicht ganz der MinMax Algo. Mï¿½sste aber fï¿½rs Erste reichen.
 	public Move calculateDefenderMove(Move lastMove, int thinktimeInSeconds) {
 		//Speichern in Verlaufbaum, muss noch durchdacht werden
 		//verlauf.setLeft(new Node<Move>(lastMove));
 		
-		//Abbruchbedingung Zeit muss eingefügt werden
+		//Abbruchbedingung Zeit muss eingefï¿½gt werden
 		//if(time>= thinktimeInSeconds){
 		//zeit abgelaufen -> Spiel vorbei ?
 		//} else {
-		//Hauptcode zur Berechnung nächster Schritt
+		//Hauptcode zur Berechnung nï¿½chster Schritt
 	    Move[] moves = GenerateMoves(BoardContent.DEFENDER);
 	    Move move;
 	    Move best_move=moves[0];
@@ -67,11 +67,11 @@ public class NormalStrategy implements MoveStrategy {
 		//Speichern in Verlaufbaum, muss noch durchdacht werden
 		//verlauf.setRight(new Node<Move>(lastMove));
 		
-		//Abbruchbedingung Zeit muss eingefügt werden
+		//Abbruchbedingung Zeit muss eingefï¿½gt werden
 		//if(time>= thinktimeInSeconds){
 		//zeit abgelaufen -> Spiel vorbei ?
 		//} else {
-		//Hauptcode zur Berechnung nächster Schritt
+		//Hauptcode zur Berechnung nï¿½chster Schritt
 	    Move[] moves = GenerateMoves(BoardContent.ATTACKER);
 	    Move move;
 	    Move best_move=moves[0];
@@ -96,7 +96,7 @@ public class NormalStrategy implements MoveStrategy {
 	 * 
 	 * GenerateMoves()
 	 * 
-	 * @return ein Array mit allen möglichen Moves
+	 * @return ein Array mit allen mï¿½glichen Moves
 	 */
 	private Move[] GenerateMoves(BoardContent type) {
 		Move[] mList = new Move[500]; 
@@ -105,12 +105,12 @@ public class NormalStrategy implements MoveStrategy {
 		int m1=0;
 		int c1=0;
 		
-		//prüft wo Steine sind
+		//prï¿½ft wo Steine sind
 		for(int i=0;i<=13;i++){
 			for(int j=0;j<=13;j++){
 				//speichert nur wenn Typ gleich ist
-				if(c.getCell(i, j).getContent() == type)
-				cList[c1]=c.getCell(i,j);
+				if(b.get(i, j) == type)
+				cList[c1]=new Cell(i,j, type);
 				c1++;
 			}
 		}
@@ -159,7 +159,7 @@ public class NormalStrategy implements MoveStrategy {
 		      if((c4 != p)&&(c1!=BoardContent.EMPTY)){
 		    	  value++;
 		      }
-		      //checkt ob Move zulässig
+		      //checkt ob Move zulï¿½ssig
 		      if(MoveCheck.check(m,b)){
 		    	  return -1;
 		      }
@@ -167,23 +167,23 @@ public class NormalStrategy implements MoveStrategy {
 		   }
 	
 	public String toString(){
-	return name+" Strategy, Gruppe"+getNr;	
+	return name+" Strategy, Gruppe"+grpNr;	
 	}
 
-	//Methoden müssen importiert werden, vlt in vorgaben löschen ?
-	@Override
-	public de.fhhannover.inform.hnefatafl.vorgaben.Move calculateDefenderMove(
-			de.fhhannover.inform.hnefatafl.vorgaben.Move lastMove,
-			int thinktimeInSeconds) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public de.fhhannover.inform.hnefatafl.vorgaben.Move calculateAttackerMove(
-			de.fhhannover.inform.hnefatafl.vorgaben.Move lastMove,
-			int thinktimeInSeconds) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+//	//Methoden mï¿½ssen importiert werden, vlt in vorgaben lï¿½schen ?
+//	@Override
+//	public de.fhhannover.inform.hnefatafl.vorgaben.Move calculateDefenderMove(
+//			de.fhhannover.inform.hnefatafl.vorgaben.Move lastMove,
+//			int thinktimeInSeconds) {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
+//
+//	@Override
+//	public de.fhhannover.inform.hnefatafl.vorgaben.Move calculateAttackerMove(
+//			de.fhhannover.inform.hnefatafl.vorgaben.Move lastMove,
+//			int thinktimeInSeconds) {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
 }

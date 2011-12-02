@@ -8,18 +8,18 @@ public class GameLog {
 	static private FileHandler fileTxt;	
 	static private Logger logger;
 	
-	static void init(String fileName) throws IOException {
+	static public void init(String fileName) throws IOException {
 		logger = Logger.getLogger("");
 		logger.setLevel(Level.INFO);
 		fileTxt = new FileHandler(fileName);
 		logger.addHandler(fileTxt);
 	}	
 	
-	static void logGameEvent(String player, String event){
+	static public void logGameEvent(String player, String event){
 		logger.info(player + ": " + event);
 	}
 	
-	static void logDebugEvent(String event){
+	static public void logDebugEvent(String event){
 		logger.info(event);
 	}
 }
