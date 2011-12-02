@@ -8,6 +8,9 @@ import javax.swing.*;
 
 import javax.imageio.ImageIO;
 
+import de.gruppe12.logic.GameLog;
+import de.gruppe12.logic.LogicMain;
+
 /** 
  * GameGui
  * 
@@ -41,6 +44,8 @@ public class GameGui extends JFrame {
 	private final GuiController controller;
 	private final Container cardLOContainer;
 	
+	private final DefaultListModel logListModel;
+	
 	/* ActionListener, der Buttons mit {ENTER} zu aktivieren ermoeglicht */ 
 	private KeyListener enterListener;
 	/* FocusListener, der den Inhalt eines JTextFields bei Fokus-Gewinn markiert */
@@ -55,10 +60,17 @@ public class GameGui extends JFrame {
 	public GameGui () {
 		super();
 		
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		controller= new GuiController();
 		controller.setGameGui(this);
 		cardLO= new CardLayout();
 		cardLOContainer= getContentPane();
+		logListModel= new DefaultListModel();
 		
 		initGUI();
 		
@@ -136,6 +148,9 @@ public class GameGui extends JFrame {
 		final JButton jbtnHumanVsHuman = new JButton("Mensch vs Mensch");
 		final JButton jbtnHumanVsAi = new JButton("Mensch vs KI");
 		final JButton jbtnAiVsAi = new JButton("KI vs KI");
+		
+		//jbtnHumanVsHuman.setContentAreaFilled(false);
+		//jbtnHumanVsHuman.setBorder(BorderFactory.createMatteBorder(5, 5, 5, 5, Color.DARK_GRAY));
 		
 		addToGBPanel(0, 0, 1, 1, 1, 1, Box.createGlue(), jpnlStartMenu);
 		addToGBPanel(1, 1, 1, 1, 1, 1, jbtnHumanVsHuman, jpnlStartMenu);
@@ -252,7 +267,7 @@ public class GameGui extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				//controller.initHvHGame();
+				controller.initHvHGame();
 				cardLO.show(cardLOContainer, cardNameGamePanel);
 			}
 		});
@@ -413,7 +428,6 @@ public class GameGui extends JFrame {
 
 	private void buildGamePanel() {
 		jpnlGamePanel= new JPanel();
-		jpnlGameInfo= new JPanel();
 		
 		buildBoardDisplay();
 		buildGameInfo();
@@ -423,6 +437,7 @@ public class GameGui extends JFrame {
 		
 		jpnlGamePanel.setLayout(new BorderLayout());
 		jpnlGamePanel.add(jpnlBoardDisplay, BorderLayout.CENTER);
+		jpnlGamePanel.add(jpnlGameInfo, BorderLayout.WEST);
 		
 	}
 
@@ -442,6 +457,14 @@ public class GameGui extends JFrame {
 	 * 
 	 */
 	private void buildGameInfo() {
+		jpnlGameInfo= new JPanel();
+		
+		JList jlstLog= new JList(logListModel);
+		jlstLog.setPreferredSize(new Dimension(250, 0));
+		jlstLog.setBorder(BorderFactory.createTitledBorder("Log:"));
+		
+		jpnlGameInfo.setLayout(new BorderLayout());
+		jpnlGameInfo.add(jlstLog, BorderLayout.CENTER);
 		
 	}
 	
@@ -507,18 +530,27 @@ public class GameGui extends JFrame {
 		JMenuItem jmiHvA= new JMenuItem(cardNameHvA);
 		JMenuItem jmiAvA= new JMenuItem(cardNameAvA);
 		JMenuItem jmiGamePanel= new JMenuItem(cardNameGamePanel);
+		JMenuItem jmiLogTest= new JMenuItem("Log Test");
 		
 		jmiStartMenu.addActionListener(devListener);
 		jmiHvH.addActionListener(devListener);
 		jmiHvA.addActionListener(devListener);
 		jmiAvA.addActionListener(devListener);
 		jmiGamePanel.addActionListener(devListener);
+		jmiLogTest.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				logListModel.addElement("Bla Bla Bla Bla");
+			}
+		});
 		
 		jmDevelopment.add(jmiStartMenu);
 		jmDevelopment.add(jmiHvH);
 		jmDevelopment.add(jmiHvA);
 		jmDevelopment.add(jmiAvA);
 		jmDevelopment.add(jmiGamePanel);
+		jmDevelopment.add(jmiLogTest);
 		
 		jmbMenuBar.add(jmDevelopment);
 		/*######### ######### #########*/
@@ -541,12 +573,29 @@ public class GameGui extends JFrame {
 			public void run() {
 				GameGui inst= null;
 				inst = new GameGui();
+				
+				LogicMain logicMain= new LogicMain();
+				inst.getController().setLogicMain(logicMain);
+				
 				inst.setLocationRelativeTo(null);
 				inst.setVisible(true);
+				
+				try {
+					GameLog.init("testfile.txt");
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
 			}
 		});
+		
+		
 	}
 	
+	protected GuiController getController() {
+		return controller;
+	}
 	/**
 	 * redraw
 	 * 
@@ -554,7 +603,12 @@ public class GameGui extends JFrame {
 	 * und fuehrt zum Neuzeichnen des Spielbretts
 	 */
 
-	protected void redraw() {
+	protected void update() {
+		String logString= controller.getLastMoveLog();
+		if (logString!= null) {
+			logListModel.addElement(logString);
+		}
+		
 		SwingUtilities.invokeLater(new Runnable() {
 			
 			@Override

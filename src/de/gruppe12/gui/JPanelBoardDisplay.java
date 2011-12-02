@@ -1,16 +1,14 @@
 package de.gruppe12.gui;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.*;
 
+import javax.imageio.ImageIO;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 
 import de.fhhannover.inform.hnefatafl.vorgaben.BoardContent;
+import de.gruppe12.shared.Cell;
 
 public class JPanelBoardDisplay extends JPanel {
 	private static final long serialVersionUID = 1L;
@@ -20,11 +18,12 @@ public class JPanelBoardDisplay extends JPanel {
 	private int boardStartY;
 	private final Point selectedCell; 
 	private BoardContent[][] board;
+	private Image imgBoardWood;
 	
 	public JPanelBoardDisplay(final GuiController gc) {
 		this.gc= gc;
 		selectedCell= new Point(-1,-1);
-		setOpaque(false);
+		//setOpaque(false);
 		
 		repaint();
 		
@@ -38,7 +37,7 @@ public class JPanelBoardDisplay extends JPanel {
 		
 		addMouseListener(new MouseAdapter() {
 			@Override public void mouseClicked(MouseEvent e) {
-				if (!gc.logicAwaitsPlayerMove()) return;
+				if (!gc.logicAwaitsPlayerMove() || gc.getAnimation().isRunning()) return;
 				Point cell= getCellOf(e.getX(), e.getY());
 				if (cell==null ) return;
 				
@@ -46,10 +45,8 @@ public class JPanelBoardDisplay extends JPanel {
 					selectedCell.setLocation(cell);
 
 				} else if (!selectedCell.equals(new Point(-1, -1))) {
-					if (pathExists(selectedCell, cell)) {
-						gc.doMove(selectedCell.x, selectedCell.y, cell.x, cell.y);
-						selectedCell.setLocation(-1, -1);
-					}
+					gc.doMove(selectedCell.x, selectedCell.y, cell.x, cell.y);
+					selectedCell.setLocation(-1, -1);
 				}
 				repaint();
 				
@@ -62,12 +59,6 @@ public class JPanelBoardDisplay extends JPanel {
 			 * @return boolean: true, wenn Pfad existiert, false wenn nicht
 			 */
 
-			private boolean pathExists(Point selectedCell, Point cell) {
-				if (selectedCell.x != cell.x && selectedCell.y != cell.y) {
-					return false;
-				} 
-				return true;
-			}	
 		});
 	}
 	
@@ -104,7 +95,7 @@ public class JPanelBoardDisplay extends JPanel {
 		super.paintComponent(g);
 		
 		Graphics2D tempg= (Graphics2D) g.create();
-		
+				
 		board= gc.getBoard();
 		
 		int roughBoardSize= (int)(Math.min(getWidth(), getHeight()) * 0.8);
@@ -114,6 +105,7 @@ public class JPanelBoardDisplay extends JPanel {
 		
 		//Brett Umrandung zeichnen
 		tempg.setColor(Color.ORANGE);
+		//tempg.drawImage(imgBoardWood, boardStartX-fieldSize, boardStartY-fieldSize, boardStartX-fieldSize+fieldSize*17, boardStartY-fieldSize+fieldSize*17, 0, 0, imgBoardWood.getWidth(null), imgBoardWood.getHeight(null), null);
 		tempg.drawRect(boardStartX-fieldSize, boardStartY-fieldSize, fieldSize*17, fieldSize*17);
 		
 		//Tuerme zeichnen
@@ -133,13 +125,21 @@ public class JPanelBoardDisplay extends JPanel {
 				if (!( (i==j && (i==0 || i==12)) || (i==0 && j==12) || (i==12 && j==0) )){
 					tempg.setColor(Color.GREEN);
 					tempg.drawRect(boardStartX+fieldSize*(i+1), boardStartY+fieldSize*(j+1), fieldSize, fieldSize);
+				}
+			}
+		}
+		for (int i=0; i<13; i++) {
+			for (int j=0; j<13; j++) {
+				if (!( (i==j && (i==0 || i==12)) || (i==0 && j==12) || (i==12 && j==0) )){
 					if (board[i][j]!=BoardContent.EMPTY) {
-						drawStone(i, j, tempg);
+						drawStone(i, j, board[i][j], tempg);
 					}
 				}
 			}
 		}
 		
+		
+
 		if (!selectedCell.equals(new Point(-1,-1))) {
 			tempg.setColor(Color.PINK);
 			
@@ -151,13 +151,13 @@ public class JPanelBoardDisplay extends JPanel {
 		tempg.dispose();
 	}
 
-	private void drawStone(int i, int j, Graphics2D g) {
-		if (board[i][j]==BoardContent.ATTACKER) g.setColor(Color.RED);
-		else if (board[i][j]==BoardContent.DEFENDER) g.setColor(Color.BLUE);
+	private void drawStone(int i, int j, BoardContent bc, Graphics2D g) {
+		if (bc==BoardContent.ATTACKER) g.setColor(Color.RED);
+		else if (bc==BoardContent.DEFENDER) g.setColor(Color.BLUE);
 		else g.setColor(Color.CYAN);
 		
 		if (gc.getAnimation().isRunning()) {
-			Point cell= gc.getAnimation().getDestCell();
+			Point cell= gc.getAnimation().getSrcCell();
 			if (i== cell.x && j== cell.y) {
 				double[] pos= gc.getAnimation().getStonePosition();
 				g.drawOval(

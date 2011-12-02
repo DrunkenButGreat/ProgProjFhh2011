@@ -3,7 +3,7 @@ package de.gruppe12.gui;
 import java.awt.Point;
 
 public class MoveAnimation {
-	private static final int durationPerCrossedCell= 100;
+	private static final int durationPerCrossedCell= 200;
 	private Point sourceCell, destCell;
 	private int animationDuration, remainingDuration;
 	private GuiController gc;
@@ -32,7 +32,9 @@ public class MoveAnimation {
 	}
 
 	protected void end() {
+		gc.refreshBoard();
 		running= false;
+		gc.update();
 	}
 
 	protected void update(long dT) {
@@ -52,8 +54,8 @@ public class MoveAnimation {
 		};
 	}
 
-	public Point getDestCell() {
-		return destCell;
+	protected Point getSrcCell() {
+		return sourceCell;
 	}
 
 }

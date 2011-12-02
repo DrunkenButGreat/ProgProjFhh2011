@@ -1,6 +1,7 @@
 package de.gruppe12.gui;
 
 import java.awt.Point;
+import java.util.Arrays;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -13,20 +14,17 @@ import de.gruppe12.shared.Board;
 import de.gruppe12.shared.Cell;
 import de.gruppe12.shared.Move;
 
-public class GuiController extends Observable implements Observer{
+public class GuiController implements Observer{
 	private final MoveAnimation anim;
 	private GameGui gui;
 	private LogicMain logic;
 	private MoveStrategy[] moveStrats;
 	private static int thinkTime= 5000;
+	private String lastMoveLog= null;
+	private BoardContent[][] board= null;
 	
 	public GuiController() {
-		addObserver(this);
 		anim= new MoveAnimation(this);
-		
-		int k= 1;
-		int d= 2;
-		int a= 3;
 	}
 	
 	protected void setGameGui(GameGui gui) {
@@ -39,43 +37,40 @@ public class GuiController extends Observable implements Observer{
 	}
 	
 	protected boolean isPlayersTurn(int cellX, int cellY) {
-		boolean result=false;
-		/*if (((board[cellX][cellY]==BoardContent.DEFENDER || dummyBoard[cellX][cellY]==BoardContent.KING) && defendersTurn) || (
-		dummyBoard[cellX][cellY]==BoardContent.ATTACKER && !defendersTurn))
+		boolean defTurn= logic.getDefPlayerTurn();
+		boolean result= false;
+		if (((board[cellX][cellY]==BoardContent.DEFENDER || board[cellX][cellY]==BoardContent.KING) && defTurn) || (
+		board[cellX][cellY]==BoardContent.ATTACKER && !defTurn))
 		{
 			result= true;
-		}*/
+		}
 		return result;
 	}
 	
 	protected BoardContent[][] getBoard() {
-		//return logic.getBoard().get();
-		return new Board().get();
-	}
-	
-	protected String getLog() {
-		return null;
+		if (board==null) board= getBoardCopy();
+		return board;
 	}
 	
 	protected void doMove(int srcX, int srcY, int destX, int destY) {
-		//###############
-		/*[destX][destY]= dummyBoard[srcX][srcY];
-		dummyBoard[srcX][srcY]= 0;
-		
-		setChanged();
-		notifyObservers(new Move(new Cell(srcX, srcY, null), new Cell(destX, destY, null)));
-		defendersTurn= !defendersTurn;
-		//###############*/
-		logic.move(new Move(new Cell(srcX, srcY, null), new Cell(destX, destY, null)));
+		logic.move(new Move(new Cell(srcX, srcY, logic.getBoard().getCell(srcX, srcY).getContent()), new Cell(destX, destY,logic.getBoard().getCell(srcX, srcY).getContent())));
 	}
 
 	@Override
 	public void update(Observable obsSrc, Object obj) {
 		if (obj instanceof Move) {
+			lastMoveLog= logic.getLastGameLogEvent();
 			Move move= (Move)obj;
 			Point sourceCell= new Point(move.getFromCell().getCol(), move.getFromCell().getRow());
 			Point destCell= new Point(move.getToCell().getCol(), move.getToCell().getRow());
+			
 			anim.startAnimation(sourceCell, destCell);
+		}
+		if (obj instanceof String) {
+			String str= (String) obj;
+			if (str.equals("GameOver")) {
+				//TODO: Ende Anzeigen
+			}
 		}
 	}
 	
@@ -94,7 +89,21 @@ public class GuiController extends Observable implements Observer{
 	}
 	
 	protected void update() {
-		gui.redraw();
+		gui.update();
+	}
+	
+	private BoardContent[][] getBoardCopy() {
+		BoardContent[][] boardcopy= new BoardContent[13][13];
+		for (int i=0; i<boardcopy.length; i++) {
+			for (int j=0; j<boardcopy[i].length; j++) {
+				boardcopy[i][j]= logic.getBoard().get()[i][j];
+			}
+		}
+		return boardcopy; 
+	}
+	
+	protected void refreshBoard() {
+		board= getBoardCopy();
 	}
 	
 	protected MoveAnimation getAnimation() {
@@ -103,6 +112,13 @@ public class GuiController extends Observable implements Observer{
 	
 	protected void initHvHGame() {
 		logic.humanDefHumanAtt(thinkTime);
+		board= null;
+	}
+	
+	protected String getLastMoveLog() {
+		String last= lastMoveLog;
+		lastMoveLog= null;
+		return last;
 	}
 	
 	protected void initHvAGame(boolean humanIsAttacker, String aiMoveStrategyName) {
@@ -111,6 +127,7 @@ public class GuiController extends Observable implements Observer{
 		if (humanIsAttacker) logic.humanAttKiDef(mStrat, thinkTime);
 		else logic.humanDefKiAtt(mStrat, thinkTime);
 	}
+
 	
 	protected void initAvAGame(String offenderMoveStrategyName, String defenderMoveStrategyName) {
 		MoveStrategy offStrat= null;
