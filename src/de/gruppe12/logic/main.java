@@ -60,7 +60,8 @@ public class main {
 	
 	private static void playHumanHuman(){
 		Scanner console = new Scanner(System.in);
-		int xf, yf, xt, yt, type;
+		int xf, yf, xt, yt;
+		
 		while (!main.getBoard().isFinished()){
 			if (main.getDefPlayerTurn() == true){
 				System.out.println("Verteidiger ist am Zug");
@@ -73,21 +74,10 @@ public class main {
 			yf = console.nextInt();
 			xt = console.nextInt();
 			yt = console.nextInt();
-			type = console.nextInt();
-			
-			switch (type){
-			case 0:
-				main.move(new Move(new Cell(xf, yf, BoardContent.DEFENDER), new Cell(xt, yt, BoardContent.DEFENDER)));
-				break;
-			case 1:
-				main.move(new Move(new Cell(xf, yf, BoardContent.ATTACKER), new Cell(xt, yt, BoardContent.ATTACKER)));
-				break;
-			case 2:
-				main.move(new Move(new Cell(xf, yf, BoardContent.KING), new Cell(xt, yt, BoardContent.KING)));
-				break;
-			default:
-				break;			
-			}			
+
+			BoardContent bc = main.getBoard().getCell(xf, yf).getContent();
+						
+			main.move(new Move(new Cell(xf, yf, bc), new Cell(xt, yt, bc)));			
 		}
 	}
 }

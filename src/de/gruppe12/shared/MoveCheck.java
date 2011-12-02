@@ -43,7 +43,7 @@ public class MoveCheck {
 			return true;
 		}
 		GameLog.logDebugEvent("Spielstein vom Gegner gezogen");
-		return true;		
+		return false;		
 	}
 	
 	/**checkFreeWay
