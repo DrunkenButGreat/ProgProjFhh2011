@@ -18,12 +18,25 @@ public class JPanelBoardDisplay extends JPanel {
 	private int boardStartY;
 	private final Point selectedCell; 
 	private BoardContent[][] board;
-	private Image imgBoardWood;
+	
+	private Image boardImage;
+	private Image kingIcon;
+	private Image defenderIcon;
+	private Image offenderIcon;
 	
 	public JPanelBoardDisplay(final GuiController gc) {
 		this.gc= gc;
 		selectedCell= new Point(-1,-1);
 		//setOpaque(false);
+		try {
+			boardImage= ImageIO.read(new File("images/boardimage.bmp"));
+			kingIcon= ImageIO.read(new File("images/kingicon.gif"));
+			defenderIcon= ImageIO.read(new File("images/defendericon.gif"));
+			offenderIcon= ImageIO.read(new File("images/offendericon.gif"));
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		
 		repaint();
 		
@@ -103,12 +116,12 @@ public class JPanelBoardDisplay extends JPanel {
 		boardStartX = (getWidth()-roughBoardSize)/2;
 		boardStartY = (getHeight()-roughBoardSize)/2;
 		
-		//Brett Umrandung zeichnen
+		//Brett zeichnen
 		tempg.setColor(Color.ORANGE);
-		//tempg.drawImage(imgBoardWood, boardStartX-fieldSize, boardStartY-fieldSize, boardStartX-fieldSize+fieldSize*17, boardStartY-fieldSize+fieldSize*17, 0, 0, imgBoardWood.getWidth(null), imgBoardWood.getHeight(null), null);
-		tempg.drawRect(boardStartX-fieldSize, boardStartY-fieldSize, fieldSize*17, fieldSize*17);
+		tempg.drawImage(boardImage, boardStartX-fieldSize, boardStartY-fieldSize, boardStartX-fieldSize+fieldSize*17, boardStartY-fieldSize+fieldSize*17, 0, 0, boardImage.getWidth(null), boardImage.getHeight(null), null);
+		//tempg.drawRect(boardStartX-fieldSize, boardStartY-fieldSize, fieldSize*17, fieldSize*17);
 		
-		//Tuerme zeichnen
+		/*//Tuerme zeichnen
 		int towerSize= 2*fieldSize;
 		tempg.setColor(Color.GREEN);
 		tempg.drawRect(boardStartX, boardStartY, towerSize, towerSize);
@@ -127,13 +140,11 @@ public class JPanelBoardDisplay extends JPanel {
 					tempg.drawRect(boardStartX+fieldSize*(i+1), boardStartY+fieldSize*(j+1), fieldSize, fieldSize);
 				}
 			}
-		}
+		}*/
 		for (int i=0; i<13; i++) {
 			for (int j=0; j<13; j++) {
-				if (!( (i==j && (i==0 || i==12)) || (i==0 && j==12) || (i==12 && j==0) )){
-					if (board[i][j]!=BoardContent.EMPTY) {
-						drawStone(i, j, board[i][j], tempg);
-					}
+				if (board[i][j]!=BoardContent.EMPTY && board[i][j]!=BoardContent.INVALID) {
+					drawStone(i, j, board[i][j], tempg);
 				}
 			}
 		}
@@ -141,7 +152,7 @@ public class JPanelBoardDisplay extends JPanel {
 		
 
 		if (!selectedCell.equals(new Point(-1,-1))) {
-			tempg.setColor(Color.PINK);
+			tempg.setColor(Color.BLUE);
 			
 			tempg.drawRect(boardStartX+fieldSize*(selectedCell.x+1), boardStartY+fieldSize*(selectedCell.y+1), fieldSize, fieldSize);
 			tempg.drawRect(boardStartX+fieldSize*(selectedCell.x+1)-1, boardStartY+fieldSize*(selectedCell.y+1)-1, fieldSize+2, fieldSize+2);
@@ -152,22 +163,34 @@ public class JPanelBoardDisplay extends JPanel {
 	}
 
 	private void drawStone(int i, int j, BoardContent bc, Graphics2D g) {
-		if (bc==BoardContent.ATTACKER) g.setColor(Color.RED);
-		else if (bc==BoardContent.DEFENDER) g.setColor(Color.BLUE);
-		else g.setColor(Color.CYAN);
+		Image img = null;
+		if (bc==BoardContent.ATTACKER) img= offenderIcon;
+		else if (bc==BoardContent.DEFENDER) img= defenderIcon;
+		else img= kingIcon;
 		
 		if (gc.getAnimation().isRunning()) {
 			Point cell= gc.getAnimation().getSrcCell();
 			if (i== cell.x && j== cell.y) {
 				double[] pos= gc.getAnimation().getStonePosition();
-				g.drawOval(
-						(int)Math.round(boardStartX+fieldSize*(pos[0]+1)+1), 
-						(int)Math.round(boardStartY+fieldSize*(pos[1]+1)+1), 
-						fieldSize-2, fieldSize-2);
+					g.drawImage(img, 
+							(int)Math.round(boardStartX+fieldSize*(pos[0]+1)+1), 
+							(int)Math.round(boardStartY+fieldSize*(pos[1]+1)+1), 
+							fieldSize-2, fieldSize-2, null);
+				/*} else {
+					g.fillOval(
+							(int)Math.round(boardStartX+fieldSize*(pos[0]+1)+4), 
+							(int)Math.round(boardStartY+fieldSize*(pos[1]+1)+4), 
+							fieldSize-8, fieldSize-8);
+				}*/
 				return;
 			}
 		}
-		
-		g.drawOval(boardStartX+fieldSize*(i+1)+1, boardStartY+fieldSize*(j+1)+1, fieldSize-2, fieldSize-2);
+			g.drawImage(img, 
+					(int)Math.round(boardStartX+fieldSize*(i+1)+1), 
+					(int)Math.round(boardStartY+fieldSize*(j+1)+1), 
+					fieldSize-2, fieldSize-2, null);
+		/*} else {
+			g.fillOval(boardStartX+fieldSize*(i+1)+4, boardStartY+fieldSize*(j+1)+4, fieldSize-8, fieldSize-8);
+		}*/
 	}
 }

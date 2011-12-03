@@ -20,7 +20,6 @@ import de.gruppe12.logic.LogicMain;
  */
 public class GameGui extends JFrame {
 	private static final long serialVersionUID = 2L;
-	private static final String fonttype= "Arial";
 	
 	/*static Strings zur Bezeichnung der Panels/Cards im CardLayout*/
 	private static String cardNameStartMenu= "Start Menu";
@@ -39,6 +38,8 @@ public class GameGui extends JFrame {
 	
 	private JPanel jpnlBoardDisplay;
 	private JPanel jpnlGameInfo;
+	
+	private final Font font;
 	
 	private final CardLayout cardLO;
 	private final GuiController controller;
@@ -65,6 +66,14 @@ public class GameGui extends JFrame {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		Font tempfont;
+		try {
+			tempfont= Font.createFont(Font.TRUETYPE_FONT, new File("images/Viking_n.ttf"));
+		} catch (Exception e) {
+			tempfont= Font.getFont("Arial");
+		}
+		font= tempfont;
+		
 		
 		controller= new GuiController();
 		controller.setGameGui(this);
@@ -89,7 +98,6 @@ public class GameGui extends JFrame {
 			setIconImage(ImageIO.read(new File("images/viking icon.gif")));
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
-			System.exit(ERROR);
 		}
 		setTitle("Hnefatafl");
 		
@@ -131,7 +139,8 @@ public class GameGui extends JFrame {
 		add(jpnlAiVsAi, cardNameAvA);
 		add(jpnlGamePanel, cardNameGamePanel);
 		
-		getContentPane().setPreferredSize(new Dimension(1000, 600));
+		setPreferredSize(new Dimension(1000, 600));
+		setMinimumSize(new Dimension(600, 400));
 		
 		pack();
 	}
@@ -167,9 +176,9 @@ public class GameGui extends JFrame {
 			@Override public void componentResized(ComponentEvent e) {
 				int fontSize= jbtnHumanVsHuman.getHeight()/3;
 				if (fontSize==0) return;
-				jbtnHumanVsHuman.setFont(new Font(fonttype, Font.BOLD, fontSize));
-				jbtnHumanVsAi.setFont(new Font(fonttype, Font.BOLD, fontSize));
-				jbtnAiVsAi.setFont(new Font(fonttype, Font.BOLD, fontSize));
+				jbtnHumanVsHuman.setFont(font.deriveFont(Font.BOLD, fontSize));
+				jbtnHumanVsAi.setFont(font.deriveFont(Font.BOLD, fontSize));
+				jbtnAiVsAi.setFont(font.deriveFont(Font.BOLD, fontSize));
 			}
 		});
 		
@@ -275,12 +284,13 @@ public class GameGui extends JFrame {
 		jpnlHumanVsHuman.addComponentListener(new ComponentAdapter() {
 			@Override public void componentResized(ComponentEvent e) {
 				int fontSize= jtfPlayer1.getHeight()/3;
+				int fontSizeSmall= (int) Math.round(fontSize*0.7);
 				if (fontSize==0) return;
-				jtfPlayer1.setFont(new Font(fonttype, Font.BOLD, fontSize));
-				jtfPlayer2.setFont(new Font(fonttype, Font.BOLD, fontSize));
-				jlbPlayer1.setFont(new Font(fonttype, Font.PLAIN, fontSize));
-				jlbPlayer2.setFont(new Font(fonttype, Font.PLAIN, fontSize));
-				jbtnStart.setFont(new Font(fonttype, Font.BOLD, fontSize));
+				jtfPlayer1.setFont(font.deriveFont(Font.BOLD, fontSize));
+				jtfPlayer2.setFont(font.deriveFont(Font.BOLD, fontSize));
+				jlbPlayer1.setFont(font.deriveFont(Font.BOLD, fontSizeSmall));
+				jlbPlayer2.setFont(font.deriveFont(Font.BOLD, fontSizeSmall));
+				jbtnStart.setFont(font.deriveFont(Font.BOLD, fontSize));
 			}
 		});
 		
@@ -350,15 +360,16 @@ public class GameGui extends JFrame {
 		jpnlHumanVsAi.addComponentListener(new ComponentAdapter() {
 			@Override public void componentResized(ComponentEvent e) {
 				int fontSize= jtfPlayer.getHeight()/3;
+				int fontSizeBig= (int) Math.round(fontSize*1.3);
 				if (fontSize==0) return;
-				jtfPlayer.setFont(new Font(fonttype, Font.BOLD, fontSize));
-				jcbAi.setFont(new Font(fonttype, Font.BOLD, fontSize));
-				jlbPlayer.setFont(new Font(fonttype, Font.PLAIN, fontSize));
-				jlbAi.setFont(new Font(fonttype, Font.PLAIN, fontSize));
-				jlbAngreifer.setFont(new Font(fonttype, Font.PLAIN, fontSize));
-				jbtnStart.setFont(new Font(fonttype, Font.BOLD, fontSize));
-				jrbPlayer.setFont(new Font(fonttype, Font.PLAIN, fontSize));
-				jrbAi.setFont(new Font(fonttype, Font.PLAIN, fontSize));
+				jtfPlayer.setFont(font.deriveFont(Font.BOLD, fontSize));
+				jcbAi.setFont(font.deriveFont(Font.BOLD, fontSizeBig));
+				jlbPlayer.setFont(font.deriveFont(Font.BOLD, fontSizeBig));
+				jlbAi.setFont(font.deriveFont(Font.BOLD, fontSizeBig));
+				jlbAngreifer.setFont(font.deriveFont(Font.BOLD, fontSizeBig));
+				jbtnStart.setFont(font.deriveFont(Font.BOLD, fontSize));
+				jrbPlayer.setFont(font.deriveFont(Font.BOLD, fontSize));
+				jrbAi.setFont(font.deriveFont(Font.BOLD, fontSize));
 			}
 		});
 		
@@ -406,12 +417,13 @@ public class GameGui extends JFrame {
 		jpnlHumanVsAi.addComponentListener(new ComponentAdapter() {
 			@Override public void componentResized(ComponentEvent e) {
 				int fontSize= jcbOffenderAi.getHeight()/3;
+				int fontSizeSmall= (int) Math.round(fontSize*0.7);
 				if (fontSize==0) return;
-				jcbOffenderAi.setFont(new Font(fonttype, Font.BOLD, fontSize));
-				jcbDefenderAi.setFont(new Font(fonttype, Font.BOLD, fontSize));
-				jlbOffenderAi.setFont(new Font(fonttype, Font.PLAIN, fontSize));
-				jlbDefenderAi.setFont(new Font(fonttype, Font.PLAIN, fontSize));
-				jbtnStart.setFont(new Font(fonttype, Font.BOLD, fontSize));
+				jcbOffenderAi.setFont(font.deriveFont(Font.BOLD, fontSize));
+				jcbDefenderAi.setFont(font.deriveFont(Font.BOLD, fontSize));
+				jlbOffenderAi.setFont(font.deriveFont(Font.BOLD, fontSizeSmall));
+				jlbDefenderAi.setFont(font.deriveFont(Font.BOLD, fontSizeSmall));
+				jbtnStart.setFont(font.deriveFont(Font.BOLD, fontSize));
 			}
 		});
 		
@@ -448,6 +460,7 @@ public class GameGui extends JFrame {
 	 */
 	private void buildBoardDisplay() {
 		jpnlBoardDisplay= new JPanelBoardDisplay(controller);
+		jpnlBoardDisplay.setMinimumSize(new Dimension(300,300));
 	}
 	
 	/**
@@ -530,27 +543,19 @@ public class GameGui extends JFrame {
 		JMenuItem jmiHvA= new JMenuItem(cardNameHvA);
 		JMenuItem jmiAvA= new JMenuItem(cardNameAvA);
 		JMenuItem jmiGamePanel= new JMenuItem(cardNameGamePanel);
-		JMenuItem jmiLogTest= new JMenuItem("Log Test");
 		
 		jmiStartMenu.addActionListener(devListener);
 		jmiHvH.addActionListener(devListener);
 		jmiHvA.addActionListener(devListener);
 		jmiAvA.addActionListener(devListener);
 		jmiGamePanel.addActionListener(devListener);
-		jmiLogTest.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				logListModel.addElement("Bla Bla Bla Bla");
-			}
-		});
+
 		
 		jmDevelopment.add(jmiStartMenu);
 		jmDevelopment.add(jmiHvH);
 		jmDevelopment.add(jmiHvA);
 		jmDevelopment.add(jmiAvA);
 		jmDevelopment.add(jmiGamePanel);
-		jmDevelopment.add(jmiLogTest);
 		
 		jmbMenuBar.add(jmDevelopment);
 		/*######### ######### #########*/
