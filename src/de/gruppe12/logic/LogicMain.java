@@ -67,7 +67,7 @@ public class LogicMain extends Observable {
 		this.waitForMove = false;
 		this.currentMove = null;
 		this.lastMove = null;
-		this.defPlayerTurn = true;
+		this.defPlayerTurn = false;
 	}
 
 	// Ende der Konstruktoren	
