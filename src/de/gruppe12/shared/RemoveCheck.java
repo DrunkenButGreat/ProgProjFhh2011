@@ -11,27 +11,27 @@ import de.gruppe12.logic.GameLog;
 
 public class RemoveCheck {
 	
-	public static Board checkForRemove(Move move, Board board){
+	public static Board checkForRemove(de.fhhannover.inform.hnefatafl.vorgaben.Move currentMove2, Board board){
 		
 		Board temp = new Board();
-		board = doMove(move, board);
+		board = doMove(currentMove2, board);
 		
-		temp.set(checkSurround(move,board));
-		temp = checkForEnd(move, board);
+		temp.set(checkSurround(currentMove2,board));
+		temp = checkForEnd(currentMove2, board);
 		
 		return temp;
 		
 	}
 	
-	private static Board doMove(Move move, Board board){
-		board.setCell(new Cell(move.getFromCell().getCol(), move.getFromCell().getRow(), BoardContent.EMPTY));
-		board.setCell(new Cell(move.getToCell().getCol(), move.getToCell().getRow(), move.getToCell().getContent()));
+	private static Board doMove(de.fhhannover.inform.hnefatafl.vorgaben.Move currentMove2, Board board){
+		board.setCell(new Cell(currentMove2.getFromCell().getCol(), currentMove2.getFromCell().getRow(), BoardContent.EMPTY));
+		board.setCell(new Cell(currentMove2.getToCell().getCol(), currentMove2.getToCell().getRow(), currentMove2.getToCell().getContent()));
 		return board;
 	}
 	
-	private static BoardContent[][] checkSurround(Move move, Board board){
-		int x=move.getToCell().getCol(),y=move.getToCell().getRow();
-		BoardContent me = move.getToCell().getContent();
+	private static BoardContent[][] checkSurround(de.fhhannover.inform.hnefatafl.vorgaben.Move currentMove2, Board board){
+		int x=currentMove2.getToCell().getCol(),y=currentMove2.getToCell().getRow();
+		BoardContent me = currentMove2.getToCell().getContent();
 		BoardContent tboard[][] = board.get();
 		
 		
@@ -82,15 +82,15 @@ public class RemoveCheck {
 			return tboard;
 	}
 	
-	private static Board checkForEnd(Move move, Board board){
+	private static Board checkForEnd(de.fhhannover.inform.hnefatafl.vorgaben.Move currentMove2, Board board){
 		
-		int x=move.getToCell().getCol(),y=move.getToCell().getRow();
+		int x=currentMove2.getToCell().getCol(),y=currentMove2.getToCell().getRow();
 		BoardContent tboard[][] = board.get();
 		Board tb = board;
 		
 		
 		// K�nig zieht auf Burg beendet die Methode und setzt das Finish Flag
-		if(move.getToCell().getContent()==BoardContent.KING &&
+		if(currentMove2.getToCell().getContent()==BoardContent.KING &&
 				((x==0&&y==0) || (x==0&&y==tboard[0].length-1) || (x==tboard.length-1&&y==0) || (x==tboard.length-1&&y==tboard[0].length-1))
 		) {
 			tb.setFinish();

@@ -4,12 +4,14 @@ import java.util.Observable;
 import de.gruppe12.ki.*;
 
 import de.gruppe12.shared.*;
+import de.fhhannover.inform.hnefatafl.vorgaben.MoveStrategy;
 
 public class LogicMain extends Observable {
 	
 	private Board board;
 	private MoveStrategy attacker, defender;
-	private Move currentMove, lastMove;
+	de.fhhannover.inform.hnefatafl.vorgaben.Move currentMove;
+	private de.fhhannover.inform.hnefatafl.vorgaben.Move lastMove;
 	private boolean waitForMove, gameEnd, defPlayerTurn;
 	private int thinkTime;
 	private boolean humanAttacker, humanDefender;
@@ -98,7 +100,7 @@ public class LogicMain extends Observable {
 		move();
 	}
 	
-	private void saveCurrentMove(Move move){
+	private void saveCurrentMove(de.fhhannover.inform.hnefatafl.vorgaben.Move move){
 		this.lastMove = this.currentMove;
 		this.currentMove = move;
 	}
@@ -143,26 +145,27 @@ public class LogicMain extends Observable {
 		}	
 	}
 	
-	private void update(Move move){	
+	private void update(de.fhhannover.inform.hnefatafl.vorgaben.Move currentMove2){	
 		//System.out.println(this.board.toString());
 		//Erst prüfen ob der Zug erlaubt ist	
-		if (MoveCheck.check(move, this.board, this.defPlayerTurn)) {			
+		if (MoveCheck.check(currentMove2, this.board, this.defPlayerTurn)) {			
 			//Dann prüfen ob Steine geschlagen wurden und neues Bord setzen
-			this.board = RemoveCheck.checkForRemove(move, this.board);
+			this.board = RemoveCheck.checkForRemove(currentMove2, this.board);
 			
 			//Und anschließend das Event loggen
-			logGameEvent("Gezogen von: " + move.getFromCell().getCol() + "," + move.getFromCell().getRow() + 
-					" nach: " + move.getToCell().getCol() + "," + move.getToCell().getRow());
+			logGameEvent("Gezogen von: " + currentMove2.getFromCell().getCol() + "," + currentMove2.getFromCell().getRow() + 
+					" nach: " + currentMove2.getToCell().getCol() + "," + currentMove2.getToCell().getRow());
 			
 			// Spieler wechseln
 			this.defPlayerTurn = !this.defPlayerTurn;
 			
 			//Oberserver benachrichtigen
 			setChanged();
-			notifyObservers(move);
+			notifyObservers(currentMove2);
 		}
 		else {
 			logGameEvent("Ungültig");
+			logGameEvent(currentMove2.toString());
 			//Wenn KI am Zug ist
 			if ((this.defPlayerTurn && !this.humanDefender) ||
 						!this.defPlayerTurn && !this.humanAttacker){
@@ -171,6 +174,7 @@ public class LogicMain extends Observable {
 			//Wenn Mensch am zu ist
 			else{
 				// Zug ignorieren und eventuell Meldung an KI
+				return;
 			}	
 		}		
 		System.out.println(this.board.toString());

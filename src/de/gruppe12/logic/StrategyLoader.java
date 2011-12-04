@@ -13,14 +13,14 @@ import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import de.gruppe12.ki.MoveStrategy;
+import de.fhhannover.inform.hnefatafl.vorgaben.MoveStrategy;
 
 
 public class StrategyLoader {
 	
 	/** listContent
 	 * 
-	 * Öffnet eine Zip oder Jar datei und gibt ihren Inahlt aus
+	 * ï¿½ffnet eine Zip oder Jar datei und gibt ihren Inahlt aus
 	 * 
 	 * @param uri 	: Pfad zur Datei
 	 * @return		: Eine Arraylist mit alle Dateien samt relativer Pfade
@@ -30,7 +30,7 @@ public class StrategyLoader {
 		
 		ArrayList<String> ar = new ArrayList<String>();
 		
-		//Jar öffnen und Durchsuchen
+		//Jar ï¿½ffnen und Durchsuchen
 		 try {
 	          ZipFile zf=new ZipFile(uri);
 	          Enumeration<? extends ZipEntry> e=zf.entries();

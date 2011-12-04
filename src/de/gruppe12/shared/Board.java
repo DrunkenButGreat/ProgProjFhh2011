@@ -208,7 +208,7 @@ public class Board {
 	 * @param cell : Zelle -> Zelle auf Board
 	 * @return Einen Boardcontent
 	 */
-	public BoardContent getCellBC(Cell cell){
+	public BoardContent getCellBC(de.fhhannover.inform.hnefatafl.vorgaben.Cell cell){
 		return board[cell.getCol()][cell.getRow()];
 	}
 }

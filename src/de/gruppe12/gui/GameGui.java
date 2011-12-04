@@ -88,7 +88,7 @@ public class GameGui extends JFrame {
 	 * initGUI
 	 * 
 	 * setzt Fensterstartgroesse, ruft Komponenten bauende Methoden auf 
-	 * und fügt diese anschließend im CardLayout zusammen
+	 * und fï¿½gt diese anschlieï¿½end im CardLayout zusammen
 	 * 
 	 */
 	
@@ -171,7 +171,7 @@ public class GameGui extends JFrame {
 		jbtnHumanVsAi.addKeyListener(enterListener);
 		jbtnAiVsAi.addKeyListener(enterListener);
 		
-		/* sorgt bei Groessenaenderung dafür, dass Schritfgroessen angepasst werden */
+		/* sorgt bei Groessenaenderung dafï¿½r, dass Schritfgroessen angepasst werden */
 		jpnlStartMenu.addComponentListener(new ComponentAdapter() {
 			@Override public void componentResized(ComponentEvent e) {
 				int fontSize= jbtnHumanVsHuman.getHeight()/3;
