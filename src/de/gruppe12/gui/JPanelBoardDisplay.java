@@ -8,7 +8,6 @@ import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 import de.fhhannover.inform.hnefatafl.vorgaben.BoardContent;
-import de.gruppe12.shared.Cell;
 
 public class JPanelBoardDisplay extends JPanel {
 	private static final long serialVersionUID = 1L;
@@ -22,7 +21,9 @@ public class JPanelBoardDisplay extends JPanel {
 	private Image boardImage;
 	private Image kingIcon;
 	private Image defenderIcon;
+	private Image defenderWinImage;
 	private Image offenderIcon;
+	private Image offenderWinImage;
 	
 	public JPanelBoardDisplay(final GuiController gc) {
 		this.gc= gc;
@@ -33,6 +34,8 @@ public class JPanelBoardDisplay extends JPanel {
 			kingIcon= ImageIO.read(new File("images/kingicon.gif"));
 			defenderIcon= ImageIO.read(new File("images/defendericon.gif"));
 			offenderIcon= ImageIO.read(new File("images/offendericon.gif"));
+			defenderWinImage= ImageIO.read(new File("images/defbannerimg.gif"));
+			offenderWinImage= ImageIO.read(new File("images/offbannerimg.gif"));
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -50,7 +53,7 @@ public class JPanelBoardDisplay extends JPanel {
 		
 		addMouseListener(new MouseAdapter() {
 			@Override public void mouseClicked(MouseEvent e) {
-				if (!gc.logicAwaitsPlayerMove() || gc.getAnimation().isRunning()) return;
+				if (!gc.logicAwaitsPlayerMove() || gc.getAnimation().isRunning() || gc.gameFinished()) return;
 				Point cell= getCellOf(e.getX(), e.getY());
 				if (cell==null ) return;
 				
@@ -157,6 +160,16 @@ public class JPanelBoardDisplay extends JPanel {
 			tempg.drawRect(boardStartX+fieldSize*(selectedCell.x+1), boardStartY+fieldSize*(selectedCell.y+1), fieldSize, fieldSize);
 			tempg.drawRect(boardStartX+fieldSize*(selectedCell.x+1)-1, boardStartY+fieldSize*(selectedCell.y+1)-1, fieldSize+2, fieldSize+2);
 			
+		}
+		
+		if (gc.gameFinished()) {
+			Image banner= defenderWinImage;
+			//if (gc.offenderWon()) banner= offenderWinImage;
+			
+			double imageRatio= banner.getHeight(null)/(double)banner.getWidth(null);
+			double bannerHeight= imageRatio* 19*fieldSize;
+			
+			tempg.drawImage(banner, boardStartX-2*fieldSize, (int)Math.round(boardStartY+7.5*fieldSize-bannerHeight/2), 19*fieldSize, (int)Math.round(bannerHeight), null);
 		}
 		
 		tempg.dispose();

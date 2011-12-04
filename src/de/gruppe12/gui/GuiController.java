@@ -36,6 +36,10 @@ public class GuiController implements Observer{
 		logic.addObserver(this);
 	}
 	
+	protected boolean gameFinished() {
+		return logic.getBoard().isFinished();
+	}
+	
 	protected boolean isPlayersTurn(int cellX, int cellY) {
 		boolean defTurn= logic.getDefPlayerTurn();
 		boolean result= false;
