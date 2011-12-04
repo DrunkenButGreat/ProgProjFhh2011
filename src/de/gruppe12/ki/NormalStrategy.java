@@ -9,8 +9,8 @@ import de.gruppe12.shared.*;
 * Copyright: (c) 2011 <p>
 * Company: Gruppe 12 <p>
 * @author Markus
-* @version 0.5.0 28.11.2011
-* ï¿½nderungen: 28.11. erste implementierung von calcMoves und calcValue
+* @version 0.6.0 03.12.2011
+* ï¿½nderungen: 03.12. Fehler beseitigt, javadoc erweitert
 */
 
 public class NormalStrategy implements MoveStrategy {
@@ -32,7 +32,6 @@ public class NormalStrategy implements MoveStrategy {
 		return name;
 	}
 
-	//ein erster Versuch, noch nicht ganz der MinMax Algo. Mï¿½sste aber fï¿½rs Erste reichen.
 	public Move calculateDefenderMove(Move lastMove, int thinktimeInSeconds) {
 		//Speichern in Verlaufbaum, muss noch durchdacht werden
 		//verlauf.setLeft(new Node<Move>(lastMove));
@@ -95,13 +94,14 @@ public class NormalStrategy implements MoveStrategy {
 	/**
 	 * 
 	 * GenerateMoves()
+	 * erzeutgt ein Array mit den nächsten möglichen Schritten
+	 * jeder Spielfigur 
 	 * 
 	 * @return ein Array mit allen mï¿½glichen Moves
 	 */
 	private Move[] GenerateMoves(BoardContent type) {
 		Move[] mList = new Move[500]; 
 		Cell[] cList = new Cell[24];
-		Cell c = null;
 		int m1=0;
 		int c1=0;
 		
@@ -132,6 +132,7 @@ public class NormalStrategy implements MoveStrategy {
 
 	/**
 	 * calculateValue
+	 * Bewertet den übergebenen Move.
 	 * 
 	 * @return Bewertung des Moves
 	 */
@@ -160,7 +161,7 @@ public class NormalStrategy implements MoveStrategy {
 		    	  value++;
 		      }
 		      //checkt ob Move zulï¿½ssig
-		      if(MoveCheck.check(m,b)){
+		      if(MoveCheck.check(m,b,false)){
 		    	  return -1;
 		      }
 		      return value;
