@@ -8,7 +8,7 @@ import java.util.Observer;
 import javax.swing.SwingUtilities;
 
 import de.fhhannover.inform.hnefatafl.vorgaben.BoardContent;
-import de.gruppe12.ki.MoveStrategy;
+import de.fhhannover.inform.hnefatafl.vorgaben.MoveStrategy;
 import de.gruppe12.logic.LogicMain;
 import de.gruppe12.shared.Board;
 import de.gruppe12.shared.Cell;
@@ -81,7 +81,7 @@ public class GuiController implements Observer{
 	/**
 	 * getMoveStratNames
 	 * 
-	 * @return gibt ein Array mit den Namen der vorhandenen MoveStrategies zurück
+	 * @return gibt ein Array mit den Namen der vorhandenen MoveStrategies zurï¿½ck
 	 */
 	protected String[] getMoveStratNames() {
 		return null;
