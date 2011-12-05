@@ -1,8 +1,6 @@
 package de.gruppe12.logic;
 
 import java.util.Observable;
-import de.gruppe12.ki.*;
-
 import de.gruppe12.shared.*;
 import de.fhhannover.inform.hnefatafl.vorgaben.MoveStrategy;
 
@@ -88,10 +86,6 @@ public class LogicMain extends Observable {
 	
 	public boolean getDefPlayerTurn(){
 		return this.defPlayerTurn;
-	}
-
-	void finish(boolean player){
-		
 	}	
 	
 	public void move(Move move){	
@@ -146,6 +140,12 @@ public class LogicMain extends Observable {
 	}
 	
 	private void update(de.fhhannover.inform.hnefatafl.vorgaben.Move currentMove2){	
+		//TODO: Das hier sauber machen und prüfen.. Aber erstmal läufts
+		if (currentMove2 == null){
+			GameLog.logDebugEvent("null Move erhalten");
+			return;
+		}
+		
 		//System.out.println(this.board.toString());
 		//Erst prüfen ob der Zug erlaubt ist	
 		if (MoveCheck.check(currentMove2, this.board, this.defPlayerTurn)) {			
