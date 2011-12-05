@@ -76,14 +76,17 @@ public class StrategyLoader {
      * @return
      * @throws Exception
      */
-    static MoveStrategy getStrategy( String path, String classname ) throws Exception 
+    public static MoveStrategy getStrategy( String path, String classname ) throws Exception 
     {
     	 @SuppressWarnings("deprecation")
- 		URL jarURL = new File(path).toURI().toURL();
-          
-          ClassLoader classLoader =    new URLClassLoader(new URL[]{jarURL});
-                  
-          return (MoveStrategy) classLoader.loadClass(classname).newInstance();
+    	 URL jarURL = new File(path).toURI().toURL();
+    	 
+    	 String binaryName= classname.substring(0, classname.lastIndexOf('.'));
+    	 binaryName= binaryName.replace('/', '.');
+    	 
+    	 ClassLoader classLoader =    new URLClassLoader(new URL[]{jarURL});
+
+    	 return (MoveStrategy) classLoader.loadClass(binaryName).newInstance();
     }
     
     /**getFromClassPath

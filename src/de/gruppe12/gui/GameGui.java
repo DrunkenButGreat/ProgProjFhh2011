@@ -3,6 +3,7 @@ package de.gruppe12.gui;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.util.Map;
 
 import javax.swing.*;
 
@@ -51,6 +52,8 @@ public class GameGui extends JFrame {
 	private KeyListener enterListener;
 	/* FocusListener, der den Inhalt eines JTextFields bei Fokus-Gewinn markiert */
 	private FocusListener markOnFocus;
+
+	private Map<String, String> moveStrategies;
 	
 	/** 
 	 * GameGui Konstruktor
@@ -80,6 +83,8 @@ public class GameGui extends JFrame {
 		cardLO= new CardLayout();
 		cardLOContainer= getContentPane();
 		logListModel= new DefaultListModel();
+		
+		moveStrategies= controller.getStrats();
 		
 		initGUI();
 		
@@ -313,7 +318,7 @@ public class GameGui extends JFrame {
 		final JLabel jlbAi= new JLabel("KI:");
 		final JLabel jlbAngreifer= new JLabel("Angreifer:   ");
 		final JTextField jtfPlayer= new JTextField("   Spieler 1   ");
-		final JComboBox jcbAi= new JComboBox();
+		final JComboBox jcbAi= new JComboBox(moveStrategies.keySet().toArray());
 		final JRadioButton jrbPlayer= new JRadioButton("Spieler  ");
 		final JRadioButton jrbAi= new JRadioButton("KI");
 		ActionListener buttonToggle= new ActionListener() {
@@ -378,7 +383,8 @@ public class GameGui extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				//controller.initHvAGame(jrbPlayer.isSelected(), jcbAi.getSelectedItem());
+				String strat= moveStrategies.get((String)jcbAi.getSelectedItem());
+				controller.initHvAGame(jrbPlayer.isSelected(), strat);
 				cardLO.show(cardLOContainer, cardNameGamePanel);
 			}
 		});

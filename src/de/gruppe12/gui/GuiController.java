@@ -1,20 +1,26 @@
 package de.gruppe12.gui;
 
 import java.awt.Point;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.TreeMap;
 
 import javax.swing.SwingUtilities;
 
 import de.fhhannover.inform.hnefatafl.vorgaben.BoardContent;
 import de.fhhannover.inform.hnefatafl.vorgaben.MoveStrategy;
 import de.gruppe12.logic.LogicMain;
+import de.gruppe12.logic.StrategyLoader;
 import de.gruppe12.shared.Board;
 import de.gruppe12.shared.Cell;
 import de.gruppe12.shared.Move;
 
 public class GuiController implements Observer{
+	private final String kiPathName= "Ki.jar";
 	private final MoveAnimation anim;
 	private GameGui gui;
 	private LogicMain logic;
@@ -56,8 +62,12 @@ public class GuiController implements Observer{
 		return board;
 	}
 	
-	protected void doMove(int srcX, int srcY, int destX, int destY) {
-		logic.move(new Move(new Cell(srcX, srcY, logic.getBoard().getCell(srcX, srcY).getContent()), new Cell(destX, destY,logic.getBoard().getCell(srcX, srcY).getContent())));
+	protected void doMove(final int srcX, final int srcY, final int destX, final int destY) {
+		new Thread() {
+			@Override public void run() {
+				logic.move(new Move(new Cell(srcX, srcY, logic.getBoard().getCell(srcX, srcY).getContent()), new Cell(destX, destY,logic.getBoard().getCell(srcX, srcY).getContent())));
+			}
+		}.start();
 	}
 
 	@Override
@@ -126,8 +136,12 @@ public class GuiController implements Observer{
 	}
 	
 	protected void initHvAGame(boolean humanIsAttacker, String aiMoveStrategyName) {
-		MoveStrategy mStrat=null;
-		//mStrat aus MoveStrategy Array bestimmen
+		MoveStrategy mStrat= null;
+		try {
+			mStrat = StrategyLoader.getStrategy(kiPathName, aiMoveStrategyName);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		if (humanIsAttacker) logic.humanAttKiDef(mStrat, thinkTime);
 		else logic.humanDefKiAtt(mStrat, thinkTime);
 	}
@@ -142,6 +156,36 @@ public class GuiController implements Observer{
 	
 	protected boolean defenderWon() {
 		return !logic.getBoard().attackerWon();
+	}
+
+	protected Map<String, String> getStrats() {
+		ArrayList<String> moveStrategies= null;
+		try {
+			moveStrategies= StrategyLoader.listContent(kiPathName);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		moveStrategies= StrategyLoader.filterExtension(moveStrategies, ".class");
+		
+		Map<String, String> shortPathMap= new TreeMap<String, String>();
+		for (String s: moveStrategies) {
+			String filename;
+			if (s.contains("/")) {
+				filename= s.substring(s.lastIndexOf('/')+1, s.lastIndexOf('.'));
+			} else {
+				filename= s.substring(0, s.lastIndexOf('.'));
+			}
+			
+			shortPathMap.put(filename, s);
+		}
+		return shortPathMap;
+	}
+
+	protected void wakeLogic() {
+		synchronized (logic) {
+			logic.notifyAll();
+		}
 	}
 
 }

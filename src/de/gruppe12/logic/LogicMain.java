@@ -157,10 +157,18 @@ public class LogicMain extends Observable {
 			
 			// Spieler wechseln
 			this.defPlayerTurn = !this.defPlayerTurn;
-			
 			//Oberserver benachrichtigen
 			setChanged();
 			notifyObservers(currentMove2);
+			
+			synchronized(this) {
+				try {
+					wait();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		}
 		else {			
 			//Wenn KI am Zug ist
@@ -170,8 +178,26 @@ public class LogicMain extends Observable {
 				logGameEvent("Ungültiger Zug der KI");
 				logGameEvent(currentMove2.toString());	
 				
-				// Spieler wechseln
-				this.defPlayerTurn = !this.defPlayerTurn;
+				//### Prototyp von Ende ###
+				
+				
+				board.setFinish();
+				if (defPlayerTurn) board.setAttackerWon();
+				else board.setDefenderWon();
+				
+				setChanged();
+				notifyObservers("GameOver");
+				
+				try {
+					synchronized (this) {
+						wait();
+					}
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				//### Ende vom Prototyp Ende ###
+				
 				return;
 			}
 			//Wenn Mensch am zu ist

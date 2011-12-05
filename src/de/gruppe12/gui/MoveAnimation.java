@@ -35,6 +35,7 @@ public class MoveAnimation {
 		gc.refreshBoard();
 		running= false;
 		gc.update();
+		gc.wakeLogic();
 	}
 
 	protected void update(long dT) {
