@@ -24,8 +24,9 @@ public class RemoveCheck {
 	}
 	
 	private static Board doMove(de.fhhannover.inform.hnefatafl.vorgaben.Move currentMove2, Board board){
+		BoardContent bc = currentMove2.getFromCell().getContent();
 		board.setCell(new Cell(currentMove2.getFromCell().getCol(), currentMove2.getFromCell().getRow(), BoardContent.EMPTY));
-		board.setCell(new Cell(currentMove2.getToCell().getCol(), currentMove2.getToCell().getRow(), currentMove2.getToCell().getContent()));
+		board.setCell(new Cell(currentMove2.getToCell().getCol(), currentMove2.getToCell().getRow(), bc));
 		return board;
 	}
 	
@@ -86,8 +87,7 @@ public class RemoveCheck {
 		
 		int x=currentMove2.getToCell().getCol(),y=currentMove2.getToCell().getRow();
 		BoardContent tboard[][] = board.get();
-		Board tb = board;
-		
+		Board tb = board;		
 		
 		// Prüfen ob alle Fluchburgen blockiert sind
 		if (board.getCell(0, 1).getContent() == BoardContent.ATTACKER &&
@@ -102,8 +102,7 @@ public class RemoveCheck {
 			tb.setFinish();
 			tb.setAttackerWon();
 			GameLog.logDebugEvent("Spielende");
-			return tb;
-			
+			return tb;			
 		}
 		
 		

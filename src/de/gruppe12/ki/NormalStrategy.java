@@ -85,6 +85,10 @@ public class NormalStrategy implements MoveStrategy {
 		   	 if (m == null){
 		   		 return -1;
 		   	 }
+		   	 //checkt ob Move zul�ssig
+		      if(!MoveCheck.check(m,b,isDefTurn)){
+		    	  return -1;
+		      } 
 		   
 		      int value=0;
 		      //Figur die Bewegt wird
@@ -108,11 +112,7 @@ public class NormalStrategy implements MoveStrategy {
 		      }
 		      if((c4 != p)&&(c1!=BoardContent.EMPTY)){
 		    	  value++;
-		      }
-		      //checkt ob Move zul�ssig
-		      if(!MoveCheck.check(m,b,isDefTurn)){
-		    	  return -1;
-		      } 		      
+		      }		      		      
 		      return value;
 		   }
 	
@@ -122,9 +122,7 @@ public class NormalStrategy implements MoveStrategy {
 	
 	private Board doMove(de.fhhannover.inform.hnefatafl.vorgaben.Move currentMove2, Board board){
 		if (currentMove2 != null){
-			board.setCell(new Cell(currentMove2.getFromCell().getCol(), currentMove2.getFromCell().getRow(), BoardContent.EMPTY));
-			board.setCell(new Cell(currentMove2.getToCell().getCol(), currentMove2.getToCell().getRow(), currentMove2.getToCell().getContent()));
-			board = RemoveCheck.checkForRemove(currentMove2, board);
+			return RemoveCheck.checkForRemove(currentMove2, board);
 		}		
 		return board;		
 	}
