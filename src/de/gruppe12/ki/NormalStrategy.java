@@ -64,11 +64,11 @@ public class NormalStrategy implements MoveStrategy {
 			int r=12-cList[i].getCol();
 			int l=12-cList[i].getRow();
 			for(int j=0;j<r;j++){
-				mList[m1]=new Move(cList[i],new Cell(cList[i].getCol()+1,cList[i].getRow(), cList[i].getContent()));
+				mList[m1]=new Move(cList[i],new Cell(cList[i].getCol()+j,cList[i].getRow(), cList[i].getContent()));
 				m1++;
 			}
 			for(int h=0;h<l;h++){
-				mList[m1]=new Move(cList[i],new Cell(cList[i].getCol(),cList[i].getRow()+1, cList[i].getContent()));
+				mList[m1]=new Move(cList[i],new Cell(cList[i].getCol(),cList[i].getRow()+h, cList[i].getContent()));
 				m1++;		
 			}
 		}		
@@ -83,7 +83,7 @@ public class NormalStrategy implements MoveStrategy {
 	 */
 	   private int calculateValue(Move m, boolean isDefTurn) {
 		   	 if (m == null){
-		   		 return 0;
+		   		 return -1;
 		   	 }
 		   
 		      int value=0;
@@ -110,7 +110,7 @@ public class NormalStrategy implements MoveStrategy {
 		    	  value++;
 		      }
 		      //checkt ob Move zul�ssig
-		      if(MoveCheck.check(m,b,isDefTurn)){
+		      if(!MoveCheck.check(m,b,isDefTurn)){
 		    	  return -1;
 		      } 		      
 		      return value;
@@ -124,7 +124,8 @@ public class NormalStrategy implements MoveStrategy {
 		if (currentMove2 != null){
 			board.setCell(new Cell(currentMove2.getFromCell().getCol(), currentMove2.getFromCell().getRow(), BoardContent.EMPTY));
 			board.setCell(new Cell(currentMove2.getToCell().getCol(), currentMove2.getToCell().getRow(), currentMove2.getToCell().getContent()));
-		}
+			RemoveCheck.checkForRemove(currentMove2, board);
+		}		
 		return board;		
 	}
 
@@ -150,11 +151,11 @@ public class NormalStrategy implements MoveStrategy {
 			       move = moves[i];
 			       if (calculateValue(move, false) > calculateValue(best_move, false)) {
 			          last_bm = best_move;
-			    	   best_move = move;
+			    	  best_move = move;
 			       }
 			    }
 			    if(best_move!=arg0){
-			    return best_move;
+			    	return best_move;
 			    } else { 
 			    	return last_bm;
 			    }

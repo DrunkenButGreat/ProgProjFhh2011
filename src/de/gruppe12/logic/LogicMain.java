@@ -89,8 +89,7 @@ public class LogicMain extends Observable {
 	}	
 	
 	public void move(Move move){	
-		update(move);	
-		saveCurrentMove(move);
+		update(move);
 		move();
 	}
 	
@@ -128,13 +127,11 @@ public class LogicMain extends Observable {
 			
 			// Wenn die Verteidiger KI am Zug ist
 			if (this.defPlayerTurn && !this.humanDefender){	
-				saveCurrentMove(defender.calculateDefenderMove(this.lastMove, this.thinkTime));
-				update(this.currentMove);
+				update(defender.calculateDefenderMove(this.lastMove, this.thinkTime));
 			}
 			// Wenn die Angreifer KI am Zug ist
 			else if (!this.defPlayerTurn && !this.humanAttacker){
-				saveCurrentMove(attacker.calculateAttackerMove(this.lastMove, this.thinkTime));
-				update(this.currentMove);	
+				update(attacker.calculateAttackerMove(this.lastMove, this.thinkTime));	
 			}
 		}	
 	}
@@ -146,9 +143,11 @@ public class LogicMain extends Observable {
 			return;
 		}
 		
-		//System.out.println(this.board.toString());
 		//Erst prüfen ob der Zug erlaubt ist	
-		if (MoveCheck.check(currentMove2, this.board, this.defPlayerTurn)) {			
+		if (MoveCheck.check(currentMove2, this.board, this.defPlayerTurn)) {	
+			//Dann den letzen Move speichern
+			saveCurrentMove(currentMove2);
+			
 			//Dann prüfen ob Steine geschlagen wurden und neues Bord setzen
 			this.board = RemoveCheck.checkForRemove(currentMove2, this.board);
 			
@@ -163,17 +162,22 @@ public class LogicMain extends Observable {
 			setChanged();
 			notifyObservers(currentMove2);
 		}
-		else {
-			logGameEvent("Ungültig");
-			logGameEvent(currentMove2.toString());
+		else {			
 			//Wenn KI am Zug ist
 			if ((this.defPlayerTurn && !this.humanDefender) ||
-						!this.defPlayerTurn && !this.humanAttacker){
-				//KI wegen Betruges disqualifizieren	
+						!this.defPlayerTurn && !this.humanAttacker)
+			{
+				logGameEvent("Ungültiger Zug der KI");
+				logGameEvent(currentMove2.toString());	
+				
+				// Spieler wechseln
+				this.defPlayerTurn = !this.defPlayerTurn;
+				return;
 			}
 			//Wenn Mensch am zu ist
 			else{
-				// Zug ignorieren und eventuell Meldung an KI
+				logGameEvent("Ungültiger Zug vom Menschen");
+				logGameEvent(currentMove2.toString());	
 				return;
 			}	
 		}		
