@@ -403,8 +403,8 @@ public class GameGui extends JFrame {
 		
 		final JLabel jlbOffenderAi= new JLabel("Angreifer KI:");
 		final JLabel jlbDefenderAi= new JLabel("Verteidiger KI:   ");
-		final JComboBox jcbOffenderAi= new JComboBox();
-		final JComboBox jcbDefenderAi= new JComboBox();
+		final JComboBox jcbOffenderAi= new JComboBox(moveStrategies.keySet().toArray());
+		final JComboBox jcbDefenderAi= new JComboBox(moveStrategies.keySet().toArray());
 
 
 		
@@ -438,8 +438,10 @@ public class GameGui extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				//controller.initAvAGame(jcbOffenderAi.getSelectedItem(), jcbDefenderAi.getSelectedItem());
+				String offStrat= moveStrategies.get((String)jcbOffenderAi.getSelectedItem());
+				String defStrat= moveStrategies.get((String)jcbDefenderAi.getSelectedItem());
 				cardLO.show(cardLOContainer, cardNameGamePanel);
+				controller.initAvAGame(offStrat, defStrat);
 			}
 		});
 	}
@@ -449,9 +451,7 @@ public class GameGui extends JFrame {
 		
 		buildBoardDisplay();
 		buildGameInfo();
-		
 
-		
 		
 		jpnlGamePanel.setLayout(new BorderLayout());
 		jpnlGamePanel.add(jpnlBoardDisplay, BorderLayout.CENTER);

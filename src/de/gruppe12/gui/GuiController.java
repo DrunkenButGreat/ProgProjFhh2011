@@ -83,7 +83,7 @@ public class GuiController implements Observer{
 		if (obj instanceof String) {
 			String str= (String) obj;
 			if (str.equals("GameOver")) {
-				//TODO: Ende Anzeigen
+				update();
 			}
 		}
 	}
@@ -147,11 +147,21 @@ public class GuiController implements Observer{
 	}
 
 	
-	protected void initAvAGame(String offenderMoveStrategyName, String defenderMoveStrategyName) {
-		MoveStrategy offStrat= null;
-		MoveStrategy defStrat= null;
-		//MoveStrategies aus MoveStrategy Array bestimmen
-		logic.KiDefKiAtt(defStrat, offStrat, thinkTime);
+	protected void initAvAGame(final String offenderMoveStrategyName, final String defenderMoveStrategyName) {
+		new Thread () {
+			@Override
+			public void run() {
+				MoveStrategy offStrat= null;
+				MoveStrategy defStrat= null;
+				try {
+					offStrat = StrategyLoader.getStrategy(kiPathName, offenderMoveStrategyName);
+					defStrat = StrategyLoader.getStrategy(kiPathName, defenderMoveStrategyName);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				logic.KiDefKiAtt(defStrat, offStrat, thinkTime);
+			}
+		}.start();
 	}
 	
 	protected boolean defenderWon() {
