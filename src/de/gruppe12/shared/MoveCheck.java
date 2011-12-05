@@ -8,6 +8,7 @@
 package de.gruppe12.shared;
 
 import de.fhhannover.inform.hnefatafl.vorgaben.BoardContent;
+import de.fhhannover.inform.hnefatafl.vorgaben.Move;
 import de.gruppe12.logic.GameLog;
 
 public class MoveCheck {
@@ -23,7 +24,8 @@ public class MoveCheck {
 	 * @param currentMove2
 	 * @return
 	 */
-	public static Boolean check (de.fhhannover.inform.hnefatafl.vorgaben.Move currentMove2, Board board, Boolean isDefTurn){ 			
+	public static Boolean check (de.fhhannover.inform.hnefatafl.vorgaben.Move currentMove2, Board board, Boolean isDefTurn){ 	
+		if (!checkIsMoving(currentMove2, board)) return false;
 		if (!checkInBoard(currentMove2, board)) return false;
 		if (!checkCorrectPlayer(currentMove2, board, isDefTurn)) return false;
 		if (!checkMoveDirection(currentMove2, board)) return false;
@@ -35,6 +37,14 @@ public class MoveCheck {
 		return true;
 	}
 	
+	private static boolean checkIsMoving(Move currentMove2, Board board) {
+		if ((currentMove2.getFromCell().getCol() == currentMove2.getToCell().getCol()) && currentMove2.getFromCell().getRow() == currentMove2.getToCell().getRow()){
+			GameLog.logDebugEvent("Stein wird nicht bewegt");
+			return false;
+		}			
+		return true;
+	}
+
 	private static boolean checkCorrectPlayer(de.fhhannover.inform.hnefatafl.vorgaben.Move currentMove2, Board board, Boolean isDefTurn){
 		if (isDefTurn && (currentMove2.getFromCell().getContent() == BoardContent.DEFENDER || 
 							currentMove2.getFromCell().getContent() == BoardContent.KING)){
@@ -130,10 +140,8 @@ public class MoveCheck {
 					}		
 				}
 				
-				return true;
-				
-			}
-			
+				return true;				
+			}			
 		}
 	}
 	
