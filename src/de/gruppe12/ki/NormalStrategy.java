@@ -124,7 +124,7 @@ public class NormalStrategy implements MoveStrategy {
 		if (currentMove2 != null){
 			board.setCell(new Cell(currentMove2.getFromCell().getCol(), currentMove2.getFromCell().getRow(), BoardContent.EMPTY));
 			board.setCell(new Cell(currentMove2.getToCell().getCol(), currentMove2.getToCell().getRow(), currentMove2.getToCell().getContent()));
-			RemoveCheck.checkForRemove(currentMove2, board);
+			board = RemoveCheck.checkForRemove(currentMove2, board);
 		}		
 		return board;		
 	}
