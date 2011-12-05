@@ -162,9 +162,9 @@ public class JPanelBoardDisplay extends JPanel {
 			
 		}
 		
-		if (gc.gameFinished()) {
-			Image banner= defenderWinImage;
-			//if (gc.offenderWon()) banner= offenderWinImage;
+		if (gc.gameFinished() && !gc.getAnimation().isRunning()) {
+			Image banner= offenderWinImage;
+			if (gc.defenderWon()) banner= defenderWinImage;
 			
 			double imageRatio= banner.getHeight(null)/(double)banner.getWidth(null);
 			double bannerHeight= imageRatio* 19*fieldSize;

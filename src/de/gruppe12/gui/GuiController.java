@@ -139,5 +139,9 @@ public class GuiController implements Observer{
 		//MoveStrategies aus MoveStrategy Array bestimmen
 		logic.KiDefKiAtt(defStrat, offStrat, thinkTime);
 	}
+	
+	protected boolean defenderWon() {
+		return !logic.getBoard().attackerWon();
+	}
 
 }

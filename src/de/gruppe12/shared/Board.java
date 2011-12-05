@@ -15,7 +15,7 @@ public class Board {
 	
 	final int fields = 13;
 	private BoardContent[][] board = new BoardContent[fields][fields];
-	private boolean finish;
+	private boolean finish, attackerWon;
 	
 	public Board(){
 		init();
@@ -210,5 +210,17 @@ public class Board {
 	 */
 	public BoardContent getCellBC(de.fhhannover.inform.hnefatafl.vorgaben.Cell cell){
 		return board[cell.getCol()][cell.getRow()];
+	}
+
+	public void setAttackerWon() {
+		attackerWon= true;
+	}
+	
+	public void setDefenderWon() {
+		attackerWon= false;
+	}
+	
+	public boolean attackerWon () {
+		return attackerWon;
 	}
 }

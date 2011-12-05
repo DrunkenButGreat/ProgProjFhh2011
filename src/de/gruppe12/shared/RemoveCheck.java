@@ -94,6 +94,7 @@ public class RemoveCheck {
 				((x==0&&y==0) || (x==0&&y==tboard[0].length-1) || (x==tboard.length-1&&y==0) || (x==tboard.length-1&&y==tboard[0].length-1))
 		) {
 			tb.setFinish();
+			tb.setDefenderWon();
 			GameLog.logDebugEvent("Spielende");
 			return tb;
 		}
@@ -145,6 +146,7 @@ public class RemoveCheck {
 		if(sur==4) {
 			GameLog.logDebugEvent("Spielende");
 			tb.setFinish();
+			tb.setAttackerWon();
 		}
 		
 		return tb;		
