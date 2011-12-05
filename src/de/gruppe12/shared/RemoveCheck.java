@@ -89,6 +89,24 @@ public class RemoveCheck {
 		Board tb = board;
 		
 		
+		// Prüfen ob alle Fluchburgen blockiert sind
+		if (board.getCell(0, 1).getContent() == BoardContent.ATTACKER &&
+				board.getCell(1, 0).getContent() == BoardContent.ATTACKER &&
+				board.getCell(11, 0).getContent() == BoardContent.ATTACKER &&
+				board.getCell(12, 1).getContent() == BoardContent.ATTACKER &&
+				board.getCell(0, 11).getContent() == BoardContent.ATTACKER &&
+				board.getCell(1, 12).getContent() == BoardContent.ATTACKER &&
+				board.getCell(12, 11).getContent() == BoardContent.ATTACKER &&
+				board.getCell(11, 12).getContent() == BoardContent.ATTACKER
+				){
+			tb.setFinish();
+			tb.setAttackerWon();
+			GameLog.logDebugEvent("Spielende");
+			return tb;
+			
+		}
+		
+		
 		// K�nig zieht auf Burg beendet die Methode und setzt das Finish Flag
 		if(currentMove2.getToCell().getContent()==BoardContent.KING &&
 				((x==0&&y==0) || (x==0&&y==tboard[0].length-1) || (x==tboard.length-1&&y==0) || (x==tboard.length-1&&y==tboard[0].length-1))
