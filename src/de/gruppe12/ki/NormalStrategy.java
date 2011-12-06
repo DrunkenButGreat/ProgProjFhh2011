@@ -121,8 +121,62 @@ public class NormalStrategy implements MoveStrategy {
 		      int col=m.getToCell().getCol();
 		      
 		      //extra Berechnung für Defender
-		      //kommt noch...
-
+		      //   1  2  3  4  5  6  7  8  9  10 11 12 13
+		      // 1|xx|10|08|xx|xx|xx|xx|xx|xx|xx|08|10|xx
+		      // 2|10|10|08|xx|xx|xx|xx|xx|xx|xx|08|10|10
+		      // 3|08|08|08|xx|xx|xx|xx|xx|xx|xx|08|08|08
+		      // 4|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx
+		      // 5|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx
+		      // 6|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx
+		      // 7|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx
+		      // 8|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx
+		      // 9|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx
+		      //10|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx
+		      //11|08|08|08|xx|xx|xx|xx|xx|xx|xx|08|08|08
+		      //12|10|10|08|xx|xx|xx|xx|xx|xx|xx|08|10|10
+		      //13|xx|10|08|xx|xx|xx|xx|xx|xx|xx|08|10|xx
+		      
+		      if(p==BoardContent.DEFENDER){
+		    	  //Bewertung 10
+		    	  if(((row==2)&&(col==2))|
+						     ((row==2)&&(col==3))|
+						     ((row==1)&&(col==2))|
+						     ((row==12)&&(col==1))|
+						     ((row==13)&&(col==2))|
+						     ((row==1)&&(col==12))|
+						     ((row==2)&&(col==12))|
+						     ((row==2)&&(col==13))|
+						     ((row==12)&&(col==13))|
+						     ((row==12)&&(col==12))|
+						     ((row==13)&&(col==12)))
+						    {
+						    		  value=value+10;	  
+						    }
+		    	  //Bewertung 8 
+		    	  if(((row==1)&&(col==3))|
+		           			 ((row==2)&&(col==3))|
+		           			 ((row==3)&&(col==3))|	    	  
+		           			 ((row==3)&&(col==1))|
+		           			 ((row==3)&&(col==2))|
+		           			 ((row==11)&&(col==1))|
+		           			 ((row==11)&&(col==2))|
+		           			 ((row==11)&&(col==3))|		    	  
+		           			 ((row==12)&&(col==3))|		    	  
+		           			 ((row==13)&&(col==3))|		    	  
+		           			 ((row==1)&&(col==1))|		    	  
+		           			 ((row==2)&&(col==2))|		    	  
+		           			 ((row==3)&&(col==3))|
+		           			 ((row==3)&&(col==12))|          			 
+		           			 ((row==3)&&(col==13))|		    	  
+		           			 ((row==11)&&(col==11))|		    	  
+		           			 ((row==11)&&(col==12))|		    	  
+		           			 ((row==11)&&(col==13))|		    	  
+		           			 ((row==12)&&(col==11))|		    	  
+		           			 ((row==13)&&(col==11))
+		           			 ){
+				    		  value=value+8;
+				    	  }
+		      }
 		      
 		      
 		      
