@@ -10,8 +10,8 @@ import de.gruppe12.shared.*;
 * Copyright: (c) 2011 <p>
 * Company: Gruppe 12 <p>
 * @author Markus
-* @version 0.6.0 03.12.2011
-* �nderungen: 03.12. Fehler beseitigt, javadoc erweitert
+* @version 1.0.0 07.12.2011
+* �nderungen: 07.12. KI verbessert!
 */
 
 public class NormalStrategy implements MoveStrategy {
@@ -429,7 +429,7 @@ public class NormalStrategy implements MoveStrategy {
 				     ((row==13)&&(col==12))|				     				     
 				     ((row==13)&&(col==11))
 				     ){
-				    		  value=value+10;
+				    		  value=value+8;
 				     }
 		      }
 		      return value;
