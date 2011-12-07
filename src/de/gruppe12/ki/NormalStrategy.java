@@ -120,7 +120,7 @@ public class NormalStrategy implements MoveStrategy {
 		      int row=m.getToCell().getRow();
 		      int col=m.getToCell().getCol();
 		      
-		      //extra Berechnung für Defender
+		      //extra Berechnung für Attacker
 		      //   1  2  3  4  5  6  7  8  9  10 11 12 13
 		      // 1|xx|10|08|xx|xx|xx|xx|xx|xx|xx|08|10|xx
 		      // 2|10|10|08|xx|xx|xx|xx|xx|xx|xx|08|10|10
@@ -136,7 +136,7 @@ public class NormalStrategy implements MoveStrategy {
 		      //12|10|10|08|xx|xx|xx|xx|xx|xx|xx|08|10|10
 		      //13|xx|10|08|xx|xx|xx|xx|xx|xx|xx|08|10|xx
 		      
-		      if(p==BoardContent.DEFENDER){
+		      if(p==BoardContent.ATTACKER){
 		    	  //Bewertung 10
 		    	  if(((row==2)&&(col==2))|
 						     ((row==2)&&(col==3))|
@@ -362,8 +362,22 @@ public class NormalStrategy implements MoveStrategy {
 		    	  
 		      
 		      
-		      //Berechnung für Angreifer -> ?Idee?
-		      
+		      //Berechnung für Verteidiger?
+		    //extra Berechnung für Deffender
+		      //   1  2  3  4  5  6  7  8  9  10 11 12 13
+		      // 1|xx|xx|10|xx|xx|xx|xx|xx|xx|xx|10|xx|xx
+		      // 2|xx|10|xx|xx|xx|xx|xx|xx|xx|xx|xx|10|xx
+		      // 3|10|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|10
+		      // 4|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx
+		      // 5|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx
+		      // 6|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx
+		      // 7|xx|xx|xx|xx|xx|xx|KK|xx|xx|xx|xx|xx|xx
+		      // 8|xx|xx|xx|xx|xx|xx|xx|08|xx|xx|xx|xx|xx
+		      // 9|xx|xx|xx|xx|xx|xx|08|xx|08|xx|xx|xx|xx
+		      //10|xx|xx|xx|xx|xx|08|xx|xx|xx|08|xx|xx|xx
+		      //11|10|xx|xx|xx|08|xx|xx|xx|xx|xx|08|xx|xx
+		      //12|xx|10|xx|08|xx|xx|xx|xx|xx|xx|xx|08|xx
+		      //13|xx|xx|10|xx|xx|xx|xx|xx|xx|xx|08|08|xx
 		      
 		      return value;
 		   }
