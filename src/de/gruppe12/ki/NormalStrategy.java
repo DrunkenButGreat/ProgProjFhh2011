@@ -176,6 +176,21 @@ public class NormalStrategy implements MoveStrategy {
 		           			 ){
 				    		  value=value+8;
 				    	  }
+		    	  
+		    	  //Wenn König in der Nähe, dann ziehe dahin!
+		    	  if((c1 ==BoardContent.KING)){
+			    	  value=value+10;
+			      }
+		    	  if((c1 ==BoardContent.KING)){
+			    	  value=value+10;
+			      }
+		    	  if((c1 ==BoardContent.KING)){
+			    	  value=value+10;
+			      }
+		    	  if((c1 ==BoardContent.KING)){
+			    	  value=value+10;
+			      }
+		    	  
 		      }
 		      
 		      
@@ -378,7 +393,45 @@ public class NormalStrategy implements MoveStrategy {
 		      //11|10|xx|xx|xx|08|xx|xx|xx|xx|xx|08|xx|xx
 		      //12|xx|10|xx|08|xx|xx|xx|xx|xx|xx|xx|08|xx
 		      //13|xx|xx|10|xx|xx|xx|xx|xx|xx|xx|08|08|xx
-		      
+		      if(p==BoardContent.DEFENDER){
+		    	  //links oben 31;22;13 
+		    	  if(((row==3)&&(col==1))|
+		    		 ((row==2)&&(col==2))|
+		    		 ((row==1)&&(col==3))
+		    		 ){
+		    		  value=value+10;
+		    	  }
+		      //links unten 111;122;131 
+		    	  if(((row==11)&&(col==1))|
+				     ((row==12)&&(col==2))|
+				     ((row==13)&&(col==1))
+				      ){
+				    		  value=value+10;
+				      }
+		    //rechtes oben 111;212;313
+		    	  if(((row==1)&&(col==11))|
+				   	 ((row==2)&&(col==12))|
+				   	 ((row==3)&&(col==13))
+				   	 ){
+				    	  value=value+10;
+				     } 
+		    	  
+		    //rest 124;115;106;97;88;99;1010;1111;1212;1312;1311
+		    	  if(((row==12)&&(col==4))|
+				     ((row==11)&&(col==5))|
+				     ((row==10)&&(col==6))|
+				     ((row==9)&&(col==57))|
+				     ((row==8)&&(col==8))|
+				     ((row==9)&&(col==9))|
+				     ((row==10)&&(col==10))|
+				     ((row==11)&&(col==11))|
+				     ((row==12)&&(col==12))|
+				     ((row==13)&&(col==12))|				     				     
+				     ((row==13)&&(col==11))
+				     ){
+				    		  value=value+10;
+				     }
+		      }
 		      return value;
 		   }
 	
