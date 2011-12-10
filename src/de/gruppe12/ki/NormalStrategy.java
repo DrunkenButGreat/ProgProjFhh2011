@@ -102,6 +102,7 @@ public class NormalStrategy implements MoveStrategy {
 		      
 			  
 			  //testet, wenn Gegner und kein leeres Feld steigt Value
+			  if(p==BoardContent.ATTACKER){
 		      if((c1 != p)&&(c1!=BoardContent.EMPTY)){
 		    	  value++;
 		      }
@@ -114,7 +115,7 @@ public class NormalStrategy implements MoveStrategy {
 		      if((c4 != p)&&(c1!=BoardContent.EMPTY)){
 		    	  value++;
 		      }
-		      
+			  }
 		      
 		      //extra Berechnungen beginnen hier:
 		      int row=m.getToCell().getRow();
@@ -181,13 +182,13 @@ public class NormalStrategy implements MoveStrategy {
 		    	  if((c1 ==BoardContent.KING)){
 			    	  value=value+10;
 			      }
-		    	  if((c1 ==BoardContent.KING)){
+		    	  if((c2 ==BoardContent.KING)){
 			    	  value=value+10;
 			      }
-		    	  if((c1 ==BoardContent.KING)){
+		    	  if((c3 ==BoardContent.KING)){
 			    	  value=value+10;
 			      }
-		    	  if((c1 ==BoardContent.KING)){
+		    	  if((c4 ==BoardContent.KING)){
 			    	  value=value+10;
 			      }
 		    	  
@@ -501,6 +502,16 @@ public class NormalStrategy implements MoveStrategy {
 			    	   best_move = move;
 			       }
 			    }
+			    //testen ob König ziehen besser ist
+			    Move[] movesK = GenerateMoves(BoardContent.KING);
+			    for(int i=1; i<moves.length; i++) {
+				       move = movesK[i];
+				       if (calculateValue(move, true) > calculateValue(best_move, true)) {
+				          last_bm = best_move;
+				    	   best_move = move;
+				       }
+			    }
+			    
 			    if(best_move!=arg0){
 			    	return best_move;
 			    } else { 
