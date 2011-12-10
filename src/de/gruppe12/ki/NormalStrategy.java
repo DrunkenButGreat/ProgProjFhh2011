@@ -10,8 +10,8 @@ import de.gruppe12.shared.*;
 * Copyright: (c) 2011 <p>
 * Company: Gruppe 12 <p>
 * @author Markus
-* @version 1.0.0 07.12.2011
-* ï¿½nderungen: 07.12. KI verbessert!
+* @version 1.0.1 10.12.2011
+* ï¿½nderungen: 10.12. KI verbessert!
 */
 
 public class NormalStrategy implements MoveStrategy {
@@ -51,8 +51,8 @@ public class NormalStrategy implements MoveStrategy {
 		int c1=0;
 		
 		//prÃ¼ft wo Steine sind
-		for(int i=0;i<13;i++){
-			for(int j=0;j<13;j++){
+		for(int i=0;i<12;i++){
+			for(int j=0;j<12;j++){
 				//speichert nur wenn Typ gleich ist
 				if(b.getCell(i,j).getContent() == type){
 					cList[c1]=new Cell(i,j, type);
@@ -121,58 +121,58 @@ public class NormalStrategy implements MoveStrategy {
 		      int col=m.getToCell().getCol();
 		      
 		      //extra Berechnung für Attacker
-		      //   1  2  3  4  5  6  7  8  9  10 11 12 13
-		      // 1|xx|10|08|xx|xx|xx|xx|xx|xx|xx|08|10|xx
-		      // 2|10|10|08|xx|xx|xx|xx|xx|xx|xx|08|10|10
-		      // 3|08|08|08|xx|xx|xx|xx|xx|xx|xx|08|08|08
+		      //   0   1  2  3  4  5  6  7  8  9 10 11 12
+		      // 0|xx|10|08|xx|xx|xx|xx|xx|xx|xx|08|10|xx
+		      // 1|10|10|08|xx|xx|xx|xx|xx|xx|xx|08|10|10
+		      // 2|08|08|08|xx|xx|xx|xx|xx|xx|xx|08|08|08
+		      // 3|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx
 		      // 4|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx
 		      // 5|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx
 		      // 6|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx
 		      // 7|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx
 		      // 8|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx
 		      // 9|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx
-		      //10|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx
-		      //11|08|08|08|xx|xx|xx|xx|xx|xx|xx|08|08|08
-		      //12|10|10|08|xx|xx|xx|xx|xx|xx|xx|08|10|10
-		      //13|xx|10|08|xx|xx|xx|xx|xx|xx|xx|08|10|xx
+		      //10|08|08|08|xx|xx|xx|xx|xx|xx|xx|08|08|08
+		      //11|10|10|08|xx|xx|xx|xx|xx|xx|xx|08|10|10
+		      //12|xx|10|08|xx|xx|xx|xx|xx|xx|xx|08|10|xx
 		      
 		      if(p==BoardContent.ATTACKER){
 		    	  //Bewertung 10
-		    	  if(((row==2)&&(col==2))|
-						     ((row==2)&&(col==3))|
+		    	  if(((row==1)&&(col==1))|
 						     ((row==1)&&(col==2))|
+						     ((row==0)&&(col==1))|
+						     ((row==11)&&(col==0))|
 						     ((row==12)&&(col==1))|
-						     ((row==13)&&(col==2))|
+						     ((row==0)&&(col==11))|
+						     ((row==1)&&(col==11))|
 						     ((row==1)&&(col==12))|
-						     ((row==2)&&(col==12))|
-						     ((row==2)&&(col==13))|
-						     ((row==12)&&(col==13))|
-						     ((row==12)&&(col==12))|
-						     ((row==13)&&(col==12)))
+						     ((row==11)&&(col==12))|
+						     ((row==11)&&(col==11))|
+						     ((row==12)&&(col==11)))
 						    {
 						    		  value=value+10;	  
 						    }
 		    	  //Bewertung 8 
-		    	  if(((row==1)&&(col==3))|
-		           			 ((row==2)&&(col==3))|
-		           			 ((row==3)&&(col==3))|	    	  
-		           			 ((row==3)&&(col==1))|
-		           			 ((row==3)&&(col==2))|
-		           			 ((row==11)&&(col==1))|
-		           			 ((row==11)&&(col==2))|
-		           			 ((row==11)&&(col==3))|		    	  
-		           			 ((row==12)&&(col==3))|		    	  
-		           			 ((row==13)&&(col==3))|		    	  
-		           			 ((row==1)&&(col==1))|		    	  
-		           			 ((row==2)&&(col==2))|		    	  
-		           			 ((row==3)&&(col==3))|
-		           			 ((row==3)&&(col==12))|          			 
-		           			 ((row==3)&&(col==13))|		    	  
-		           			 ((row==11)&&(col==11))|		    	  
-		           			 ((row==11)&&(col==12))|		    	  
-		           			 ((row==11)&&(col==13))|		    	  
-		           			 ((row==12)&&(col==11))|		    	  
-		           			 ((row==13)&&(col==11))
+		    	  if(((row==0)&&(col==2))|
+		           			 ((row==1)&&(col==2))|
+		           			 ((row==2)&&(col==2))|	    	  
+		           			 ((row==2)&&(col==0))|
+		           			 ((row==2)&&(col==1))|
+		           			 ((row==10)&&(col==0))|
+		           			 ((row==10)&&(col==2))|
+		           			 ((row==10)&&(col==2))|		    	  
+		           			 ((row==11)&&(col==2))|		    	  
+		           			 ((row==12)&&(col==2))|		    	  
+		           			 ((row==0)&&(col==2))|		    	  
+		           			 ((row==1)&&(col==2))|		    	  
+		           			 ((row==2)&&(col==2))|
+		           			 ((row==2)&&(col==11))|          			 
+		           			 ((row==2)&&(col==12))|		    	  
+		           			 ((row==10)&&(col==10))|		    	  
+		           			 ((row==10)&&(col==11))|		    	  
+		           			 ((row==10)&&(col==12))|		    	  
+		           			 ((row==11)&&(col==10))|		    	  
+		           			 ((row==12)&&(col==10))
 		           			 ){
 				    		  value=value+8;
 				    	  }
@@ -215,156 +215,153 @@ public class NormalStrategy implements MoveStrategy {
 		       
 		      if(p==BoardContent.KING){
 		    	  //Felder mit Bewertung 10: LO:1,1 RO:1,13 LU:13,1 RU:13,13
-		    	  if(((row==1)&&(col==1))|
-		    		 ((row==1)&&(col==13))|
-		    		 ((row==13)&&(col==1))|
-		    		 ((row==13)&&(col==13))
+		    	  if(((row==0)&&(col==0))|
+		    		 ((row==0)&&(col==12))|
+		    		 ((row==12)&&(col==0))|
+		    		 ((row==12)&&(col==12))
 		    		 ){
 		    		  value=value+10;
 		    	  }
-		    	  //Felder mit Bewertung 8: LO:2,2;2,3;1,2 LU:12,1;12,2;13,2 RO:1,12;2,12;2,13 RU:12,13;12,12;13,12
-		    	  if(((row==2)&&(col==2))|
-				     ((row==2)&&(col==3))|
+		    	  //Felder mit Bewertung 8
+		    	  if(((row==1)&&(col==1))|
 				     ((row==1)&&(col==2))|
+				     ((row==0)&&(col==1))|
+				     ((row==11)&&(col==0))|
 				     ((row==12)&&(col==1))|
-				     ((row==13)&&(col==2))|
+				     ((row==0)&&(col==11))|
+				     ((row==1)&&(col==11))|
 				     ((row==1)&&(col==12))|
-				     ((row==2)&&(col==12))|
-				     ((row==2)&&(col==13))|
-				     ((row==12)&&(col==13))|
-				     ((row==12)&&(col==12))|
-				     ((row==13)&&(col==12)))
+				     ((row==11)&&(col==12))|
+				     ((row==11)&&(col==11))|
+				     ((row==12)&&(col==11)))
 				    {
 				    		  value=value+8;
 				    	  }
-		    	//Felder mit Bewertung 6: LO:1,3;2,3;3,3;3,1;3,2 LU:11,1;11,2;11,3;12,3;13,3 RO:1,11;2,11,3;3,12;3,13 RU:11,11;11,12;11,13;12,11;13,11 
-		    	  if(((row==1)&&(col==3))|
-           			 ((row==2)&&(col==3))|
-           			 ((row==3)&&(col==3))|	    	  
-           			 ((row==3)&&(col==1))|
-           			 ((row==3)&&(col==2))|
-           			 ((row==11)&&(col==1))|
-           			 ((row==11)&&(col==2))|
-           			 ((row==11)&&(col==3))|		    	  
-           			 ((row==12)&&(col==3))|		    	  
-           			 ((row==13)&&(col==3))|		    	  
+		    	//Felder mit Bewertung 6: 
+		    	  if(((row==0)&&(col==2))|
+           			 ((row==1)&&(col==2))|
+           			 ((row==2)&&(col==2))|	    	  
+           			 ((row==2)&&(col==0))|
+           			 ((row==2)&&(col==1))|
+           			 ((row==10)&&(col==0))|
+           			 ((row==10)&&(col==1))|
+           			 ((row==10)&&(col==2))|		    	  
+           			 ((row==11)&&(col==2))|		    	  
+           			 ((row==12)&&(col==2))|		    	  
+           			 ((row==0)&&(col==0))|		    	  
            			 ((row==1)&&(col==1))|		    	  
-           			 ((row==2)&&(col==2))|		    	  
-           			 ((row==3)&&(col==3))|
-           			 ((row==3)&&(col==12))|          			 
-           			 ((row==3)&&(col==13))|		    	  
-           			 ((row==11)&&(col==11))|		    	  
-           			 ((row==11)&&(col==12))|		    	  
-           			 ((row==11)&&(col==13))|		    	  
-           			 ((row==12)&&(col==11))|		    	  
-           			 ((row==13)&&(col==11))
+           			 ((row==2)&&(col==2))|
+           			 ((row==2)&&(col==11))|          			 
+           			 ((row==2)&&(col==12))|		    	  
+           			 ((row==10)&&(col==10))|		    	  
+           			 ((row==10)&&(col==11))|		    	  
+           			 ((row==10)&&(col==12))|		    	  
+           			 ((row==11)&&(col==10))|		    	  
+           			 ((row==12)&&(col==10))
            			 ){
 		    		  value=value+6;
 		    	  }
-		    	  //Felder mit Bewertung 4: LO:4,1;4,2;4,3;4,4;3,4;2,4;1,4 LU:10,1;10,2;10,3;10,4;11,4;12,4;13,4 
-			      // RO:1,10;2,10;3,10;4,10;4,11;4,12;4,13 RU:10,10;10,11;10,12;10,13;11,10;12,10;13,10 
-		    	  if(((row==4)&&(col==1))|
-			         ((row==4)&&(col==2))|
-			         ((row==4)&&(col==3))|
-			         ((row==4)&&(col==4))|
-			         ((row==3)&&(col==4))|
-			         ((row==2)&&(col==4))|
-			         ((row==1)&&(col==4))|
-			         ((row==10)&&(col==1))|
-			         ((row==10)&&(col==2))|
+		    	  //Felder mit Bewertung 4
+		    	  if(((row==3)&&(col==0))|
+			         ((row==3)&&(col==1))|
+			         ((row==3)&&(col==2))|
+			         ((row==3)&&(col==3))|
+			         ((row==2)&&(col==3))|
+			         ((row==1)&&(col==3))|
+			         ((row==0)&&(col==3))|
+			         ((row==9)&&(col==0))|
+			         ((row==9)&&(col==1))|
+			         ((row==9)&&(col==2))|
+			         ((row==9)&&(col==3))|
 			         ((row==10)&&(col==3))|
-			         ((row==10)&&(col==4))|
-			         ((row==11)&&(col==4))|
-			         ((row==12)&&(col==4))|
-			         ((row==13)&&(col==4))|
-			         ((row==1)&&(col==10))|
-			         ((row==2)&&(col==10))|
+			         ((row==11)&&(col==3))|
+			         ((row==12)&&(col==3))|
+			         ((row==0)&&(col==9))|
+			         ((row==1)&&(col==9))|
+			         ((row==2)&&(col==9))|
+			         ((row==3)&&(col==9))|
 			         ((row==3)&&(col==10))|
-			         ((row==4)&&(col==10))|
-			         ((row==4)&&(col==11))|
-			         ((row==4)&&(col==12))|
-			         ((row==4)&&(col==13))|
-			         ((row==10)&&(col==10))|
-			         ((row==11)&&(col==10))|
-			         ((row==12)&&(col==10))|
-			         ((row==13)&&(col==10))|
-			         ((row==10)&&(col==11))|
-			         ((row==10)&&(col==12))|
-			         ((row==10)&&(col==13))
+			         ((row==3)&&(col==11))|
+			         ((row==3)&&(col==12))|
+			         ((row==9)&&(col==9))|
+			         ((row==10)&&(col==9))|
+			         ((row==11)&&(col==9))|
+			         ((row==12)&&(col==9))|
+			         ((row==9)&&(col==10))|
+			         ((row==9)&&(col==11))|
+			         ((row==9)&&(col==12))
 				     ){
 		    		  value=value+4;
 		    	  }
 		    	  
-		    	//Felder mit Bewertung 3: LO: 51;52;53;54;55;15;25;35;45 LU: 91,92,93,94,95;105;115;125;135
-			      //RO: 19;29;39;49;59;510;511;512;513 RU:99;910;911;912;913;109;119;129;139 
-		    	  if(((row==5)&&(col==1))|
-			         ((row==5)&&(col==2))|
-			         ((row==5)&&(col==3))|
-			         ((row==5)&&(col==4))|
-			         ((row==5)&&(col==5))|
-			         ((row==1)&&(col==5))|
-			         ((row==2)&&(col==5))|
-			         ((row==3)&&(col==5))|
-			         ((row==4)&&(col==5))|
+		    	//Felder mit Bewertung 3: LO:
+		    	  if(((row==4)&&(col==0))|
+			         ((row==4)&&(col==1))|
+			         ((row==4)&&(col==2))|
+			         ((row==4)&&(col==3))|
+			         ((row==4)&&(col==4))|
+			         ((row==0)&&(col==4))|
+			         ((row==1)&&(col==4))|
+			         ((row==2)&&(col==4))|
+			         ((row==3)&&(col==4))|
 
-			         ((row==9)&&(col==1))|
-			         ((row==9)&&(col==2))|
-			         ((row==9)&&(col==3))|
+			         ((row==8)&&(col==0))|
+			         ((row==8)&&(col==1))|
+			         ((row==8)&&(col==2))|
+			         ((row==8)&&(col==3))|
+			         ((row==8)&&(col==4))|
 			         ((row==9)&&(col==4))|
-			         ((row==9)&&(col==5))|
-			         ((row==10)&&(col==5))|
-			         ((row==11)&&(col==5))|
-			         ((row==12)&&(col==5))|
-			         ((row==13)&&(col==5))|
+			         ((row==10)&&(col==4))|
+			         ((row==11)&&(col==4))|
+			         ((row==12)&&(col==4))|
 
-			         ((row==1)&&(col==9))|
-			         ((row==2)&&(col==9))|
-			         ((row==3)&&(col==9))|
+			         ((row==0)&&(col==8))|
+			         ((row==1)&&(col==8))|
+			         ((row==2)&&(col==8))|
+			         ((row==3)&&(col==8))|
+			         ((row==4)&&(col==8))|
 			         ((row==4)&&(col==9))|
-			         ((row==5)&&(col==9))|
-			         ((row==5)&&(col==10))|
-			         ((row==5)&&(col==11))|
-			         ((row==5)&&(col==12))|
-			         ((row==5)&&(col==13))|
+			         ((row==4)&&(col==10))|
+			         ((row==4)&&(col==11))|
+			         ((row==4)&&(col==12))|
 
-			         ((row==9)&&(col==9))|
-			         ((row==9)&&(col==13))|
-			         ((row==9)&&(col==12))|
-			         ((row==9)&&(col==11))|
-			         ((row==9)&&(col==10))|
-			         ((row==10)&&(col==9))|
-			         ((row==11)&&(col==9))|
-			         ((row==12)&&(col==9))|
-			         ((row==13)&&(col==9))
+			         ((row==8)&&(col==8))|
+			         ((row==8)&&(col==12))|
+			         ((row==8)&&(col==11))|
+			         ((row==8)&&(col==10))|
+			         ((row==8)&&(col==9))|
+			         ((row==9)&&(col==8))|
+			         ((row==10)&&(col==8))|
+			         ((row==11)&&(col==8))|
+			         ((row==12)&&(col==8))
 		    	  	 ){
 		    		  value=value+3;
 		    	  }
-		       //Felder mit Bewertung 1: 7,1;7,2;7,3;7,4;7,5;7,6 1,7;2,7;3,7;4,7;5,7;6,7  
-			   // 						 7,8;7,9;7,10;7,11;7,12;7,13 8,7;9,7;10,7;11,7;12,7;13,7 
-		    	  if(((row==7)&&(col==1))|
-	           		 ((row==7)&&(col==2))|		    	  
-	           		 ((row==7)&&(col==3))|		    	  
-	           		 ((row==7)&&(col==4))|	           			 
-	         		 ((row==7)&&(col==5))|	           			 
-	         		 ((row==7)&&(col==6))|	           			 
-	           		 ((row==7)&&(col==8))|	           			 
-	           		 ((row==7)&&(col==9))|	           			 
-	           		 ((row==7)&&(col==10))|	           			 
-	           		 ((row==7)&&(col==11))|	           			 
-	           		 ((row==7)&&(col==12))|	           			 
-	           		 ((row==7)&&(col==13))|	           			 
-	           		 ((row==1)&&(col==7))|	           			 
-	           		 ((row==2)&&(col==7))|	           			 
-	           		 ((row==3)&&(col==7))|	           			 
-	           		 ((row==4)&&(col==7))|
-	           		 ((row==5)&&(col==7))|
-	           		 ((row==6)&&(col==7))|	           			 
-	           		 ((row==8)&&(col==7))|	           			 
-	           		 ((row==9)&&(col==7))|	           			 
-	           		 ((row==10)&&(col==7))|	           			 
-	           		 ((row==11)&&(col==7))|
-	           		 ((row==12)&&(col==7))|
-	           		 ((row==13)&&(col==7))
+		       //Felder mit Bewertung 1:
+		    	  if(((row==6)&&(col==0))|
+	           		 ((row==6)&&(col==1))|		    	  
+	           		 ((row==6)&&(col==2))|		    	  
+	           		 ((row==6)&&(col==3))|	           			 
+	         		 ((row==6)&&(col==4))|	           			 
+	         		 ((row==6)&&(col==5))|	           			 
+	           		 ((row==6)&&(col==6))|	           			 
+	           		 ((row==6)&&(col==8))|	           			 
+	           		 ((row==6)&&(col==9))|	           			 
+	           		 ((row==6)&&(col==10))|	           			 
+	           		 ((row==6)&&(col==11))|	           			 
+	           		 ((row==6)&&(col==12))|	           			 
+	           		 ((row==0)&&(col==6))|	           			 
+	           		 ((row==1)&&(col==6))|	           			 
+	           		 ((row==2)&&(col==6))|	           			 
+	           		 ((row==3)&&(col==6))|
+	           		 ((row==4)&&(col==6))|
+	           		 ((row==5)&&(col==6))|	           			 
+	           		 ((row==7)&&(col==6))|	           			 
+	           		 ((row==8)&&(col==6))|	           			 
+	           		 ((row==9)&&(col==6))|	           			 
+	           		 ((row==10)&&(col==6))|
+	           		 ((row==11)&&(col==6))|
+	           		 ((row==12)&&(col==6))
 	           		 ){ 
 		    		  value=value+1;
 		    	  } else {
@@ -379,55 +376,55 @@ public class NormalStrategy implements MoveStrategy {
 		      
 		      //Berechnung für Verteidiger?
 		    //extra Berechnung für Deffender
-		      //   1  2  3  4  5  6  7  8  9  10 11 12 13
-		      // 1|xx|xx|10|xx|xx|xx|xx|xx|xx|xx|10|xx|xx
-		      // 2|xx|10|xx|xx|xx|xx|xx|xx|xx|xx|xx|10|xx
-		      // 3|10|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|10
+		      //    0 1  2  3  4  5  6  7  8  9  10 11 12
+		      // 0|xx|xx|10|xx|xx|xx|xx|xx|xx|xx|10|xx|xx
+		      // 1|xx|10|xx|xx|xx|xx|xx|xx|xx|xx|xx|10|xx
+		      // 2|10|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|10
+		      // 3|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx
 		      // 4|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx
 		      // 5|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx
-		      // 6|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx
-		      // 7|xx|xx|xx|xx|xx|xx|KK|xx|xx|xx|xx|xx|xx
-		      // 8|xx|xx|xx|xx|xx|xx|xx|08|xx|xx|xx|xx|xx
-		      // 9|xx|xx|xx|xx|xx|xx|08|xx|08|xx|xx|xx|xx
-		      //10|xx|xx|xx|xx|xx|08|xx|xx|xx|08|xx|xx|xx
-		      //11|10|xx|xx|xx|08|xx|xx|xx|xx|xx|08|xx|xx
-		      //12|xx|10|xx|08|xx|xx|xx|xx|xx|xx|xx|08|xx
-		      //13|xx|xx|10|xx|xx|xx|xx|xx|xx|xx|08|08|xx
+		      // 6|xx|xx|xx|xx|xx|xx|KK|xx|xx|xx|xx|xx|xx
+		      // 7|xx|xx|xx|xx|xx|xx|xx|08|xx|xx|xx|xx|xx
+		      // 8|xx|xx|xx|xx|xx|xx|08|xx|08|xx|xx|xx|xx
+		      // 9|xx|xx|xx|xx|xx|08|xx|xx|xx|08|xx|xx|xx
+		      //10|10|xx|xx|xx|08|xx|xx|xx|xx|xx|08|xx|xx
+		      //11|xx|10|xx|08|xx|xx|xx|xx|xx|xx|xx|08|xx
+		      //12|xx|xx|10|xx|xx|xx|xx|xx|xx|xx|08|08|xx
 		      if(p==BoardContent.DEFENDER){
-		    	  //links oben 31;22;13 
-		    	  if(((row==3)&&(col==1))|
-		    		 ((row==2)&&(col==2))|
-		    		 ((row==1)&&(col==3))
+		    	  //links oben  
+		    	  if(((row==2)&&(col==0))|
+		    		 ((row==1)&&(col==1))|
+		    		 ((row==0)&&(col==2))
 		    		 ){
 		    		  value=value+10;
 		    	  }
-		      //links unten 111;122;131 
-		    	  if(((row==11)&&(col==1))|
-				     ((row==12)&&(col==2))|
-				     ((row==13)&&(col==1))
+		      //links unten 
+		    	  if(((row==10)&&(col==0))|
+				     ((row==11)&&(col==1))|
+				     ((row==12)&&(col==0))
 				      ){
 				    		  value=value+10;
 				      }
-		    //rechtes oben 111;212;313
-		    	  if(((row==1)&&(col==11))|
-				   	 ((row==2)&&(col==12))|
-				   	 ((row==3)&&(col==13))
+		    //rechtes oben
+		    	  if(((row==0)&&(col==10))|
+				   	 ((row==1)&&(col==11))|
+				   	 ((row==2)&&(col==12))
 				   	 ){
 				    	  value=value+10;
 				     } 
 		    	  
-		    //rest 124;115;106;97;88;99;1010;1111;1212;1312;1311
-		    	  if(((row==12)&&(col==4))|
-				     ((row==11)&&(col==5))|
-				     ((row==10)&&(col==6))|
-				     ((row==9)&&(col==57))|
+		    //rest 
+		    	  if(((row==11)&&(col==3))|
+				     ((row==10)&&(col==4))|
+				     ((row==9)&&(col==5))|
+				     ((row==8)&&(col==6))|
+				     ((row==7)&&(col==7))|
 				     ((row==8)&&(col==8))|
 				     ((row==9)&&(col==9))|
 				     ((row==10)&&(col==10))|
 				     ((row==11)&&(col==11))|
-				     ((row==12)&&(col==12))|
-				     ((row==13)&&(col==12))|				     				     
-				     ((row==13)&&(col==11))
+				     ((row==12)&&(col==11))|				     				     
+				     ((row==12)&&(col==10))
 				     ){
 				    		  value=value+8;
 				     }
