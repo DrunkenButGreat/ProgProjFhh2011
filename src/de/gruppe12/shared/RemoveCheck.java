@@ -1,8 +1,14 @@
-/**
- * @author Julian Kipka
- * @version = 1.0
+/** RemoveCheck
  * 
+ * Prüft ob etwas vom Feld entfernt werden muss
+ * 
+ * Copyright: (c) 2011 <p>
+ * Company: Gruppe 12 <p>
+ * @author Julian Kipka & Lennart Henke
+ * @version 2011.12.10
  */
+
+//TODO: Wenn keine Steine mehr das sing Spiel beenden.
 
 package de.gruppe12.shared;
 
@@ -11,28 +17,65 @@ import de.gruppe12.logic.GameLog;
 
 public class RemoveCheck {
 	
-	public static Board checkForRemove(de.fhhannover.inform.hnefatafl.vorgaben.Move currentMove2, Board board){
+	private static boolean gamelog = true;
+	
+	/** checkForRemove
+	 * 
+	 * Analysiert das Board und den Zug und entfert wenn noetig
+	 * einen Stein oder beendet im Fall dass der König nicht mehr
+	 * Ziehen kann das Spiel bzw. setzt die nötige flag
+	 * 
+	 * @param currentMove : Aktueller Zug
+	 * @param board : Aktuelles Board
+	 * @return : Das Board ohne die Steine die zu entfernen sind
+	 */
+	public static Board checkForRemove(de.fhhannover.inform.hnefatafl.vorgaben.Move currentMove, Board board){
 		
 		Board temp = new Board();
-		board = doMove(currentMove2, board);
+		board = doMove(currentMove, board);
 		
-		temp.set(checkSurround(currentMove2,board));
-		temp = checkForEnd(currentMove2, board);
+		temp.set(checkSurround(currentMove,board));
+		temp = checkForEnd(currentMove, board);
+		
+		gamelog = true;
 		
 		return temp;
 		
 	}
 	
-	private static Board doMove(de.fhhannover.inform.hnefatafl.vorgaben.Move currentMove2, Board board){
-		BoardContent bc = currentMove2.getFromCell().getContent();
-		board.setCell(new Cell(currentMove2.getFromCell().getCol(), currentMove2.getFromCell().getRow(), BoardContent.EMPTY));
-		board.setCell(new Cell(currentMove2.getToCell().getCol(), currentMove2.getToCell().getRow(), bc));
+	public static Board checkForRemove(de.fhhannover.inform.hnefatafl.vorgaben.Move currentMove, Board board, boolean gameLog){
+		gamelog = gameLog;
+		return checkForRemove(currentMove, board);
+	}
+	
+	/** doMove
+	 * 
+	 * Macht den Zug auf den Board und gibt das Board zurück
+	 * 
+	 * @param currentMove : Aktueller Zug
+	 * @param board : Aktuelles Board
+	 * @return : Das Board mit dem Zug
+	 */
+	private static Board doMove(de.fhhannover.inform.hnefatafl.vorgaben.Move currentMove, Board board){
+		BoardContent bc = currentMove.getFromCell().getContent();
+		board.setCell(new Cell(currentMove.getFromCell().getCol(), currentMove.getFromCell().getRow(), BoardContent.EMPTY));
+		board.setCell(new Cell(currentMove.getToCell().getCol(), currentMove.getToCell().getRow(), bc));
 		return board;
 	}
 	
-	private static BoardContent[][] checkSurround(de.fhhannover.inform.hnefatafl.vorgaben.Move currentMove2, Board board){
-		int x=currentMove2.getToCell().getCol(),y=currentMove2.getToCell().getRow();
-		BoardContent me = currentMove2.getToCell().getContent();
+	/** checkSurround
+	 * 
+	 * Guckt ob um die gesogenen Figur sich ein Gegner und 
+	 * in Entfernung von 2 Feldern sich ein Verbuendeter befindet und
+	 * entfert ggf. den Stein
+	 * 
+	 * @param currentMove : Aktueller Zug
+	 * @param board : Aktuelles Board
+	 * @return Mit entferten Stein
+	 */
+	private static BoardContent[][] checkSurround(de.fhhannover.inform.hnefatafl.vorgaben.Move currentMove, Board board){
+		int x=currentMove.getToCell().getCol(),y=currentMove.getToCell().getRow();
+		BoardContent me = currentMove.getToCell().getContent();
 		BoardContent tboard[][] = board.get();
 		
 		
@@ -44,7 +87,7 @@ public class RemoveCheck {
 		try{
 			if(tboard[x-1][y]==opposite(me)&&tboard[x-2][y]==me){
 				tboard[x-1][y] = BoardContent.EMPTY;
-				GameLog.logDebugEvent(opposite(me).toString() + " entfernt: " + (x - 1) + ", " + y);
+				if(gamelog) GameLog.logDebugEvent(opposite(me).toString() + " entfernt: " + (x - 1) + ", " + y);
 			}
 		} catch (Exception e){
 			
@@ -54,7 +97,7 @@ public class RemoveCheck {
 			try{
 				if(tboard[x+1][y]==opposite(me)&&tboard[x+2][y]==me){
 					tboard[x+1][y] = BoardContent.EMPTY;
-					GameLog.logDebugEvent(opposite(me).toString() + " entfernt: " + (x + 1) + ", " + y);
+					if(gamelog) GameLog.logDebugEvent(opposite(me).toString() + " entfernt: " + (x + 1) + ", " + y);
 				}
 			} catch (Exception e){
 				
@@ -64,7 +107,7 @@ public class RemoveCheck {
 			try{
 				if(tboard[x][y+1]==opposite(me)&&tboard[x][y+2]==me){
 					tboard[x][y+1] = BoardContent.EMPTY;
-					GameLog.logDebugEvent(opposite(me).toString() + " entfernt: " + x + ", " + (y + 1));
+					if(gamelog) GameLog.logDebugEvent(opposite(me).toString() + " entfernt: " + x + ", " + (y + 1));
 				}
 			} catch (Exception e){
 				
@@ -74,7 +117,7 @@ public class RemoveCheck {
 			try{
 				if(tboard[x][y-1]==opposite(me)&&tboard[x][y-2]==me){
 					tboard[x][y-1] = BoardContent.EMPTY;
-					GameLog.logDebugEvent(opposite(me).toString() + " entfernt: " + x + ", " + (y - 1));
+					if(gamelog) GameLog.logDebugEvent(opposite(me).toString() + " entfernt: " + x + ", " + (y - 1));
 				}
 			} catch (Exception e){
 				
@@ -83,9 +126,18 @@ public class RemoveCheck {
 			return tboard;
 	}
 	
-	private static Board checkForEnd(de.fhhannover.inform.hnefatafl.vorgaben.Move currentMove2, Board board){
+	/** checkForEnd
+	 * 
+	 * Pueft ob es ein Ende gegeben hat, also ob der Koenig umzingelt ist 
+	 * oder es keinen Weg mehr zum ende gibt.
+	 * 
+	 * @param currentMove : Aktueller Zug
+	 * @param board : Aktuelles Board
+	 * @return Board mit gesetztem finish-Flag
+	 */
+	private static Board checkForEnd(de.fhhannover.inform.hnefatafl.vorgaben.Move currentMove, Board board){
 		
-		int x=currentMove2.getToCell().getCol(),y=currentMove2.getToCell().getRow();
+		int x=currentMove.getToCell().getCol(),y=currentMove.getToCell().getRow();
 		BoardContent tboard[][] = board.get();
 		Board tb = board;		
 		
@@ -101,18 +153,18 @@ public class RemoveCheck {
 				){
 			tb.setFinish();
 			tb.setAttackerWon();
-			GameLog.logDebugEvent("Spielende");
+			if(gamelog) GameLog.logDebugEvent("Spielende");
 			return tb;			
 		}
 		
 		
 		// Kï¿½nig zieht auf Burg beendet die Methode und setzt das Finish Flag
-		if(currentMove2.getToCell().getContent()==BoardContent.KING &&
+		if(currentMove.getToCell().getContent()==BoardContent.KING &&
 				((x==0&&y==0) || (x==0&&y==tboard[0].length-1) || (x==tboard.length-1&&y==0) || (x==tboard.length-1&&y==tboard[0].length-1))
 		) {
 			tb.setFinish();
 			tb.setDefenderWon();
-			GameLog.logDebugEvent("Spielende");
+			if(gamelog) GameLog.logDebugEvent("Spielende");
 			return tb;
 		}
 		
@@ -161,7 +213,7 @@ public class RemoveCheck {
 		}
 		
 		if(sur==4) {
-			GameLog.logDebugEvent("Spielende");
+			if(gamelog) GameLog.logDebugEvent("Spielende");
 			tb.setFinish();
 			tb.setAttackerWon();
 		}
@@ -169,8 +221,7 @@ public class RemoveCheck {
 		return tb;		
 		
 	}
-	
-	
+		
 	/** opposite
 	 * 
 	 * Helfer zum ermitteln des Gegenspielers

@@ -1,5 +1,7 @@
 package de.gruppe12.ki;
 
+import de.fhhannover.inform.hnefatafl.vorgaben.MoveStrategy;
+
 /**
 * Die Klasse StrategyManager initialisiert die Strategien <p>
 * Copyright: (c) 2011 <p>
