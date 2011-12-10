@@ -87,7 +87,7 @@ public class NormalStrategy implements MoveStrategy {
 		   		 return -1;
 		   	 }
 		   	 //checkt ob Move zul�ssig
-		      if(!MoveCheck.check(m,b,isDefTurn)){
+		      if(!MoveCheck.check(m,b,isDefTurn,false)){
 		    	  return -1;
 		      } 
 		   
@@ -441,7 +441,7 @@ public class NormalStrategy implements MoveStrategy {
 	
 	private Board doMove(de.fhhannover.inform.hnefatafl.vorgaben.Move currentMove2, Board board){
 		if (currentMove2 != null){
-			return RemoveCheck.checkForRemove(currentMove2, board);
+			return RemoveCheck.checkForRemove(currentMove2, board, false);
 		}		
 		return board;		
 	}
@@ -511,21 +511,4 @@ public class NormalStrategy implements MoveStrategy {
 			    }
 				//}	
 	}
-
-//	//Methoden m�ssen importiert werden, vlt in vorgaben l�schen ?
-//	@Override
-//	public de.fhhannover.inform.hnefatafl.vorgaben.Move calculateDefenderMove(
-//			de.fhhannover.inform.hnefatafl.vorgaben.Move lastMove,
-//			int thinktimeInSeconds) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-//
-//	@Override
-//	public de.fhhannover.inform.hnefatafl.vorgaben.Move calculateAttackerMove(
-//			de.fhhannover.inform.hnefatafl.vorgaben.Move lastMove,
-//			int thinktimeInSeconds) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
 }

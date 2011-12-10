@@ -1,3 +1,13 @@
+/** StrategyLoader
+ * 
+ * Läd Strategies aus einer Jar oder dem Classpath
+ * 
+ * Copyright: (c) 2011 <p>
+ * Company: Gruppe 12 <p>
+ * @author Julian Kipka
+ * @version 2011.12.01
+ */
+
 package de.gruppe12.logic;
 
 import java.io.File;

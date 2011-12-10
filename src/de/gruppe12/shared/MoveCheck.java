@@ -1,9 +1,11 @@
 /** MoveCheck
  * 
- * Pr�ft ob der Zug korrekt war
+ * Prueft ob der Zug korrekt war
  * 
- * @author Julian Kipka
- * @version 1.0
+ * Copyright: (c) 2011 <p>
+ * Company: Gruppe 12 <p>
+ * @author Julian Kipka & Lennart Henke
+ * @version 2011.12.10
  */
 package de.gruppe12.shared;
 
@@ -13,47 +15,69 @@ import de.gruppe12.logic.GameLog;
 
 public class MoveCheck {
 	static final int boardSize = 12;
+	static boolean gamelog=true;
 	
-	//TODO: Funktionstest ob die Funktionen richtig funktionieren
 	
 	/** check
 	 * 
 	 * Prüft zunächt ob die Zugrichtung korrekt war.
 	 * 
 	 * @param board
-	 * @param currentMove2
+	 * @param currentMove
 	 * @return
 	 */
-	public static Boolean check (de.fhhannover.inform.hnefatafl.vorgaben.Move currentMove2, Board board, Boolean isDefTurn){ 	
-		if (!checkIsMoving(currentMove2, board)) return false;
-		if (!checkInBoard(currentMove2, board)) return false;
-		if (!checkCorrectPlayer(currentMove2, board, isDefTurn)) return false;
-		if (!checkMoveDirection(currentMove2, board)) return false;
-		if (!checkForFortress(currentMove2, board)) return false;
-		if (!checkBoardContent(currentMove2, board)) return false;
-		if (!checkFreeWay(currentMove2, board)) return false;
+	public static Boolean check (de.fhhannover.inform.hnefatafl.vorgaben.Move currentMove, Board board, Boolean isDefTurn){ 	
+		if (!checkIsMoving(currentMove, board)) return false;
+		if (!checkInBoard(currentMove, board)) return false;
+		if (!checkCorrectPlayer(currentMove, board, isDefTurn)) return false;
+		if (!checkMoveDirection(currentMove, board)) return false;
+		if (!checkForFortress(currentMove, board)) return false;
+		if (!checkBoardContent(currentMove, board)) return false;
+		if (!checkFreeWay(currentMove, board)) return false;
 	
-		GameLog.logDebugEvent("__________Zug erlaubt__________");
+		if(gamelog) GameLog.logDebugEvent("__________Zug erlaubt__________");
+		gamelog=true;
 		return true;
 	}
 	
-	private static boolean checkIsMoving(Move currentMove2, Board board) {
-		if ((currentMove2.getFromCell().getCol() == currentMove2.getToCell().getCol()) && currentMove2.getFromCell().getRow() == currentMove2.getToCell().getRow()){
-			GameLog.logDebugEvent("Stein wird nicht bewegt");
+	public static Boolean check (de.fhhannover.inform.hnefatafl.vorgaben.Move currentMove, Board board, Boolean isDefTurn,boolean gameLog){
+		gamelog = gameLog;
+		return check (currentMove,board, isDefTurn);
+	}
+	
+	/** checkIsMoving
+	 * 
+	 * Pr�ft ob ein Stein wirklich bewegt wurde
+	 * 
+	 * @param currentMove : Der Aktuelle Zug
+	 * @param board : Das aktuelle Board
+	 * @return : true/false
+	 */
+	private static boolean checkIsMoving(Move currentMove, Board board) {
+		if ((currentMove.getFromCell().getCol() == currentMove.getToCell().getCol()) && currentMove.getFromCell().getRow() == currentMove.getToCell().getRow()){
+			if(gamelog) GameLog.logDebugEvent("Stein wird nicht bewegt");
 			return false;
 		}			
 		return true;
 	}
-
-	private static boolean checkCorrectPlayer(de.fhhannover.inform.hnefatafl.vorgaben.Move currentMove2, Board board, Boolean isDefTurn){
-		if (isDefTurn && (currentMove2.getFromCell().getContent() == BoardContent.DEFENDER || 
-							currentMove2.getFromCell().getContent() == BoardContent.KING)){
+	
+	
+	/** checkCorrectPlayer
+	 * 
+	 * @param currentMove : Aktueller Zug
+	 * @param board : Aktuelles Board
+	 * @param isDefTurn : Ist es ein Defender Zug?
+	 * @return : true/false
+	 */
+	private static boolean checkCorrectPlayer(de.fhhannover.inform.hnefatafl.vorgaben.Move currentMove, Board board, Boolean isDefTurn){
+		if (isDefTurn && (currentMove.getFromCell().getContent() == BoardContent.DEFENDER || 
+							currentMove.getFromCell().getContent() == BoardContent.KING)){
 			return true;
 		}
-		if (!isDefTurn && currentMove2.getFromCell().getContent() == BoardContent.ATTACKER){
+		if (!isDefTurn && currentMove.getFromCell().getContent() == BoardContent.ATTACKER){
 			return true;
 		}
-		GameLog.logDebugEvent("Spielstein vom Gegner gezogen");
+		if(gamelog) GameLog.logDebugEvent("Spielstein vom Gegner gezogen");
 		return false;		
 	}
 	
@@ -62,29 +86,29 @@ public class MoveCheck {
 	 * Prüft ob nicht über andere Personen gegangen wird oder Felder die Inavlid sind
 	 * 
 	 * @param board
-	 * @param currentMove2
-	 * @return
+	 * @param currentMove
+	 * @return : true/false
 	 */
-	private static boolean checkFreeWay(de.fhhannover.inform.hnefatafl.vorgaben.Move currentMove2, Board board){
+	private static boolean checkFreeWay(de.fhhannover.inform.hnefatafl.vorgaben.Move currentMove, Board board){
 		boolean isKing = false;
-		if (currentMove2.getFromCell().getContent() == BoardContent.KING){
+		if (currentMove.getFromCell().getContent() == BoardContent.KING){
 			isKing = true;
 		}	
 		
 		/* Bewegungsrichtung ermitteln */
-		if(currentMove2.getFromCell().getCol()!=currentMove2.getToCell().getCol()){
+		if(currentMove.getFromCell().getCol()!=currentMove.getToCell().getCol()){
 			
 			//bewegungsvektor bestimmen
-			if(currentMove2.getFromCell().getCol()>currentMove2.getToCell().getCol()){
+			if(currentMove.getFromCell().getCol()>currentMove.getToCell().getCol()){
 				
 				/* von  rechts nach links */
-				for(int i = currentMove2.getFromCell().getCol() - 1; i>=currentMove2.getToCell().getCol(); i--){
-						if(!isKing && board.get()[i][currentMove2.getToCell().getRow()]!=BoardContent.EMPTY) {
-							GameLog.logDebugEvent("Weg blockiert");
+				for(int i = currentMove.getFromCell().getCol() - 1; i>=currentMove.getToCell().getCol(); i--){
+						if(!isKing && board.get()[i][currentMove.getToCell().getRow()]!=BoardContent.EMPTY) {
+							if(gamelog) GameLog.logDebugEvent("Weg blockiert");
 							return false;
 						}
-						if (isKing && !(board.get()[i][currentMove2.getToCell().getRow()] == BoardContent.EMPTY || board.get()[i][currentMove2.getToCell().getRow()] == BoardContent.INVALID)){
-							GameLog.logDebugEvent("Weg blockiert");
+						if (isKing && !(board.get()[i][currentMove.getToCell().getRow()] == BoardContent.EMPTY || board.get()[i][currentMove.getToCell().getRow()] == BoardContent.INVALID)){
+							if(gamelog) GameLog.logDebugEvent("Weg blockiert");
 							return false;
 						}							
 					}
@@ -94,13 +118,13 @@ public class MoveCheck {
 			} else {
 				
 				/* von links nach rechts */
-				for(int i = currentMove2.getFromCell().getCol() + 1; i<=currentMove2.getToCell().getCol(); i++){
-					if(!isKing && board.get()[i][currentMove2.getToCell().getRow()]!=BoardContent.EMPTY) {
-						GameLog.logDebugEvent("Weg blockiert");
+				for(int i = currentMove.getFromCell().getCol() + 1; i<=currentMove.getToCell().getCol(); i++){
+					if(!isKing && board.get()[i][currentMove.getToCell().getRow()]!=BoardContent.EMPTY) {
+						if(gamelog) GameLog.logDebugEvent("Weg blockiert");
 						return false;
 					}
-					if (isKing && !(board.get()[i][currentMove2.getToCell().getRow()]==BoardContent.EMPTY || board.get()[i][currentMove2.getToCell().getRow()]==BoardContent.INVALID)){
-						GameLog.logDebugEvent("Weg blockiert");
+					if (isKing && !(board.get()[i][currentMove.getToCell().getRow()]==BoardContent.EMPTY || board.get()[i][currentMove.getToCell().getRow()]==BoardContent.INVALID)){
+						if(gamelog) GameLog.logDebugEvent("Weg blockiert");
 						return false;
 					}		
 				}				
@@ -110,16 +134,16 @@ public class MoveCheck {
 			
 		} else {
 			
-			if(currentMove2.getFromCell().getRow()>currentMove2.getToCell().getRow()){
+			if(currentMove.getFromCell().getRow()>currentMove.getToCell().getRow()){
 				
 				/* von  unten nach oben */
-				for(int i = currentMove2.getFromCell().getRow() - 1; i>=currentMove2.getToCell().getRow(); i--){
-					if(!isKing && board.get()[currentMove2.getToCell().getCol()][i]!=BoardContent.EMPTY) {
-						GameLog.logDebugEvent("Weg blockiert");
+				for(int i = currentMove.getFromCell().getRow() - 1; i>=currentMove.getToCell().getRow(); i--){
+					if(!isKing && board.get()[currentMove.getToCell().getCol()][i]!=BoardContent.EMPTY) {
+						if(gamelog) GameLog.logDebugEvent("Weg blockiert");
 						return false;
 					}
-					if (isKing && !(board.get()[currentMove2.getToCell().getCol()][i]==BoardContent.EMPTY || board.get()[currentMove2.getToCell().getCol()][i]==BoardContent.INVALID)){
-						GameLog.logDebugEvent("Weg blockiert");
+					if (isKing && !(board.get()[currentMove.getToCell().getCol()][i]==BoardContent.EMPTY || board.get()[currentMove.getToCell().getCol()][i]==BoardContent.INVALID)){
+						if(gamelog) GameLog.logDebugEvent("Weg blockiert");
 						return false;
 					}		
 				}
@@ -129,13 +153,13 @@ public class MoveCheck {
 			} else {
 				
 				/* von  oben nach unten */
-				for(int i = currentMove2.getFromCell().getRow() + 1; i<=currentMove2.getToCell().getRow(); i++){
-					if(!isKing && board.get()[currentMove2.getToCell().getCol()][i]!=BoardContent.EMPTY) {
-						GameLog.logDebugEvent("Weg blockiert");
+				for(int i = currentMove.getFromCell().getRow() + 1; i<=currentMove.getToCell().getRow(); i++){
+					if(!isKing && board.get()[currentMove.getToCell().getCol()][i]!=BoardContent.EMPTY) {
+						if(gamelog) GameLog.logDebugEvent("Weg blockiert");
 						return false;
 					}
-					if (isKing && !(board.get()[currentMove2.getToCell().getCol()][i]==BoardContent.EMPTY || board.get()[currentMove2.getToCell().getCol()][i]==BoardContent.INVALID)){
-						GameLog.logDebugEvent("Weg blockiert");
+					if (isKing && !(board.get()[currentMove.getToCell().getCol()][i]==BoardContent.EMPTY || board.get()[currentMove.getToCell().getCol()][i]==BoardContent.INVALID)){
+						if(gamelog) GameLog.logDebugEvent("Weg blockiert");
 						return false;
 					}		
 				}
@@ -151,15 +175,15 @@ public class MoveCheck {
 	 * Sonst Betrugsversuch
 	 * 
 	 * @param move: Der zu Analysierende Zug
-	 * @return
+	 * @return : true/false
 	 */
-	private static boolean checkBoardContent(de.fhhannover.inform.hnefatafl.vorgaben.Move currentMove2, Board board){
-		if(currentMove2.getFromCell().getContent() != board.getCellBC(currentMove2.getFromCell())){
-			GameLog.logDebugEvent("BoardContent stimmt nicht");
+	private static boolean checkBoardContent(de.fhhannover.inform.hnefatafl.vorgaben.Move currentMove, Board board){
+		if(currentMove.getFromCell().getContent() != board.getCellBC(currentMove.getFromCell())){
+			if(gamelog) GameLog.logDebugEvent("BoardContent stimmt nicht");
 			return false;
 		}
-		if(currentMove2.getFromCell().getContent()!=currentMove2.getToCell().getContent()) {
-			GameLog.logDebugEvent("BoardContent nicht gleich");
+		if(currentMove.getFromCell().getContent()!=currentMove.getToCell().getContent()) {
+			if(gamelog) GameLog.logDebugEvent("BoardContent nicht gleich");
 			return false;
 		}		
 		else return true;
@@ -174,23 +198,23 @@ public class MoveCheck {
 	 * mit den Spalten
 	 * 
 	 * @param board
-	 * @param currentMove2
-	 * @return
+	 * @param currentMove
+	 * @return : true/false
 	 */
-	private static boolean checkInBoard(de.fhhannover.inform.hnefatafl.vorgaben.Move currentMove2, Board board){
-		if(		currentMove2.getFromCell().getCol()>boardSize ||
-				currentMove2.getFromCell().getCol()<0 ||
+	private static boolean checkInBoard(de.fhhannover.inform.hnefatafl.vorgaben.Move currentMove, Board board){
+		if(		currentMove.getFromCell().getCol()>boardSize ||
+				currentMove.getFromCell().getCol()<0 ||
 				
-				currentMove2.getToCell().getCol()>boardSize ||
-				currentMove2.getToCell().getCol()<0 ||
+				currentMove.getToCell().getCol()>boardSize ||
+				currentMove.getToCell().getCol()<0 ||
 				
-				currentMove2.getFromCell().getRow()>boardSize ||
-				currentMove2.getFromCell().getRow()<0 ||
+				currentMove.getFromCell().getRow()>boardSize ||
+				currentMove.getFromCell().getRow()<0 ||
 				
-				currentMove2.getToCell().getRow()>boardSize ||
-				currentMove2.getToCell().getRow()<0)
+				currentMove.getToCell().getRow()>boardSize ||
+				currentMove.getToCell().getRow()<0)
 		{
-			GameLog.logDebugEvent("Move außerhalb vom Board");
+			if(gamelog) GameLog.logDebugEvent("Move außerhalb vom Board");
 			return false;
 		}
 		
@@ -203,24 +227,24 @@ public class MoveCheck {
 	 * Pr�ft ob von oder auf ein INVALID feld gezogen wird
 	 * 
 	 * @param board
-	 * @param currentMove2
-	 * @return
+	 * @param currentMove
+	 * @return : true/false
 	 */
-	private static boolean checkForFortress(de.fhhannover.inform.hnefatafl.vorgaben.Move currentMove2, Board board){
+	private static boolean checkForFortress(de.fhhannover.inform.hnefatafl.vorgaben.Move currentMove, Board board){
 		
 		/* K�nig darf von daher erst pr�fen ob Content King */
-		if(currentMove2.getFromCell().getContent()!=BoardContent.KING){
+		if(currentMove.getFromCell().getContent()!=BoardContent.KING){
 			
 			/* Test von Quelle und Ziel Move / Test anhand des Boardcontents */
 			
 			if(
-					board.get()[currentMove2.getToCell().getCol()][currentMove2.getToCell().getRow()]!=BoardContent.INVALID &&
-					board.get()[currentMove2.getFromCell().getCol()][currentMove2.getFromCell().getRow()]!= BoardContent.INVALID
+					board.get()[currentMove.getToCell().getCol()][currentMove.getToCell().getRow()]!=BoardContent.INVALID &&
+					board.get()[currentMove.getFromCell().getCol()][currentMove.getFromCell().getRow()]!= BoardContent.INVALID
 			) {
 				return true;
 			}
 			else {
-				GameLog.logDebugEvent("Normale Spielfigur in Festung gezogen");
+				if(gamelog) GameLog.logDebugEvent("Normale Spielfigur in Festung gezogen");
 				return false;
 			}
 				
@@ -229,11 +253,17 @@ public class MoveCheck {
 		
 	}
 	
-	private static boolean checkMoveDirection(de.fhhannover.inform.hnefatafl.vorgaben.Move currentMove2, Board board){
+	/** checkMoveDirection
+	 * 
+	 * @param currentMove : Auktueller Zug
+	 * @param board : Aktuelles Board
+	 * @return true/flase
+	 */
+	private static boolean checkMoveDirection(de.fhhannover.inform.hnefatafl.vorgaben.Move currentMove, Board board){
 		/* Teste ob Zugrichtung korrekt */
-		if(currentMove2.getFromCell().getCol()!=currentMove2.getToCell().getCol() &&
-				currentMove2.getFromCell().getRow()!=currentMove2.getToCell().getRow()) {
-			GameLog.logDebugEvent("Falsche Bewegungsrichtung");
+		if(currentMove.getFromCell().getCol()!=currentMove.getToCell().getCol() &&
+				currentMove.getFromCell().getRow()!=currentMove.getToCell().getRow()) {
+			if(gamelog) GameLog.logDebugEvent("Falsche Bewegungsrichtung");
 			return false;
 		}
 		
