@@ -187,28 +187,28 @@ public class RemoveCheck {
 		//links
 		try{
 			if(tboard[x-1][y]==BoardContent.ATTACKER) sur++;			
-		} catch (Exception e){
+		} catch (IndexOutOfBoundsException e){
 			sur++;
 		}
 
 		//Rechts
 		try{
 			if(tboard[x+1][y]==BoardContent.ATTACKER) sur++;			
-		} catch (Exception e){
+		} catch (IndexOutOfBoundsException e){
 			sur++;
 		}
 
 		//oben
 		try{
 			if(tboard[x][y-1]==BoardContent.ATTACKER) sur++;			
-		} catch (Exception e){
+		} catch (IndexOutOfBoundsException e){
 			sur++;
 		}
 		
 		//unten
 		try{
 			if(tboard[x][y+1]==BoardContent.ATTACKER) sur++;			
-		} catch (Exception e){
+		} catch (IndexOutOfBoundsException e){
 			sur++;
 		}
 		

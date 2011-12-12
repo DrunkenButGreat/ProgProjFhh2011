@@ -144,6 +144,7 @@ public class GuiController implements Observer{
 		}
 		if (humanIsAttacker) logic.humanAttKiDef(mStrat, thinkTime);
 		else logic.humanDefKiAtt(mStrat, thinkTime);
+		board = logic.getBoard().get(); 
 	}
 
 	
@@ -162,6 +163,7 @@ public class GuiController implements Observer{
 				logic.KiDefKiAtt(defStrat, offStrat, thinkTime);
 			}
 		}.start();
+		board = logic.getBoard().get();
 	}
 	
 	protected boolean defenderWon() {
