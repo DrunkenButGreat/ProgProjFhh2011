@@ -174,19 +174,26 @@ public class MoveCheck {
 	 * Prï¿½t ob der Boardcontent der Quell-Zelle und der Zielzelle gleich ist.
 	 * Sonst Betrugsversuch
 	 * 
+	 * UPDATE: Da scheinbar der BoardContent in den Moves egals ist. Auf minimale Prüfung geändert.
+	 * 
 	 * @param move: Der zu Analysierende Zug
 	 * @return : true/false
 	 */
 	private static boolean checkBoardContent(de.fhhannover.inform.hnefatafl.vorgaben.Move currentMove, Board board){
-		if(currentMove.getFromCell().getContent() != board.getCellBC(currentMove.getFromCell())){
-			if(gamelog) GameLog.logDebugEvent("BoardContent stimmt nicht");
+		
+		/* Pruefe ob das Zielfeld frei ist. */
+		if(board.getCellBC(currentMove.getToCell())!=BoardContent.EMPTY){
+			if(gamelog) GameLog.logDebugEvent("BoardContent des Zieles nicht Leer");
 			return false;
 		}
-		if(currentMove.getFromCell().getContent()!=currentMove.getToCell().getContent()) {
-			if(gamelog) GameLog.logDebugEvent("BoardContent nicht gleich");
+		
+		/* Pruefe ob das Quellfeld nicht frei ist */
+		if(board.getCellBC(currentMove.getFromCell())==BoardContent.EMPTY){
+			if(gamelog) GameLog.logDebugEvent("Boardcontent der Quelle nicht leer");
 			return false;
-		}		
-		else return true;
+		}
+		
+		return true;
 	}
 	
 	/** checkInBoard
