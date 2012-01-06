@@ -288,7 +288,7 @@ public class GameGui extends JFrame {
 
 		jpnlHumanVsHuman.addComponentListener(new ComponentAdapter() {
 			@Override public void componentResized(ComponentEvent e) {
-				int fontSize= jtfPlayer1.getHeight()/3;
+				int fontSize= jtfPlayer1.getHeight()/5;
 				int fontSizeSmall= (int) Math.round(fontSize*0.7);
 				if (fontSize==0) return;
 				jtfPlayer1.setFont(font.deriveFont(Font.BOLD, fontSize));
@@ -364,7 +364,7 @@ public class GameGui extends JFrame {
 
 		jpnlHumanVsAi.addComponentListener(new ComponentAdapter() {
 			@Override public void componentResized(ComponentEvent e) {
-				int fontSize= jtfPlayer.getHeight()/3;
+				int fontSize= jtfPlayer.getHeight()/5;
 				int fontSizeBig= (int) Math.round(fontSize*1.3);
 				if (fontSize==0) return;
 				jtfPlayer.setFont(font.deriveFont(Font.BOLD, fontSize));
