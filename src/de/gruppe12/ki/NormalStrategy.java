@@ -87,7 +87,7 @@ public class NormalStrategy implements MoveStrategy {
 		   		 return -1;
 		   	 }
 		   	 //checkt ob Move zulï¿½ssig
-		      if(!MoveCheck.check(m,b,isDefTurn,false)){
+		      if(!MoveCheck.check(m,this.b,isDefTurn,false)){
 		    	  return -1;
 		      } 
 		   
@@ -121,7 +121,7 @@ public class NormalStrategy implements MoveStrategy {
 		      int row=m.getToCell().getRow();
 		      int col=m.getToCell().getCol();
 		      
-		      //extra Berechnung für Attacker
+		      //extra Berechnung fï¿½r Attacker
 		      //   0   1  2  3  4  5  6  7  8  9 10 11 12
 		      // 0|xx|10|08|xx|xx|xx|xx|xx|xx|xx|08|10|xx
 		      // 1|10|10|08|xx|xx|xx|xx|xx|xx|xx|08|10|10
@@ -178,7 +178,7 @@ public class NormalStrategy implements MoveStrategy {
 				    		  value=value+8;
 				    	  }
 		    	  
-		    	  //Wenn König in der Nähe, dann ziehe dahin!
+		    	  //Wenn Kï¿½nig in der Nï¿½he, dann ziehe dahin!
 		    	  if((c1 ==BoardContent.KING)){
 			    	  value=value+10;
 			      }
@@ -198,7 +198,7 @@ public class NormalStrategy implements MoveStrategy {
 		      
 		      
 		      
-		      //extra Berechnung für König
+		      //extra Berechnung fï¿½r Kï¿½nig
 		      //   1  2  3  4  5  6  7  8  9  10 11 12 13
 		      // 1|10|08|06|04|03|02|01|02|03|04|06|08|10
 		      // 2|08|08|06|04|03|02|01|02|03|04|06|08|08
@@ -375,8 +375,8 @@ public class NormalStrategy implements MoveStrategy {
 		    	  
 		      
 		      
-		      //Berechnung für Verteidiger?
-		    //extra Berechnung für Deffender
+		      //Berechnung fï¿½r Verteidiger?
+		    //extra Berechnung fï¿½r Deffender
 		      //    0 1  2  3  4  5  6  7  8  9  10 11 12
 		      // 0|xx|xx|10|xx|xx|xx|xx|xx|xx|xx|10|xx|xx
 		      // 1|xx|10|xx|xx|xx|xx|xx|xx|xx|xx|xx|10|xx
@@ -432,7 +432,7 @@ public class NormalStrategy implements MoveStrategy {
 		      }
 		      return value;
 		   }
-	
+	@Override
 	public String toString(){
 		return name+" Strategy, Gruppe"+grpNr;	
 	}
@@ -448,7 +448,7 @@ public class NormalStrategy implements MoveStrategy {
 	public de.fhhannover.inform.hnefatafl.vorgaben.Move calculateAttackerMove(
 			de.fhhannover.inform.hnefatafl.vorgaben.Move arg0, int arg1) {		
 		// Move Ã¼bernehmen	
-				b = doMove(arg0,b);
+				this.b = doMove(arg0,this.b);
 				
 		//Speichern in Verlaufbaum, muss noch durchdacht werden
 				//verlauf.setLeft(new Node<Move>(lastMove));
@@ -459,21 +459,16 @@ public class NormalStrategy implements MoveStrategy {
 				//} else {
 				//Hauptcode zur Berechnung nï¿½chster Schritt
 			    Move[] moves = GenerateMoves(BoardContent.ATTACKER);
-			    Move move;
-			    Move best_move=moves[0];
-			    Move last_bm=best_move;
+			    int best_move=0;
 			    for(int i=1; i<moves.length; i++) {
-			       move = moves[i];
-			       if (calculateValue(move, false) > calculateValue(best_move, false)) {
-			          last_bm = best_move;
-			    	  best_move = move;
+			       if (calculateValue(moves[i], false) >= calculateValue(moves[best_move], false)) {
+			    	  best_move = i;
 			       }
-			    }
-			    if(best_move!=arg0){
-			    	return best_move;
-			    } else { 
-			    	return last_bm;
-			    }
+			    } 
+		
+		    	// Move Ã¼bernehmen	
+				this.b = doMove(moves[best_move],this.b);
+		    	return moves[best_move];
 				//}	
 	}
 
@@ -481,7 +476,7 @@ public class NormalStrategy implements MoveStrategy {
 	public de.fhhannover.inform.hnefatafl.vorgaben.Move calculateDefenderMove(
 			de.fhhannover.inform.hnefatafl.vorgaben.Move arg0, int arg1) {
 		// Move Ã¼bernehmen	
-		b = doMove(arg0,b);
+		this.b = doMove(arg0,this.b);
 		
 		//Speichern in Verlaufbaum, muss noch durchdacht werden
 				//verlauf.setRight(new Node<Move>(lastMove));
@@ -492,31 +487,23 @@ public class NormalStrategy implements MoveStrategy {
 				//} else {
 				//Hauptcode zur Berechnung nï¿½chster Schritt
 			    Move[] moves = GenerateMoves(BoardContent.DEFENDER);
-			    Move move;
-			    Move best_move=moves[0];
-			    Move last_bm=best_move;
+			    int best_move=0;
 			    for(int i=1; i<moves.length; i++) {
-			       move = moves[i];
-			       if (calculateValue(move, true) > calculateValue(best_move, true)) {
-			          last_bm = best_move;
-			    	   best_move = move;
+			       if (calculateValue(moves[i], true) >= calculateValue(moves[best_move], true)) {
+			    	  best_move = i;
 			       }
 			    }
-			    //testen ob König ziehen besser ist
+			    //testen ob Kï¿½nig ziehen besser ist
 			    Move[] movesK = GenerateMoves(BoardContent.KING);
 			    for(int i=1; i<moves.length; i++) {
-				       move = movesK[i];
-				       if (calculateValue(move, true) > calculateValue(best_move, true)) {
-				          last_bm = best_move;
-				    	   best_move = move;
+				       if (calculateValue(movesK[i], true) >= calculateValue(moves[best_move], true)) {
+				    	  best_move = i;
 				       }
-			    }
-			    
-			    if(best_move!=arg0){
-			    	return best_move;
-			    } else { 
-			    	return last_bm;
-			    }
+			    }	
+			    	
+				this.b = doMove(moves[best_move],this.b);
+		    	return moves[best_move];
+	
 				//}	
 	}
 }
