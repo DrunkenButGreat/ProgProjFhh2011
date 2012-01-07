@@ -1,5 +1,9 @@
 package de.gruppe12.ki;
 
+import java.util.ArrayList;
+import java.util.Random;
+import java.util.TreeMap;
+
 import de.fhhannover.inform.hnefatafl.vorgaben.BoardContent;
 import de.fhhannover.inform.hnefatafl.vorgaben.MoveStrategy;
 import de.gruppe12.shared.*;
@@ -19,11 +23,13 @@ public class NormalStrategy implements MoveStrategy {
 	private String name;
 	//private Node<Move> verlauf;
 	private Board b;
+	Random r;
 	
 	public NormalStrategy(){
 		grpNr = 12;
 		name = "normal"; 
 		b = new Board();
+		r = new Random();
 	}
 	
 	@Override
@@ -44,15 +50,15 @@ public class NormalStrategy implements MoveStrategy {
 	 * 
 	 * @return ein Array mit allen m�glichen Moves
 	 */
-	private Move[] GenerateMoves(BoardContent type) {
+	private Move[] generateMoves(BoardContent type) {
 		Move[] mList = new Move[500]; 
-		Cell[] cList = new Cell[24];
+		Cell[] cList = new Cell[26];
 		int m1=0;
 		int c1=0;
 		
 		//prüft wo Steine sind
-		for(int i=0;i<12;i++){
-			for(int j=0;j<12;j++){
+		for(int i=0;i<=12;i++){
+			for(int j=0;j<=12;j++){
 				//speichert nur wenn Typ gleich ist
 				if(b.getCell(i,j).getContent() == type){
 					cList[c1]=new Cell(i,j, type);
@@ -61,8 +67,8 @@ public class NormalStrategy implements MoveStrategy {
 			}
 		}
 		for(int i=0;i<c1;i++){
-			int r=12-cList[i].getCol();
-			int l=12-cList[i].getRow();
+			int r=13-cList[i].getCol();
+			int l=13-cList[i].getRow();
 			for(int j=0;j<r;j++){
 				mList[m1]=new Move(cList[i],new Cell(cList[i].getCol()+j,cList[i].getRow(), cList[i].getContent()));
 				m1++;
@@ -140,56 +146,56 @@ public class NormalStrategy implements MoveStrategy {
 		      if(p==BoardContent.ATTACKER){
 		    	  //Bewertung 10
 		    	  if(((row==1)&&(col==1))|
-						     ((row==1)&&(col==2))|
-						     ((row==0)&&(col==1))|
-						     ((row==11)&&(col==0))|
-						     ((row==12)&&(col==1))|
-						     ((row==0)&&(col==11))|
-						     ((row==1)&&(col==11))|
-						     ((row==1)&&(col==12))|
-						     ((row==11)&&(col==12))|
-						     ((row==11)&&(col==11))|
+						     ((row==1)&&(col==2))||
+						     ((row==0)&&(col==1))||
+						     ((row==11)&&(col==0))||
+						     ((row==12)&&(col==1))||
+						     ((row==0)&&(col==11))||
+						     ((row==1)&&(col==11))||
+						     ((row==1)&&(col==12))||
+						     ((row==11)&&(col==12))||
+						     ((row==11)&&(col==11))||
 						     ((row==12)&&(col==11)))
 						    {
-						    		  value=value+10;	  
+						    		  value+=10;	  
 						    }
 		    	  //Bewertung 8 
 		    	  if(((row==0)&&(col==2))|
-		           			 ((row==1)&&(col==2))|
-		           			 ((row==2)&&(col==2))|	    	  
-		           			 ((row==2)&&(col==0))|
-		           			 ((row==2)&&(col==1))|
-		           			 ((row==10)&&(col==0))|
-		           			 ((row==10)&&(col==2))|
-		           			 ((row==10)&&(col==2))|		    	  
-		           			 ((row==11)&&(col==2))|		    	  
-		           			 ((row==12)&&(col==2))|		    	  
-		           			 ((row==0)&&(col==2))|		    	  
-		           			 ((row==1)&&(col==2))|		    	  
-		           			 ((row==2)&&(col==2))|
-		           			 ((row==2)&&(col==11))|          			 
-		           			 ((row==2)&&(col==12))|		    	  
-		           			 ((row==10)&&(col==10))|		    	  
-		           			 ((row==10)&&(col==11))|		    	  
-		           			 ((row==10)&&(col==12))|		    	  
-		           			 ((row==11)&&(col==10))|		    	  
+		           			 ((row==1)&&(col==2))||
+		           			 ((row==2)&&(col==2))||	    	  
+		           			 ((row==2)&&(col==0))||
+		           			 ((row==2)&&(col==1))||
+		           			 ((row==10)&&(col==0))||
+		           			 ((row==10)&&(col==2))||
+		           			 ((row==10)&&(col==2))||	    	  
+		           			 ((row==11)&&(col==2))||		    	  
+		           			 ((row==12)&&(col==2))||		    	  
+		           			 ((row==0)&&(col==2))||		    	  
+		           			 ((row==1)&&(col==2))||		    	  
+		           			 ((row==2)&&(col==2))||
+		           			 ((row==2)&&(col==11))||          			 
+		           			 ((row==2)&&(col==12))||	    	  
+		           			 ((row==10)&&(col==10))||		    	  
+		           			 ((row==10)&&(col==11))||		    	  
+		           			 ((row==10)&&(col==12))||		    	  
+		           			 ((row==11)&&(col==10))||		    	  
 		           			 ((row==12)&&(col==10))
 		           			 ){
-				    		  value=value+8;
+				    		  value+=8;
 				    	  }
 		    	  
 		    	  //Wenn K�nig in der N�he, dann ziehe dahin!
 		    	  if((c1 ==BoardContent.KING)){
-			    	  value=value+10;
+			    	  value+=100;
 			      }
 		    	  if((c2 ==BoardContent.KING)){
-			    	  value=value+10;
+			    	  value+=100;
 			      }
 		    	  if((c3 ==BoardContent.KING)){
-			    	  value=value+10;
+			    	  value+=100;
 			      }
 		    	  if((c4 ==BoardContent.KING)){
-			    	  value=value+10;
+			    	  value+=100;
 			      }
 		    	  
 		      }
@@ -216,164 +222,161 @@ public class NormalStrategy implements MoveStrategy {
 		       
 		      if(p==BoardContent.KING){
 		    	  //Felder mit Bewertung 10: LO:1,1 RO:1,13 LU:13,1 RU:13,13
-		    	  if(((row==0)&&(col==0))|
-		    		 ((row==0)&&(col==12))|
-		    		 ((row==12)&&(col==0))|
+		    	  if(((row==0)&&(col==0))||
+		    		 ((row==0)&&(col==12))||
+		    		 ((row==12)&&(col==0))||
 		    		 ((row==12)&&(col==12))
 		    		 ){
-		    		  value=value+10;
+		    		  value=10000;
 		    	  }
 		    	  //Felder mit Bewertung 8
-		    	  if(((row==1)&&(col==1))|
-				     ((row==1)&&(col==2))|
-				     ((row==0)&&(col==1))|
-				     ((row==11)&&(col==0))|
-				     ((row==12)&&(col==1))|
-				     ((row==0)&&(col==11))|
-				     ((row==1)&&(col==11))|
-				     ((row==1)&&(col==12))|
-				     ((row==11)&&(col==12))|
-				     ((row==11)&&(col==11))|
+		    	  if(((row==1)&&(col==1))||
+				     ((row==1)&&(col==2))||
+				     ((row==0)&&(col==1))||
+				     ((row==11)&&(col==0))||
+				     ((row==12)&&(col==1))||
+				     ((row==0)&&(col==11))||
+				     ((row==1)&&(col==11))||
+				     ((row==1)&&(col==12))||
+				     ((row==11)&&(col==12))||
+				     ((row==11)&&(col==11))||
 				     ((row==12)&&(col==11)))
 				    {
-				    		  value=value+8;
-				    	  }
+				    		  value=1000;
+				    }
 		    	//Felder mit Bewertung 6: 
-		    	  if(((row==0)&&(col==2))|
-           			 ((row==1)&&(col==2))|
-           			 ((row==2)&&(col==2))|	    	  
-           			 ((row==2)&&(col==0))|
-           			 ((row==2)&&(col==1))|
-           			 ((row==10)&&(col==0))|
-           			 ((row==10)&&(col==1))|
-           			 ((row==10)&&(col==2))|		    	  
-           			 ((row==11)&&(col==2))|		    	  
-           			 ((row==12)&&(col==2))|		    	  
-           			 ((row==0)&&(col==0))|		    	  
-           			 ((row==1)&&(col==1))|		    	  
-           			 ((row==2)&&(col==2))|
-           			 ((row==2)&&(col==11))|          			 
-           			 ((row==2)&&(col==12))|		    	  
-           			 ((row==10)&&(col==10))|		    	  
-           			 ((row==10)&&(col==11))|		    	  
-           			 ((row==10)&&(col==12))|		    	  
-           			 ((row==11)&&(col==10))|		    	  
+		    	  if(((row==0)&&(col==2))||
+           			 ((row==1)&&(col==2))||
+           			 ((row==2)&&(col==2))||	    	  
+           			 ((row==2)&&(col==0))||
+           			 ((row==2)&&(col==1))||
+           			 ((row==10)&&(col==0))||
+           			 ((row==10)&&(col==1))||
+           			 ((row==10)&&(col==2))||		    	  
+           			 ((row==11)&&(col==2))||		    	  
+           			 ((row==12)&&(col==2))||		    	  
+           			 ((row==0)&&(col==0))||		    	  
+           			 ((row==1)&&(col==1))||		    	  
+           			 ((row==2)&&(col==2))||
+           			 ((row==2)&&(col==11))||         			 
+           			 ((row==2)&&(col==12))||		    	  
+           			 ((row==10)&&(col==10))||		    	  
+           			 ((row==10)&&(col==11))||		    	  
+           			 ((row==10)&&(col==12))||		    	  
+           			 ((row==11)&&(col==10))||		    	  
            			 ((row==12)&&(col==10))
            			 ){
-		    		  value=value+6;
+		    		  value=800;
 		    	  }
 		    	  //Felder mit Bewertung 4
-		    	  if(((row==3)&&(col==0))|
-			         ((row==3)&&(col==1))|
-			         ((row==3)&&(col==2))|
-			         ((row==3)&&(col==3))|
-			         ((row==2)&&(col==3))|
-			         ((row==1)&&(col==3))|
-			         ((row==0)&&(col==3))|
-			         ((row==9)&&(col==0))|
-			         ((row==9)&&(col==1))|
-			         ((row==9)&&(col==2))|
-			         ((row==9)&&(col==3))|
-			         ((row==10)&&(col==3))|
-			         ((row==11)&&(col==3))|
-			         ((row==12)&&(col==3))|
-			         ((row==0)&&(col==9))|
-			         ((row==1)&&(col==9))|
-			         ((row==2)&&(col==9))|
-			         ((row==3)&&(col==9))|
-			         ((row==3)&&(col==10))|
-			         ((row==3)&&(col==11))|
-			         ((row==3)&&(col==12))|
-			         ((row==9)&&(col==9))|
-			         ((row==10)&&(col==9))|
-			         ((row==11)&&(col==9))|
-			         ((row==12)&&(col==9))|
-			         ((row==9)&&(col==10))|
-			         ((row==9)&&(col==11))|
+		    	  if(((row==3)&&(col==0))||
+			         ((row==3)&&(col==1))||
+			         ((row==3)&&(col==2))||
+			         ((row==3)&&(col==3))||
+			         ((row==2)&&(col==3))||
+			         ((row==1)&&(col==3))||
+			         ((row==0)&&(col==3))||
+			         ((row==9)&&(col==0))||
+			         ((row==9)&&(col==1))||
+			         ((row==9)&&(col==2))||
+			         ((row==9)&&(col==3))||
+			         ((row==10)&&(col==3))||
+			         ((row==11)&&(col==3))||
+			         ((row==12)&&(col==3))||
+			         ((row==0)&&(col==9))||
+			         ((row==1)&&(col==9))||
+			         ((row==2)&&(col==9))||
+			         ((row==3)&&(col==9))||
+			         ((row==3)&&(col==10))||
+			         ((row==3)&&(col==11))||
+			         ((row==3)&&(col==12))||
+			         ((row==9)&&(col==9))||
+			         ((row==10)&&(col==9))||
+			         ((row==11)&&(col==9))||
+			         ((row==12)&&(col==9))||
+			         ((row==9)&&(col==10))||
+			         ((row==9)&&(col==11))||
 			         ((row==9)&&(col==12))
 				     ){
-		    		  value=value+4;
+		    		  value=400;
 		    	  }
 		    	  
 		    	//Felder mit Bewertung 3: LO:
-		    	  if(((row==4)&&(col==0))|
-			         ((row==4)&&(col==1))|
-			         ((row==4)&&(col==2))|
-			         ((row==4)&&(col==3))|
-			         ((row==4)&&(col==4))|
-			         ((row==0)&&(col==4))|
-			         ((row==1)&&(col==4))|
-			         ((row==2)&&(col==4))|
-			         ((row==3)&&(col==4))|
+		    	  if(((row==4)&&(col==0))||
+			         ((row==4)&&(col==1))||
+			         ((row==4)&&(col==2))||
+			         ((row==4)&&(col==3))||
+			         ((row==4)&&(col==4))||
+			         ((row==0)&&(col==4))||
+			         ((row==1)&&(col==4))||
+			         ((row==2)&&(col==4))||
+			         ((row==3)&&(col==4))||
 
-			         ((row==8)&&(col==0))|
-			         ((row==8)&&(col==1))|
-			         ((row==8)&&(col==2))|
-			         ((row==8)&&(col==3))|
-			         ((row==8)&&(col==4))|
-			         ((row==9)&&(col==4))|
-			         ((row==10)&&(col==4))|
-			         ((row==11)&&(col==4))|
-			         ((row==12)&&(col==4))|
+			         ((row==8)&&(col==0))||
+			         ((row==8)&&(col==1))||
+			         ((row==8)&&(col==2))||
+			         ((row==8)&&(col==3))||
+			         ((row==8)&&(col==4))||
+			         ((row==9)&&(col==4))||
+			         ((row==10)&&(col==4))||
+			         ((row==11)&&(col==4))||
+			         ((row==12)&&(col==4))||
 
-			         ((row==0)&&(col==8))|
-			         ((row==1)&&(col==8))|
-			         ((row==2)&&(col==8))|
-			         ((row==3)&&(col==8))|
-			         ((row==4)&&(col==8))|
-			         ((row==4)&&(col==9))|
-			         ((row==4)&&(col==10))|
-			         ((row==4)&&(col==11))|
-			         ((row==4)&&(col==12))|
+			         ((row==0)&&(col==8))||
+			         ((row==1)&&(col==8))||
+			         ((row==2)&&(col==8))||
+			         ((row==3)&&(col==8))||
+			         ((row==4)&&(col==8))||
+			         ((row==4)&&(col==9))||
+			         ((row==4)&&(col==10))||
+			         ((row==4)&&(col==11))||
+			         ((row==4)&&(col==12))||
 
-			         ((row==8)&&(col==8))|
-			         ((row==8)&&(col==12))|
-			         ((row==8)&&(col==11))|
-			         ((row==8)&&(col==10))|
-			         ((row==8)&&(col==9))|
-			         ((row==9)&&(col==8))|
-			         ((row==10)&&(col==8))|
-			         ((row==11)&&(col==8))|
+			         ((row==8)&&(col==8))||
+			         ((row==8)&&(col==12))||
+			         ((row==8)&&(col==11))||
+			         ((row==8)&&(col==10))||
+			         ((row==8)&&(col==9))||
+			         ((row==9)&&(col==8))||
+			         ((row==10)&&(col==8))||
+			         ((row==11)&&(col==8))||
 			         ((row==12)&&(col==8))
 		    	  	 ){
-		    		  value=value+3;
-		    	  }
+		    		  value=300;
+		    	  }		//}	
 		       //Felder mit Bewertung 1:
-		    	  if(((row==6)&&(col==0))|
-	           		 ((row==6)&&(col==1))|		    	  
-	           		 ((row==6)&&(col==2))|		    	  
-	           		 ((row==6)&&(col==3))|	           			 
-	         		 ((row==6)&&(col==4))|	           			 
-	         		 ((row==6)&&(col==5))|	           			 
-	           		 ((row==6)&&(col==6))|	           			 
-	           		 ((row==6)&&(col==8))|	           			 
-	           		 ((row==6)&&(col==9))|	           			 
-	           		 ((row==6)&&(col==10))|	           			 
-	           		 ((row==6)&&(col==11))|	           			 
-	           		 ((row==6)&&(col==12))|	           			 
-	           		 ((row==0)&&(col==6))|	           			 
-	           		 ((row==1)&&(col==6))|	           			 
-	           		 ((row==2)&&(col==6))|	           			 
-	           		 ((row==3)&&(col==6))|
-	           		 ((row==4)&&(col==6))|
-	           		 ((row==5)&&(col==6))|	           			 
-	           		 ((row==7)&&(col==6))|	           			 
-	           		 ((row==8)&&(col==6))|	           			 
-	           		 ((row==9)&&(col==6))|	           			 
-	           		 ((row==10)&&(col==6))|
-	           		 ((row==11)&&(col==6))|
+		    	  if(((row==6)&&(col==0))||
+	           		 ((row==6)&&(col==1))||		    	  
+	           		 ((row==6)&&(col==2))||		    	  
+	           		 ((row==6)&&(col==3))||	           			 
+	         		 ((row==6)&&(col==4))||	           			 
+	         		 ((row==6)&&(col==5))||	           			 
+	           		 ((row==6)&&(col==6))||	           			 
+	           		 ((row==6)&&(col==8))||	           			 
+	           		 ((row==6)&&(col==9))||	           			 
+	           		 ((row==6)&&(col==10))||	           			 
+	           		 ((row==6)&&(col==11))||           			 
+	           		 ((row==6)&&(col==12))||	           			 
+	           		 ((row==0)&&(col==6))||	           			 
+	           		 ((row==1)&&(col==6))||	           			 
+	           		 ((row==2)&&(col==6))||	           			 
+	           		 ((row==3)&&(col==6))||
+	           		 ((row==4)&&(col==6))||
+	           		 ((row==5)&&(col==6))||           			 
+	           		 ((row==7)&&(col==6))||           			 
+	           		 ((row==8)&&(col==6))||           			 
+	           		 ((row==9)&&(col==6))||           			 
+	           		 ((row==10)&&(col==6))||
+	           		 ((row==11)&&(col==6))||
 	           		 ((row==12)&&(col==6))
 	           		 ){ 
-		    		  value=value+1;
+		    		  value=200;
 		    	  } else {
 				    	//Felder mit Bewertung REST 
 			    	  
-			    		  value=value+2;
+			    		  value+=2;
 			    	  }
 		    	  }
-		    	  
-		    	  
-		      
 		      
 		      //Berechnung f�r Verteidiger?
 		    //extra Berechnung f�r Deffender
@@ -391,45 +394,54 @@ public class NormalStrategy implements MoveStrategy {
 		      //10|10|xx|xx|xx|08|xx|xx|xx|xx|xx|08|xx|xx
 		      //11|xx|10|xx|08|xx|xx|xx|xx|xx|xx|xx|08|xx
 		      //12|xx|xx|10|xx|xx|xx|xx|xx|xx|xx|08|08|xx
-		      if(p==BoardContent.DEFENDER){
+		      if(p==BoardContent.ATTACKER){
 		    	  //links oben  
-		    	  if(((row==2)&&(col==0))|
-		    		 ((row==1)&&(col==1))|
+		    	  if(((row==2)&&(col==0))||
+		    		 ((row==1)&&(col==1))||
 		    		 ((row==0)&&(col==2))
 		    		 ){
-		    		  value=value+10;
+		    		  value+=100;
 		    	  }
 		      //links unten 
-		    	  if(((row==10)&&(col==0))|
-				     ((row==11)&&(col==1))|
+		    	  if(((row==10)&&(col==0))||
+				     ((row==11)&&(col==1))||
 				     ((row==12)&&(col==0))
 				      ){
-				    		  value=value+10;
+				    		  value+=100;
 				      }
-		    //rechtes oben
-		    	  if(((row==0)&&(col==10))|
-				   	 ((row==1)&&(col==11))|
+		    //rechts oben
+		    	  if(((row==0)&&(col==10))||
+				   	 ((row==1)&&(col==11))||
 				   	 ((row==2)&&(col==12))
 				   	 ){
-				    	  value=value+10;
+				    	  value+=100;
+				     } 
+		    	  
+		    	  //rechts unten
+		    	  if(((row==10)&&(col==12))||
+		    		((row==11)&&(col==11))||
+					((row==12)&&(col==10))
+		    			 ){
+				    	  value+=100;
 				     } 
 		    	  
 		    //rest 
-		    	  if(((row==11)&&(col==3))|
-				     ((row==10)&&(col==4))|
-				     ((row==9)&&(col==5))|
-				     ((row==8)&&(col==6))|
-				     ((row==7)&&(col==7))|
-				     ((row==8)&&(col==8))|
-				     ((row==9)&&(col==9))|
-				     ((row==10)&&(col==10))|
-				     ((row==11)&&(col==11))|
-				     ((row==12)&&(col==11))|				     				     
+		    	  if(((row==11)&&(col==3))||
+				     ((row==10)&&(col==4))||
+				     ((row==9)&&(col==5))||
+				     ((row==8)&&(col==6))||
+				     ((row==7)&&(col==7))||
+				     ((row==8)&&(col==8))||
+				     ((row==9)&&(col==9))||
+				     ((row==10)&&(col==10))||
+				     ((row==11)&&(col==11))||
+				     ((row==12)&&(col==11))||				     				     
 				     ((row==12)&&(col==10))
 				     ){
-				    		  value=value+8;
+				    		  value+=8;
 				     }
 		      }
+		      System.out.println(m.toString() + "Value: " + value);
 		      return value;
 		   }
 	@Override
@@ -446,9 +458,11 @@ public class NormalStrategy implements MoveStrategy {
 
 	@Override
 	public de.fhhannover.inform.hnefatafl.vorgaben.Move calculateAttackerMove(
-			de.fhhannover.inform.hnefatafl.vorgaben.Move arg0, int arg1) {		
+			de.fhhannover.inform.hnefatafl.vorgaben.Move arg0, int arg1) {	
+		long t1 = System.nanoTime();
 		// Move übernehmen	
 				this.b = doMove(arg0,this.b);
+				
 				
 		//Speichern in Verlaufbaum, muss noch durchdacht werden
 				//verlauf.setLeft(new Node<Move>(lastMove));
@@ -458,26 +472,50 @@ public class NormalStrategy implements MoveStrategy {
 				//zeit abgelaufen -> Spiel vorbei ?
 				//} else {
 				//Hauptcode zur Berechnung n�chster Schritt
-			    Move[] moves = GenerateMoves(BoardContent.ATTACKER);
-			    int best_move=0;
-			    for(int i=1; i<moves.length; i++) {
-			       if (calculateValue(moves[i], false) >= calculateValue(moves[best_move], false)) {
-			    	  best_move = i;
-			       }
+			    Move[] generatedMoves = generateMoves(BoardContent.ATTACKER);
+			    TreeMap<Integer, ArrayList<Integer>> ratedMoves = new TreeMap<Integer, ArrayList<Integer>>();
+			    int rating;
+			    
+			    // Moves nach Rating sortiert in TreeMap speichern
+			    
+			    for(int i=0; i<generatedMoves.length; i++) {
+			    	rating=calculateValue(generatedMoves[i], false);
+			    	if (rating == -1) continue;
+			    	
+			    	ArrayList<Integer> possibleMoves;	
+			    	
+			    	if (!ratedMoves.containsKey(rating)){
+			    		possibleMoves = new ArrayList<Integer>();			    		
+			    	}
+			    	else
+			    	{
+			    		possibleMoves = ratedMoves.get(rating);			    			    		
+			    	}
+			    	possibleMoves.add(i);
+		    		ratedMoves.put(rating, possibleMoves);			      
 			    } 
+			    
+			    //Aus den Moves mit dem Besten Rating einen per Zufall auswählen
+			    ArrayList<Integer> bestMoves = ratedMoves.get(ratedMoves.lastKey());
+			    int selectedMove = r.nextInt(bestMoves.size());			    
 		
 		    	// Move übernehmen	
-				this.b = doMove(moves[best_move],this.b);
-		    	return moves[best_move];
+				this.b = doMove(generatedMoves[bestMoves.get(selectedMove)],this.b);
+				
+				long t2 = (System.nanoTime() - t1 )/1000;
+				System.out.println("Time für Attackermove: " + t2 + "ms");
+		    	return generatedMoves[bestMoves.get(selectedMove)];
 				//}	
 	}
 
 	@Override
 	public de.fhhannover.inform.hnefatafl.vorgaben.Move calculateDefenderMove(
 			de.fhhannover.inform.hnefatafl.vorgaben.Move arg0, int arg1) {
+		long t1 = System.nanoTime();
 		// Move übernehmen	
 		this.b = doMove(arg0,this.b);
 		
+				
 		//Speichern in Verlaufbaum, muss noch durchdacht werden
 				//verlauf.setRight(new Node<Move>(lastMove));
 				
@@ -486,24 +524,51 @@ public class NormalStrategy implements MoveStrategy {
 				//zeit abgelaufen -> Spiel vorbei ?
 				//} else {
 				//Hauptcode zur Berechnung n�chster Schritt
-			    Move[] moves = GenerateMoves(BoardContent.DEFENDER);
-			    int best_move=0;
-			    for(int i=1; i<moves.length; i++) {
-			       if (calculateValue(moves[i], true) >= calculateValue(moves[best_move], true)) {
-			    	  best_move = i;
-			       }
-			    }
-			    //testen ob K�nig ziehen besser ist
-			    Move[] movesK = GenerateMoves(BoardContent.KING);
-			    for(int i=1; i<moves.length; i++) {
-				       if (calculateValue(movesK[i], true) >= calculateValue(moves[best_move], true)) {
-				    	  best_move = i;
-				       }
-			    }	
-			    	
-				this.b = doMove(moves[best_move],this.b);
-		    	return moves[best_move];
+		
+	 		Move[] generatedMoves = generateMoves(BoardContent.DEFENDER);
+	 		Move[] generatedKingMoves = generateMoves(BoardContent.KING);
+	 		Move[] allGeneratedMoves = new Move[1000];
+	 		for (int i = 0; i<500; i++){
+	 			allGeneratedMoves[i] = generatedKingMoves[i];
+	 		}
+	 		for (int i = 500; i<1000; i++){
+	 			allGeneratedMoves[i] = generatedMoves[i - 500];
+	 		}
+	 		
+		    TreeMap<Integer, ArrayList<Integer>> ratedMoves = new TreeMap<Integer, ArrayList<Integer>>();
+		    int rating;
+		    
+		    
+		 // Moves nach Rating sortiert in TreeMap speichern
+		    
+		    for(int i=0; i<allGeneratedMoves.length; i++) {
+		    	rating=calculateValue(allGeneratedMoves[i], true);
+		    	if (rating == -1) continue;
+		    	
+		    	ArrayList<Integer> possibleMoves;	
+		    	
+		    	if (!ratedMoves.containsKey(rating)){
+		    		possibleMoves = new ArrayList<Integer>();			    		
+		    	}
+		    	else
+		    	{
+		    		possibleMoves = ratedMoves.get(rating);			    			    		
+		    	}
+		    	possibleMoves.add(i);
+	    		ratedMoves.put(rating, possibleMoves);			      
+		    } 		   
+		    
+		    //Aus den Moves mit dem Besten Rating einen per Zufall auswählen
+		    ArrayList<Integer> bestMoves = ratedMoves.get(ratedMoves.lastKey());
+		    int selectedMove = r.nextInt(bestMoves.size());
+		    
 	
+	    	// Move übernehmen	
+			this.b = doMove(allGeneratedMoves[bestMoves.get(selectedMove)],this.b);
+			long t2 = (System.nanoTime() - t1)/1000;
+			
+			System.out.println("Time für Defendermove: " + t2 + "ms");
+	    	return allGeneratedMoves[bestMoves.get(selectedMove)];
 				//}	
 	}
 }
