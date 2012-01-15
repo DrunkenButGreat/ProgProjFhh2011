@@ -30,12 +30,16 @@ public class RemoveCheck {
 	 * @return : Das Board ohne die Steine die zu entfernen sind
 	 */
 	public static Board checkForRemove(de.fhhannover.inform.hnefatafl.vorgaben.Move currentMove, Board board){
+		long time1 = System.nanoTime();
+		
 		
 		Board temp = new Board();
 		board = doMove(currentMove, board);
 		
 		temp.set(checkSurround(currentMove,board));
 		temp = checkForEnd(currentMove, board);
+		
+		if(gamelog) System.out.println("Removecheck brauchte "+ (System.nanoTime() - time1) / 1000+" microsec");
 		
 		gamelog = true;
 		
