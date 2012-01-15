@@ -23,7 +23,7 @@ public class NormalStrategy implements MoveStrategy {
 	private String name;
 	//private Node<Move> verlauf;
 	private Board b;
-	Random r;
+	private Random r;
 	
 	public NormalStrategy(){
 		grpNr = 12;
@@ -51,7 +51,7 @@ public class NormalStrategy implements MoveStrategy {
 	 * @return ein Array mit allen m�glichen Moves
 	 */
 	private Move[] generateMoves(BoardContent type) {
-		Move[] mList = new Move[500]; 
+		Move[] mList = new Move[624]; 
 		Cell[] cList = new Cell[26];
 		int m1=0;
 		int c1=0;
@@ -67,16 +67,25 @@ public class NormalStrategy implements MoveStrategy {
 			}
 		}
 		for(int i=0;i<c1;i++){
-			int r=13-cList[i].getCol();
-			int l=13-cList[i].getRow();
-			for(int j=0;j<r;j++){
+			int space_to_right=12-cList[i].getCol();
+			int space_to_bottom=12-cList[i].getRow();
+			for(int j=1;j<=space_to_right;j++){
 				mList[m1]=new Move(cList[i],new Cell(cList[i].getCol()+j,cList[i].getRow(), cList[i].getContent()));
 				m1++;
 			}
-			for(int h=0;h<l;h++){
-				mList[m1]=new Move(cList[i],new Cell(cList[i].getCol(),cList[i].getRow()+h, cList[i].getContent()));
+			for(int j=1;j<=space_to_bottom;j++){
+				mList[m1]=new Move(cList[i],new Cell(cList[i].getCol(),cList[i].getRow()+j, cList[i].getContent()));
 				m1++;		
 			}
+			for(int j=cList[i].getCol();j>0;j--){
+				mList[m1]=new Move(cList[i],new Cell(cList[i].getCol()-j,cList[i].getRow(), cList[i].getContent()));
+				m1++;
+			}
+			for(int j=cList[i].getRow();j>0;j--){
+				mList[m1]=new Move(cList[i],new Cell(cList[i].getCol(),cList[i].getRow()-j, cList[i].getContent()));
+				m1++;		
+			}
+			
 		}		
 		return mList;
 	}
@@ -342,7 +351,7 @@ public class NormalStrategy implements MoveStrategy {
 			         ((row==11)&&(col==8))||
 			         ((row==12)&&(col==8))
 		    	  	 ){
-		    		  value=300;
+		    		  value=6;
 		    	  }		//}	
 		       //Felder mit Bewertung 1:
 		    	  if(((row==6)&&(col==0))||
@@ -370,7 +379,7 @@ public class NormalStrategy implements MoveStrategy {
 	           		 ((row==11)&&(col==6))||
 	           		 ((row==12)&&(col==6))
 	           		 ){ 
-		    		  value=200;
+		    		  value=5;
 		    	  } else {
 				    	//Felder mit Bewertung REST 
 			    	  
