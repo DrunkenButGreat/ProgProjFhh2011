@@ -33,6 +33,11 @@ public class StrategyLoader {
 	 * @throws IOException
 	 */
 	public static ArrayList<String> listContent(String uri) throws IOException{
+		return listContent(uri,"");
+	    
+	}
+	
+	public static ArrayList<String> listContent(String uri, String extension){
 		
 		ArrayList<String> ar = new ArrayList<String>();
 		
@@ -42,15 +47,29 @@ public class StrategyLoader {
 	          Enumeration<? extends ZipEntry> e=zf.entries();
 	          while (e.hasMoreElements()) {
 	              ZipEntry ze=(ZipEntry)e.nextElement();
-	                 ar.add(ze.toString());
+	                 ar.add(extension+"-"+ze.toString());
 	          }
-	          zf.close();
-		 } finally {
+	          zf.close();	       
+		 } catch (Exception e) {
 			 
 		 }
 	     
 	     return ar;
-	    
+	}
+	
+	public static ArrayList<String> listContent(String uri, Boolean folder) throws IOException{
+		if(!folder) return listContent(uri);
+		
+		ArrayList<String> classNames = new ArrayList<String>();
+		
+		File dir = new File(uri);
+		if(dir.isDirectory()){
+			for(File file : dir.listFiles()){
+				classNames.addAll(listContent(file.getAbsolutePath(),file.getName()));
+			}
+		}
+		
+		return classNames;
 	}
 	
 	
@@ -111,5 +130,7 @@ public class StrategyLoader {
     static MoveStrategy getFromClassPath(String name) throws ClassNotFoundException, InstantiationException, IllegalAccessException{
     	final Class<?> clazz = Class.forName(name);
 		return (MoveStrategy) clazz.newInstance();
-    }       
+    }   
+    
+    
 }
