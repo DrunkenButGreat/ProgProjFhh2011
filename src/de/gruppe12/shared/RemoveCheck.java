@@ -1,6 +1,6 @@
 /** RemoveCheck
  * 
- * Prüft ob etwas vom Feld entfernt werden muss
+ * Prï¿½ft ob etwas vom Feld entfernt werden muss
  * 
  * Copyright: (c) 2011 <p>
  * Company: Gruppe 12 <p>
@@ -22,8 +22,8 @@ public class RemoveCheck {
 	/** checkForRemove
 	 * 
 	 * Analysiert das Board und den Zug und entfert wenn noetig
-	 * einen Stein oder beendet im Fall dass der König nicht mehr
-	 * Ziehen kann das Spiel bzw. setzt die nötige flag
+	 * einen Stein oder beendet im Fall dass der Kï¿½nig nicht mehr
+	 * Ziehen kann das Spiel bzw. setzt die nï¿½tige flag
 	 * 
 	 * @param currentMove : Aktueller Zug
 	 * @param board : Aktuelles Board
@@ -39,7 +39,7 @@ public class RemoveCheck {
 		temp.set(checkSurround(currentMove,board));
 		temp = checkForEnd(currentMove, board);
 		
-		if(gamelog) System.out.println("Removecheck brauchte "+ (System.nanoTime() - time1) / 1000+" microsec");
+		if(gamelog) System.out.println("Removecheck brauchte "+ (System.nanoTime() - time1) / 1000+" Âµs");
 		
 		gamelog = true;
 		
@@ -54,7 +54,7 @@ public class RemoveCheck {
 	
 	/** doMove
 	 * 
-	 * Macht den Zug auf den Board und gibt das Board zurück
+	 * Macht den Zug auf den Board und gibt das Board zurï¿½ck
 	 * 
 	 * @param currentMove : Aktueller Zug
 	 * @param board : Aktuelles Board

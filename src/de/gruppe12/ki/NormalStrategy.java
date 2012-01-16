@@ -19,9 +19,9 @@ import de.gruppe12.shared.*;
 */
 
 public class NormalStrategy implements MoveStrategy {
+	private boolean gameLog, commandLine;
 	private int grpNr;
 	private String name;
-	//private Node<Move> verlauf;
 	private Board b;
 	private Random r;
 	
@@ -30,25 +30,46 @@ public class NormalStrategy implements MoveStrategy {
 		name = "normal"; 
 		b = new Board();
 		r = new Random();
+		this.gameLog = true;
+		this.commandLine = true;
 	}
 	
 	@Override
 	public int getGroupNr() {
 		return grpNr;
 	}
-
+	
 	@Override
 	public String getStrategyName() {
 		return name;
 	}	
 	
+	@Override
+	public String toString(){
+		return name+" Strategy, Gruppe"+grpNr;	
+	}
+	
+	/**
+	 * Übernimmt einen Move auf ein gegebenes Board
+	 * @param move Zu übernehmender Move
+	 * @param board Zugehöriges Board
+	 * @return
+	 */
+	
+	private Board doMove(de.fhhannover.inform.hnefatafl.vorgaben.Move move, Board board){
+		if (move != null){
+			return RemoveCheck.checkForRemove(move, board, false);
+		}		
+		return board;		
+	}
+	
 	/**
 	 * 
 	 * GenerateMoves()
-	 * erzeutgt ein Array mit den n�chsten m�glichen Schritten
+	 * erzeutgt ein Array mit den nächsten möglichen Schritten
 	 * jeder Spielfigur 
 	 * 
-	 * @return ein Array mit allen m�glichen Moves
+	 * @return eine ArrayList mit allen möglichen Moves
 	 */
 	private ArrayList<Move> generateMoves(BoardContent type) {
 		ArrayList<Move> mList = new ArrayList<Move>(); 
@@ -63,6 +84,8 @@ public class NormalStrategy implements MoveStrategy {
 				}
 			}
 		}
+		
+		//Generiert für jeden Stein Moves bis zum Ende des Spielfeldes. Ohne zu prüfen, ob diese erlaubt sind
 		for(int i=0;i<cList.size();i++){
 			int space_to_right=12-cList.get(i).getCol();
 			int space_to_bottom=12-cList.get(i).getRow();
@@ -84,408 +107,463 @@ public class NormalStrategy implements MoveStrategy {
 
 	/**
 	 * calculateValue
-	 * Bewertet den �bergebenen Move.
+	 * Bewertet den Übergebenen Move.
 	 * 
 	 * @return Bewertung des Moves
 	 */
-	   private int calculateValue(Move m, boolean isDefTurn) {
-		   	 
-		   	 if (m == null){
-		   		 return -1;
-		   	 }
-		   	 //checkt ob Move zul�ssig
-		      if(!MoveCheck.check(m,this.b,isDefTurn,false)){
-		    	  return -1;
-		      } 
+	   private int calculateValue(Move move, boolean isDefTurn) {
+		   int rating=0;
 		   
-		      int value=0;
-		      //Figur die Bewegt wird
-		      BoardContent p = m.getFromCell().getContent();
-		      //Felder in umgebung
-			  BoardContent c1 = b.getCell(m.getToCell().getCol()+1,m.getToCell().getRow()).getContent();
-			  BoardContent c2 = b.getCell(m.getToCell().getCol()+2,m.getToCell().getRow()).getContent();
-			  BoardContent c3 = b.getCell(m.getToCell().getCol(),m.getToCell().getRow()+1).getContent();
-			  BoardContent c4 = b.getCell(m.getToCell().getCol(),m.getToCell().getRow()+2).getContent();
-		      
-			  
-			  //testet, wenn Gegner und kein leeres Feld steigt Value
-			  if(p==BoardContent.ATTACKER){
-		      if((c1 != p)&&(c1!=BoardContent.EMPTY)){
-		    	  value++;
-		      }
-		      if((c2 != p)&&(c1!=BoardContent.EMPTY)){
-		    	  value++;
-		      }
-		      if((c3 != p)&&(c1!=BoardContent.EMPTY)){
-		    	  value++;
-		      }
-		      if((c4 != p)&&(c1!=BoardContent.EMPTY)){
-		    	  value++;
-		      }
-			  }
-		      
-		      //extra Berechnungen beginnen hier:
-		      int row=m.getToCell().getRow();
-		      int col=m.getToCell().getCol();
-		      
-		      //extra Berechnung f�r Attacker
-		      //   0   1  2  3  4  5  6  7  8  9 10 11 12
-		      // 0|xx|10|08|xx|xx|xx|xx|xx|xx|xx|08|10|xx
-		      // 1|10|10|08|xx|xx|xx|xx|xx|xx|xx|08|10|10
-		      // 2|08|08|08|xx|xx|xx|xx|xx|xx|xx|08|08|08
-		      // 3|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx
-		      // 4|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx
-		      // 5|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx
-		      // 6|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx
-		      // 7|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx
-		      // 8|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx
-		      // 9|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx
-		      //10|08|08|08|xx|xx|xx|xx|xx|xx|xx|08|08|08
-		      //11|10|10|08|xx|xx|xx|xx|xx|xx|xx|08|10|10
-		      //12|xx|10|08|xx|xx|xx|xx|xx|xx|xx|08|10|xx
-		      
-		      if(p==BoardContent.ATTACKER){
-		    	  //Bewertung 10
-		    	  if(((row==1)&&(col==1))|
-						     ((row==1)&&(col==2))||
-						     ((row==0)&&(col==1))||
-						     ((row==11)&&(col==0))||
-						     ((row==12)&&(col==1))||
-						     ((row==0)&&(col==11))||
-						     ((row==1)&&(col==11))||
-						     ((row==1)&&(col==12))||
-						     ((row==11)&&(col==12))||
-						     ((row==11)&&(col==11))||
-						     ((row==12)&&(col==11)))
-						    {
-						    		  value+=10;	  
-						    }
-		    	  //Bewertung 8 
-		    	  if(((row==0)&&(col==2))|
-		           			 ((row==1)&&(col==2))||
-		           			 ((row==2)&&(col==2))||	    	  
-		           			 ((row==2)&&(col==0))||
-		           			 ((row==2)&&(col==1))||
-		           			 ((row==10)&&(col==0))||
-		           			 ((row==10)&&(col==2))||
-		           			 ((row==10)&&(col==2))||	    	  
-		           			 ((row==11)&&(col==2))||		    	  
-		           			 ((row==12)&&(col==2))||		    	  
-		           			 ((row==0)&&(col==2))||		    	  
-		           			 ((row==1)&&(col==2))||		    	  
-		           			 ((row==2)&&(col==2))||
-		           			 ((row==2)&&(col==11))||          			 
-		           			 ((row==2)&&(col==12))||	    	  
-		           			 ((row==10)&&(col==10))||		    	  
-		           			 ((row==10)&&(col==11))||		    	  
-		           			 ((row==10)&&(col==12))||		    	  
-		           			 ((row==11)&&(col==10))||		    	  
-		           			 ((row==12)&&(col==10))
-		           			 ){
-				    		  value+=8;
-				    	  }
-		    	  
-		    	  //Wenn K�nig in der N�he, dann ziehe dahin!
-		    	  if((c1 ==BoardContent.KING)){
-			    	  value+=100;
-			      }
-		    	  if((c2 ==BoardContent.KING)){
-			    	  value+=100;
-			      }
-		    	  if((c3 ==BoardContent.KING)){
-			    	  value+=100;
-			      }
-		    	  if((c4 ==BoardContent.KING)){
-			    	  value+=100;
-			      }
-		    	  
-		      }
-		      
-		      
-		      
-		      
-		      
-		      //extra Berechnung f�r K�nig
-		      //   1  2  3  4  5  6  7  8  9  10 11 12 13
-		      // 1|10|08|06|04|03|02|01|02|03|04|06|08|10
-		      // 2|08|08|06|04|03|02|01|02|03|04|06|08|08
-		      // 3|06|06|06|04|03|02|01|02|03|04|06|06|06
-		      // 4|04|04|04|04|03|02|01|02|03|04|04|04|04
-		      // 5|03|03|03|03|03|02|01|02|03|03|03|03|03
-		      // 6|02|02|02|02|02|02|01|02|02|02|02|02|02
-		      // 7|01|01|01|01|01|01|01|01|01|01|01|01|01
-		      // 8|02|02|02|02|02|02|01|02|02|02|02|02|02
-		      // 9|03|03|03|03|03|02|01|02|03|03|03|03|03
-		      //10|04|04|04|04|03|02|01|02|03|04|04|04|04
-		      //11|06|06|06|04|03|02|01|02|03|04|06|06|06
-		      //12|08|08|06|04|03|02|01|02|03|04|06|08|08
-		      //13|10|08|06|04|03|02|01|02|03|04|06|08|10
-		       
-		      if(p==BoardContent.KING){
-		    	  //Felder mit Bewertung 10: LO:1,1 RO:1,13 LU:13,1 RU:13,13
-		    	  if(((row==0)&&(col==0))||
-		    		 ((row==0)&&(col==12))||
-		    		 ((row==12)&&(col==0))||
-		    		 ((row==12)&&(col==12))
-		    		 ){
-		    		  System.out.println("-------------------------------------------------------------------------------");
-		    		  return 10000;
-		    	  }
-		    	  //Felder mit Bewertung 8
-		    	  if(((row==1)&&(col==1))||
-				     ((row==1)&&(col==2))||
-				     ((row==0)&&(col==1))||
-				     ((row==11)&&(col==0))||
-				     ((row==12)&&(col==1))||
-				     ((row==0)&&(col==11))||
-				     ((row==1)&&(col==11))||
-				     ((row==1)&&(col==12))||
-				     ((row==11)&&(col==12))||
-				     ((row==11)&&(col==11))||
-				     ((row==12)&&(col==11)))
-				    {
-				    		  return 1000;
-				    }
-		    	//Felder mit Bewertung 6: 
-		    	  if(((row==0)&&(col==2))||
-         			 ((row==1)&&(col==2))||
-         			 ((row==2)&&(col==2))||	    	  
-         			 ((row==2)&&(col==0))||
-         			 ((row==2)&&(col==1))||
-         			 ((row==10)&&(col==0))||
-         			 ((row==10)&&(col==1))||
-         			 ((row==10)&&(col==2))||		    	  
-         			 ((row==11)&&(col==2))||		    	  
-         			 ((row==12)&&(col==2))||		    	  
-         			 ((row==0)&&(col==0))||		    	  
-         			 ((row==1)&&(col==1))||		    	  
-         			 ((row==2)&&(col==2))||
-         			 ((row==2)&&(col==11))||         			 
-         			 ((row==2)&&(col==12))||		    	  
-         			 ((row==10)&&(col==10))||		    	  
-         			 ((row==10)&&(col==11))||		    	  
-         			 ((row==10)&&(col==12))||		    	  
-         			 ((row==11)&&(col==10))||		    	  
-         			 ((row==12)&&(col==10))
-         			 ){
-		    		  return 800;
-		    	  }
-		    	  //Felder mit Bewertung 4
-		    	  if(((row==3)&&(col==0))||
-			         ((row==3)&&(col==1))||
-			         ((row==3)&&(col==2))||
-			         ((row==3)&&(col==3))||
-			         ((row==2)&&(col==3))||
-			         ((row==1)&&(col==3))||
-			         ((row==0)&&(col==3))||
-			         ((row==9)&&(col==0))||
-			         ((row==9)&&(col==1))||
-			         ((row==9)&&(col==2))||
-			         ((row==9)&&(col==3))||
-			         ((row==10)&&(col==3))||
-			         ((row==11)&&(col==3))||
-			         ((row==12)&&(col==3))||
-			         ((row==0)&&(col==9))||
-			         ((row==1)&&(col==9))||
-			         ((row==2)&&(col==9))||
-			         ((row==3)&&(col==9))||
-			         ((row==3)&&(col==10))||
-			         ((row==3)&&(col==11))||
-			         ((row==3)&&(col==12))||
-			         ((row==9)&&(col==9))||
-			         ((row==10)&&(col==9))||
-			         ((row==11)&&(col==9))||
-			         ((row==12)&&(col==9))||
-			         ((row==9)&&(col==10))||
-			         ((row==9)&&(col==11))||
-			         ((row==9)&&(col==12))
-				     ){
-		    		  return 400;
-		    	  }
-		    	  
-		    	//Felder mit Bewertung 3: LO:
-		    	  if(((row==4)&&(col==0))||
-			         ((row==4)&&(col==1))||
-			         ((row==4)&&(col==2))||
-			         ((row==4)&&(col==3))||
-			         ((row==4)&&(col==4))||
-			         ((row==0)&&(col==4))||
-			         ((row==1)&&(col==4))||
-			         ((row==2)&&(col==4))||
-			         ((row==3)&&(col==4))||
-
-			         ((row==8)&&(col==0))||
-			         ((row==8)&&(col==1))||
-			         ((row==8)&&(col==2))||
-			         ((row==8)&&(col==3))||
-			         ((row==8)&&(col==4))||
-			         ((row==9)&&(col==4))||
-			         ((row==10)&&(col==4))||
-			         ((row==11)&&(col==4))||
-			         ((row==12)&&(col==4))||
-
-			         ((row==0)&&(col==8))||
-			         ((row==1)&&(col==8))||
-			         ((row==2)&&(col==8))||
-			         ((row==3)&&(col==8))||
-			         ((row==4)&&(col==8))||
-			         ((row==4)&&(col==9))||
-			         ((row==4)&&(col==10))||
-			         ((row==4)&&(col==11))||
-			         ((row==4)&&(col==12))||
-
-			         ((row==8)&&(col==8))||
-			         ((row==8)&&(col==12))||
-			         ((row==8)&&(col==11))||
-			         ((row==8)&&(col==10))||
-			         ((row==8)&&(col==9))||
-			         ((row==9)&&(col==8))||
-			         ((row==10)&&(col==8))||
-			         ((row==11)&&(col==8))||
-			         ((row==12)&&(col==8))
-		    	  	 ){
-		    		  return 6;
-		    	  }		//}	
-		       //Felder mit Bewertung 1:
-		    	  if(((row==6)&&(col==0))||
-	           		 ((row==6)&&(col==1))||		    	  
-	           		 ((row==6)&&(col==2))||		    	  
-	           		 ((row==6)&&(col==3))||	           			 
-	         		 ((row==6)&&(col==4))||	           			 
-	         		 ((row==6)&&(col==5))||	           			 
-	           		 ((row==6)&&(col==6))||	           			 
-	           		 ((row==6)&&(col==8))||	           			 
-	           		 ((row==6)&&(col==9))||	           			 
-	           		 ((row==6)&&(col==10))||	           			 
-	           		 ((row==6)&&(col==11))||           			 
-	           		 ((row==6)&&(col==12))||	           			 
-	           		 ((row==0)&&(col==6))||	           			 
-	           		 ((row==1)&&(col==6))||	           			 
-	           		 ((row==2)&&(col==6))||	           			 
-	           		 ((row==3)&&(col==6))||
-	           		 ((row==4)&&(col==6))||
-	           		 ((row==5)&&(col==6))||           			 
-	           		 ((row==7)&&(col==6))||           			 
-	           		 ((row==8)&&(col==6))||           			 
-	           		 ((row==9)&&(col==6))||           			 
-	           		 ((row==10)&&(col==6))||
-	           		 ((row==11)&&(col==6))||
-	           		 ((row==12)&&(col==6))
-	           		 ){ 
-		    		  return 5;
-		    	  } else {
-				    	//Felder mit Bewertung REST 
-			    	  
-			    		  value+=2;
-			    	  }
-		    	  }
-		      
-		      //Berechnung f�r Verteidiger?
-		    //extra Berechnung f�r Deffender
-		      //    0 1  2  3  4  5  6  7  8  9  10 11 12
-		      // 0|xx|xx|10|xx|xx|xx|xx|xx|xx|xx|10|xx|xx
-		      // 1|xx|10|xx|xx|xx|xx|xx|xx|xx|xx|xx|10|xx
-		      // 2|10|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|10
-		      // 3|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx
-		      // 4|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx
-		      // 5|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx
-		      // 6|xx|xx|xx|xx|xx|xx|KK|xx|xx|xx|xx|xx|xx
-		      // 7|xx|xx|xx|xx|xx|xx|xx|08|xx|xx|xx|xx|xx
-		      // 8|xx|xx|xx|xx|xx|xx|08|xx|08|xx|xx|xx|xx
-		      // 9|xx|xx|xx|xx|xx|08|xx|xx|xx|08|xx|xx|xx
-		      //10|10|xx|xx|xx|08|xx|xx|xx|xx|xx|08|xx|xx
-		      //11|xx|10|xx|08|xx|xx|xx|xx|xx|xx|xx|08|xx
-		      //12|xx|xx|10|xx|xx|xx|xx|xx|xx|xx|08|08|xx
-		      if(p==BoardContent.ATTACKER){
-		    	  //links oben  
-		    	  if(((row==2)&&(col==0))||
-		    		 ((row==1)&&(col==1))||
-		    		 ((row==0)&&(col==2))
-		    		 ){
-		    		  value+=100;
-		    	  }
-		      //links unten 
-		    	  if(((row==10)&&(col==0))||
-				     ((row==11)&&(col==1))||
-				     ((row==12)&&(col==0))
-				      ){
-				    		  value+=100;
-				      }
-		    //rechts oben
-		    	  if(((row==0)&&(col==10))||
-				   	 ((row==1)&&(col==11))||
-				   	 ((row==2)&&(col==12))
-				   	 ){
-				    	  value+=100;
-				     } 
-		    	  
-		    	  //rechts unten
-		    	  if(((row==10)&&(col==12))||
-		    		((row==11)&&(col==11))||
-					((row==12)&&(col==10))
-		    			 ){
-				    	  value+=100;
-				     } 
-		    	  
-		    //rest 
-		    	  if(((row==11)&&(col==3))||
-				     ((row==10)&&(col==4))||
-				     ((row==9)&&(col==5))||
-				     ((row==8)&&(col==6))||
-				     ((row==7)&&(col==7))||
-				     ((row==8)&&(col==8))||
-				     ((row==9)&&(col==9))||
-				     ((row==10)&&(col==10))||
-				     ((row==11)&&(col==11))||
-				     ((row==12)&&(col==11))||				     				     
-				     ((row==12)&&(col==10))
-				     ){
-				    		  value+=8;
-				     }
-		      }
-		      System.out.println(m.toString() + "Value: " + value);
-		      return value;
+		   // Abbrechen, wenn leerer Move übergeben wurde
+		   if (move == null) {
+			   return -1;
 		   }
-	@Override
-	public String toString(){
-		return name+" Strategy, Gruppe"+grpNr;	
-	}
-	
-	private Board doMove(de.fhhannover.inform.hnefatafl.vorgaben.Move currentMove2, Board board){
-		if (currentMove2 != null){
-			return RemoveCheck.checkForRemove(currentMove2, board, false);
-		}		
-		return board;		
-	}
+		   
+	   	  // Abbrechen bei ungültigem Move
+	      if(!MoveCheck.check(move,this.b,isDefTurn,false)) {
+	    	  return -1;
+	      }
+	      
+	      //Figur die Bewegt wird
+	      BoardContent p = move.getFromCell().getContent();
+	      //Felder in umgebung
+		  BoardContent c1 = b.getCell(move.getToCell().getCol()+1,move.getToCell().getRow()).getContent();
+		  BoardContent c2 = b.getCell(move.getToCell().getCol()+2,move.getToCell().getRow()).getContent();
+		  BoardContent c3 = b.getCell(move.getToCell().getCol(),move.getToCell().getRow()+1).getContent();
+		  BoardContent c4 = b.getCell(move.getToCell().getCol(),move.getToCell().getRow()+2).getContent();
+	      
+		  
+		  //testet, wenn Gegner und kein leeres Feld steigt Value
+		  if(p==BoardContent.ATTACKER){
+	      if((c1 != p)&&(c1!=BoardContent.EMPTY)){
+	    	  rating+=20;
+	      }
+	      if((c2 != p)&&(c2!=BoardContent.EMPTY)){
+	    	  rating+=20;
+	      }
+	      if((c3 != p)&&(c3!=BoardContent.EMPTY)){
+	    	  rating+=20;
+	      }
+	      if((c4 != p)&&(c4!=BoardContent.EMPTY)){
+	    	  rating+=20;
+	      }
+		  }
+	      
+	      //extra Berechnungen beginnen hier:
+	      int toRow=move.getToCell().getRow();
+	      int toCol=move.getToCell().getCol();
+	      
+	      int fromRow=move.getFromCell().getRow();
+	      int fromCol=move.getFromCell().getCol();
+	      
+	      //extra Berechnung für Attacker
+	      //   0   1  2  3  4  5  6  7  8  9 10 11 12
+	      // 0|xx|10|08|xx|xx|xx|xx|xx|xx|xx|08|10|xx
+	      // 1|10|08|08|xx|xx|xx|xx|xx|xx|xx|08|08|10
+	      // 2|08|08|08|xx|xx|xx|xx|xx|xx|xx|08|08|08
+	      // 3|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx
+	      // 4|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx
+	      // 5|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx
+	      // 6|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx
+	      // 7|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx
+	      // 8|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx
+	      // 9|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx
+	      //10|08|08|08|xx|xx|xx|xx|xx|xx|xx|08|08|08
+	      //11|10|08|08|xx|xx|xx|xx|xx|xx|xx|08|08|10
+	      //12|xx|10|08|xx|xx|xx|xx|xx|xx|xx|08|10|xx
+	      
+	      if(p==BoardContent.ATTACKER){
+	    	  //Bewertung 10
+	    	  if(((toRow==1)&&(toCol==0))||					    
+			     ((toRow==0)&&(toCol==1))||
+			     ((toRow==0)&&(toCol==11))||
+			     ((toRow==1)&&(toCol==12))||
+			     ((toRow==11)&&(toCol==0))||
+			     ((toRow==12)&&(toCol==1))||
+			     ((toRow==12)&&(toCol==11))||
+			     ((toRow==11)&&(toCol==12)))
+			    {
+			    	rating+=80;	  
+			    }
+	    	  
+	    	  //Bewertung 8 
+	    	  if(((toRow==0)&&(toCol==2))||
+       			 ((toRow==1)&&(toCol==2))||
+       			 ((toRow==2)&&(toCol==2))||
+       			 ((toRow==2)&&(toCol==1))||	    	  
+       			 ((toRow==1)&&(toCol==1))||
+       			 ((toRow==2)&&(toCol==0))||
+       			 
+       			 ((toRow==10)&&(toCol==0))||
+       			 ((toRow==10)&&(toCol==1))||	    	  
+       			 ((toRow==10)&&(toCol==2))||		    	  
+       			 ((toRow==11)&&(toCol==1))||		    	  
+       			 ((toRow==11)&&(toCol==2))||		    	  
+       			 ((toRow==12)&&(toCol==2))||	
+       			 
+       			 ((toRow==10)&&(toCol==12))||
+       			 ((toRow==10)&&(toCol==11))||          			 
+       			 ((toRow==10)&&(toCol==10))||	    	  
+       			 ((toRow==11)&&(toCol==11))||		    	  
+       			 ((toRow==11)&&(toCol==10))||		    	  
+       			 ((toRow==12)&&(toCol==10))||  			 
+       			 
+       			 
+       			 ((toRow==0)&&(toCol==10))||		 
+       			 ((toRow==1)&&(toCol==10))||	
+       			 ((toRow==1)&&(toCol==11))||	
+       			 ((toRow==2)&&(toCol==10))||	
+       			 ((toRow==2)&&(toCol==11))||	
+       			 ((toRow==2)&&(toCol==12))
+       			 ){
+			    		  rating+=40;
+			    	}
+	    	  
+	    	  //Wenn König in der Nähe, dann ziehe dahin!
+	    	  if((c1 ==BoardContent.KING)){
+		    	  rating+=500;
+		      }
+	    	  if((c2 ==BoardContent.KING)){
+		    	  rating+=500;
+		      }
+	    	  if((c3 ==BoardContent.KING)){
+		    	  rating+=500;
+		      }
+	    	  if((c4 ==BoardContent.KING)){
+		    	  rating+=500;
+		      }
+	    	  
+	      }
+	      //extra Berechnung für König
+	      //   0  1  2  3  4  5  6  7  8  9  10 11 12
+	      // 0|10|08|08|04|03|02|01|02|03|04|08|08|10
+	      // 1|08|06|06|04|03|02|01|02|03|04|06|06|08
+	      // 2|08|06|06|04|03|02|01|02|03|04|06|06|08
+	      // 3|04|04|04|04|03|02|01|02|03|04|04|04|04
+	      // 4|03|03|03|03|03|02|01|02|03|03|03|03|03
+	      // 5|02|02|02|02|02|02|01|02|02|02|02|02|02
+	      // 6|01|01|01|01|01|01|01|01|01|01|01|01|01
+	      // 7|02|02|02|02|02|02|01|02|02|02|02|02|02
+	      // 8|03|03|03|03|03|02|01|02|03|03|03|03|03
+	      // 9|04|04|04|04|03|02|01|02|03|04|04|04|04
+	      //10|08|06|06|04|03|02|01|02|03|04|06|06|08
+	      //11|08|06|06|04|03|02|01|02|03|04|06|06|08
+	      //12|10|08|08|04|03|02|01|02|03|04|08|08|10
+	       
+	      if(p==BoardContent.KING){
+	    	  
+	    	  if(c1==BoardContent.EMPTY){
+		    	  rating+=100;
+		      }
+		      if(c2==BoardContent.EMPTY){
+		    	  rating+=100;
+		      }
+		      if(c3==BoardContent.EMPTY){
+		    	  rating+=100;
+		      }
+		      if(c4==BoardContent.EMPTY){
+		    	  rating+=100;
+		      }
+	    	  
+	    	  //Felder mit Bewertung 10
+	    	  if(((toRow==0)&&(toCol==0))||
+	    		 ((toRow==0)&&(toCol==12))||
+	    		 ((toRow==12)&&(toCol==0))||
+	    		 ((toRow==12)&&(toCol==12))
+	    		 ){
+	    		  return rating + 10000;
+	    	  }
+	    	  //Felder mit Bewertung 8
+	    	  if(((toRow==0)&&(toCol==1))||
+			     ((toRow==1)&&(toCol==0))||
+			     ((toRow==1)&&(toCol==0))||
+			     ((toRow==0)&&(toCol==2))||			     			     
+			     
+			     ((toRow==0)&&(toCol==11))||
+			     ((toRow==1)&&(toCol==12))||
+			     ((toRow==0)&&(toCol==10))||
+			     ((toRow==2)&&(toCol==12))||			     
+			     
+			     ((toRow==11)&&(toCol==0))||
+			     ((toRow==12)&&(toCol==1))||
+			     ((toRow==10)&&(toCol==0))||
+			     ((toRow==12)&&(toCol==2))||			     
+			     
+			     ((toRow==12)&&(toCol==11))||
+			     ((toRow==12)&&(toCol==12))||
+	    		 ((toRow==12)&&(toCol==10))||
+	    		 ((toRow==10)&&(toCol==12)))
+			    {
+			    		  return rating + 5000;
+			    }
+	    	//Felder mit Bewertung 6: 
+	    	  if(((toRow==1)&&(toCol==2))||
+    			 ((toRow==2)&&(toCol==2))||
+    			 ((toRow==2)&&(toCol==1))||	    	  
+    			 ((toRow==1)&&(toCol==1))||
+    			 
+    			 ((toRow==10)&&(toCol==1))||	    	  
+    			 ((toRow==10)&&(toCol==2))||		    	  
+    			 ((toRow==11)&&(toCol==1))||		    	  
+    			 ((toRow==11)&&(toCol==2))||		    	  
+    			 
+    			 ((toRow==10)&&(toCol==11))||          			 
+    			 ((toRow==10)&&(toCol==10))||	    	  
+    			 ((toRow==11)&&(toCol==11))||		    	  
+    			 ((toRow==11)&&(toCol==10))||		    	   			 
+    			 	 
+    			 ((toRow==1)&&(toCol==10))||	
+    			 ((toRow==1)&&(toCol==11))||	
+    			 ((toRow==2)&&(toCol==10))||	
+    			 ((toRow==2)&&(toCol==11))
+    			 ){
+	    		  return rating + 800;
+	    	  }
+	    	  //Felder mit Bewertung 4
+	    	  if(((toRow==3)&&(toCol==0))||
+		         ((toRow==3)&&(toCol==1))||
+		         ((toRow==3)&&(toCol==2))||
+		         ((toRow==3)&&(toCol==3))||
+		         ((toRow==2)&&(toCol==3))||
+		         ((toRow==1)&&(toCol==3))||
+		         ((toRow==0)&&(toCol==3))||
+		         ((toRow==9)&&(toCol==0))||
+		         ((toRow==9)&&(toCol==1))||
+		         ((toRow==9)&&(toCol==2))||
+		         ((toRow==9)&&(toCol==3))||
+		         ((toRow==10)&&(toCol==3))||
+		         ((toRow==11)&&(toCol==3))||
+		         ((toRow==12)&&(toCol==3))||
+		         ((toRow==0)&&(toCol==9))||
+		         ((toRow==1)&&(toCol==9))||
+		         ((toRow==2)&&(toCol==9))||
+		         ((toRow==3)&&(toCol==9))||
+		         ((toRow==3)&&(toCol==10))||
+		         ((toRow==3)&&(toCol==11))||
+		         ((toRow==3)&&(toCol==12))||
+		         ((toRow==9)&&(toCol==9))||
+		         ((toRow==10)&&(toCol==9))||
+		         ((toRow==11)&&(toCol==9))||
+		         ((toRow==12)&&(toCol==9))||
+		         ((toRow==9)&&(toCol==10))||
+		         ((toRow==9)&&(toCol==11))||
+		         ((toRow==9)&&(toCol==12))
+			     ){
+	    		  return rating + 400;
+	    	  }
+	    	  
+	    	//Felder mit Bewertung 3: LO:
+	    	  if(((toRow==4)&&(toCol==0))||
+		         ((toRow==4)&&(toCol==1))||
+		         ((toRow==4)&&(toCol==2))||
+		         ((toRow==4)&&(toCol==3))||
+		         ((toRow==4)&&(toCol==4))||
+		         ((toRow==0)&&(toCol==4))||
+		         ((toRow==1)&&(toCol==4))||
+		         ((toRow==2)&&(toCol==4))||
+		         ((toRow==3)&&(toCol==4))||
 
+		         ((toRow==8)&&(toCol==0))||
+		         ((toRow==8)&&(toCol==1))||
+		         ((toRow==8)&&(toCol==2))||
+		         ((toRow==8)&&(toCol==3))||
+		         ((toRow==8)&&(toCol==4))||
+		         ((toRow==9)&&(toCol==4))||
+		         ((toRow==10)&&(toCol==4))||
+		         ((toRow==11)&&(toCol==4))||
+		         ((toRow==12)&&(toCol==4))||
+
+		         ((toRow==0)&&(toCol==8))||
+		         ((toRow==1)&&(toCol==8))||
+		         ((toRow==2)&&(toCol==8))||
+		         ((toRow==3)&&(toCol==8))||
+		         ((toRow==4)&&(toCol==8))||
+		         ((toRow==4)&&(toCol==9))||
+		         ((toRow==4)&&(toCol==10))||
+		         ((toRow==4)&&(toCol==11))||
+		         ((toRow==4)&&(toCol==12))||
+
+		         ((toRow==8)&&(toCol==8))||
+		         ((toRow==8)&&(toCol==12))||
+		         ((toRow==8)&&(toCol==11))||
+		         ((toRow==8)&&(toCol==10))||
+		         ((toRow==8)&&(toCol==9))||
+		         ((toRow==9)&&(toCol==8))||
+		         ((toRow==10)&&(toCol==8))||
+		         ((toRow==11)&&(toCol==8))||
+		         ((toRow==12)&&(toCol==8))
+	    	  	 ){
+	    		  return rating + 6;
+	    	  }
+	    	  
+	       //Felder mit Bewertung 1:
+	    	  if(((toRow==6)&&(toCol==0))||
+           		 ((toRow==6)&&(toCol==1))||		    	  
+           		 ((toRow==6)&&(toCol==2))||		    	  
+           		 ((toRow==6)&&(toCol==3))||	           			 
+         		 ((toRow==6)&&(toCol==4))||	           			 
+         		 ((toRow==6)&&(toCol==5))||	           			 
+           		 ((toRow==6)&&(toCol==6))||	           			 
+           		 ((toRow==6)&&(toCol==8))||	           			 
+           		 ((toRow==6)&&(toCol==9))||	           			 
+           		 ((toRow==6)&&(toCol==10))||	           			 
+           		 ((toRow==6)&&(toCol==11))||           			 
+           		 ((toRow==6)&&(toCol==12))||	           			 
+           		 ((toRow==0)&&(toCol==6))||	           			 
+           		 ((toRow==1)&&(toCol==6))||	           			 
+           		 ((toRow==2)&&(toCol==6))||	           			 
+           		 ((toRow==3)&&(toCol==6))||
+           		 ((toRow==4)&&(toCol==6))||
+           		 ((toRow==5)&&(toCol==6))||           			 
+           		 ((toRow==7)&&(toCol==6))||           			 
+           		 ((toRow==8)&&(toCol==6))||           			 
+           		 ((toRow==9)&&(toCol==6))||           			 
+           		 ((toRow==10)&&(toCol==6))||
+           		 ((toRow==11)&&(toCol==6))||
+           		 ((toRow==12)&&(toCol==6))
+           		 ){ 
+	    		  return rating + 5;
+	    	  } else {
+			    	//Felder mit Bewertung REST 		    	  
+		    		  return rating + 2;
+		    	  }
+	    	  }
+	      
+	      //Berechnung für Verteidiger?
+	    //extra Berechnung für Deffender
+	      //    0 1  2  3  4  5  6  7  8  9  10 11 12
+	      // 0|xx|xx|10|xx|xx|xx|xx|xx|xx|xx|10|xx|xx
+	      // 1|xx|10|xx|xx|xx|xx|xx|xx|xx|xx|xx|10|xx
+	      // 2|10|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|10
+	      // 3|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx
+	      // 4|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx
+	      // 5|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx
+	      // 6|xx|xx|xx|xx|xx|xx|KK|xx|xx|xx|xx|xx|xx
+	      // 7|xx|xx|xx|xx|xx|xx|xx|08|xx|xx|xx|xx|xx
+	      // 8|xx|xx|xx|xx|xx|xx|08|xx|08|xx|xx|xx|xx
+	      // 9|xx|xx|xx|xx|xx|08|xx|xx|xx|08|xx|xx|xx
+	      //10|10|xx|xx|xx|08|xx|xx|xx|xx|xx|08|xx|xx
+	      //11|xx|10|xx|08|xx|xx|xx|xx|xx|xx|xx|08|xx
+	      //12|xx|xx|10|xx|xx|xx|xx|xx|xx|xx|08|08|xx
+	      if(p==BoardContent.DEFENDER){
+	    	  if((c1 == BoardContent.ATTACKER)){
+		    	  rating+=20;
+		      }
+		      if((c2 == BoardContent.ATTACKER)){
+		    	  rating+=20;
+		      }
+		      if((c3 == BoardContent.ATTACKER)){
+		    	  rating+=20;
+		      }
+		      if((c4 == BoardContent.ATTACKER)){
+		    	  rating+=20;
+		      }
+		      
+		      if (((fromRow==5)&&(fromCol==6))||
+		      	((fromRow==6)&&(fromCol==6))||
+		      	((fromRow==6)&&(fromCol==7))||
+		      	((fromRow==7)&&fromCol==6)){
+		    	  rating +=100;
+		      }
+		      
+	      }
+	      if (this.commandLine) System.out.println(move.toString() + "Value: " + rating);
+	      return rating;
+	   }	
+	
+	
 	@Override
 	public de.fhhannover.inform.hnefatafl.vorgaben.Move calculateAttackerMove(
-			de.fhhannover.inform.hnefatafl.vorgaben.Move arg0, int arg1) {	
-		long t1 = System.nanoTime();
-		// Move übernehmen	
-				this.b = doMove(arg0,this.b);
+			de.fhhannover.inform.hnefatafl.vorgaben.Move lastMove, int thinkTime) {	
+				//Startzeit festhalten
+				long startTime = System.nanoTime();	
+			
+				// Lokale Variablen
+				int rating;
+				ArrayList<Integer> possibleMoves;
+				TreeMap<Integer, ArrayList<Integer>> ratedMoves = new TreeMap<Integer, ArrayList<Integer>>();
 				
+				// Übergebenen Move auf KI-internem Board übernehmen				
+				this.b = doMove(lastMove,this.b);		
 				
-		//Speichern in Verlaufbaum, muss noch durchdacht werden
-				//verlauf.setLeft(new Node<Move>(lastMove));
-				
-				//Abbruchbedingung Zeit muss eingef�gt werden
-				//if(time>= thinktimeInSeconds){
-				//zeit abgelaufen -> Spiel vorbei ?
-				//} else {
-				//Hauptcode zur Berechnung n�chster Schritt
-			    ArrayList<Move> generatedMoves = generateMoves(BoardContent.ATTACKER);
-			    TreeMap<Integer, ArrayList<Integer>> ratedMoves = new TreeMap<Integer, ArrayList<Integer>>();
-			    int rating;
+				// ArrayList mit allen erlauben Moves generieren		
+			    ArrayList<Move> generatedMoves = generateMoves(BoardContent.ATTACKER);		
 			    
 			    // Moves nach Rating sortiert in TreeMap speichern
+		 		for(int i=0; i<generatedMoves.size(); i++) {
+			 			
+			 			// Wenn nur noch weniger als 5ms der Zeitscheibe übrig sind
+			 			// wird die Bewertung der Moves abgebrochen
+				    	if (thinkTime - ((System.nanoTime() - startTime)/1000000) < 5) {
+				    			if (this.commandLine) System.out.println("Zeitscheibe abgelaufen");
+				    			break;
+				    		}
+				    	
+				    	// Rating für aktuellen Move berechnen. Legale Moves werden nach 
+				    	// ihrem Rating sortiert in einer TreeMap gespeichert
+				    	rating=calculateValue(generatedMoves.get(i), false);
+				    	if (rating == -1) continue;
+				    	
+				    	// Existiert schon ein Eintrag für das aktuelle Rating wird der Move an diese Liste gehängt
+				    	// Existiert noch kein Eintrag wird eine neue Liste erstellt und in der TreeMap gespeichert
+				    	if (!ratedMoves.containsKey(rating)){
+				    		possibleMoves = new ArrayList<Integer>();			    		
+				    	}
+				    	else
+				    	{
+				    		possibleMoves = ratedMoves.get(rating);			    			    		
+				    	}
+				    	possibleMoves.add(i);
+			    		ratedMoves.put(rating, possibleMoves);			      
+			    } 		   
 			    
-			    for(int i=0; i<generatedMoves.size(); i++) {
-			    	rating=calculateValue(generatedMoves.get(i), false);
+			    //Aus den Moves mit dem Besten Rating einen per Zufall auswählen
+			    ArrayList<Integer> bestMoves = ratedMoves.get(ratedMoves.lastKey());
+			    int selectedMove = r.nextInt(bestMoves.size());			    
+		
+				// Move auf KI-internem Board übernehmen	
+				this.b = doMove(generatedMoves.get(bestMoves.get(selectedMove)),this.b);
+				
+				long t2 = (System.nanoTime() - startTime )/1000000;
+				if (this.commandLine) System.out.println("Time für Attackermove: " + t2 + " ms");
+		    	return generatedMoves.get(bestMoves.get(selectedMove));
+	}
+
+	@Override
+	public de.fhhannover.inform.hnefatafl.vorgaben.Move calculateDefenderMove(
+			de.fhhannover.inform.hnefatafl.vorgaben.Move lastMove, int thinkTime) {
+			//Startzeit festhalten
+			long startTime = System.nanoTime();	
+		
+			// Lokale Variablen
+			int rating;
+			ArrayList<Integer> possibleMoves;
+			TreeMap<Integer, ArrayList<Integer>> ratedMoves = new TreeMap<Integer, ArrayList<Integer>>();
+			
+			// Übergebenen Move auf KI-internem Board übernehmen				
+			this.b = doMove(lastMove,this.b);		
+			
+			// ArrayList mit allen erlauben Moves generieren		
+	 		ArrayList<Move> generatedMoves = generateMoves(BoardContent.DEFENDER);	    	
+	 		generatedMoves.addAll(generateMoves(BoardContent.KING));
+		    
+	 		// Moves nach Rating sortiert in TreeMap speichern
+	 		for(int i=0; i<generatedMoves.size(); i++) {
+		 			
+		 			// Wenn nur noch weniger als 5ms der Zeitscheibe übrig sind
+		 			// wird die Bewertung der Moves abgebrochen
+			    	if (thinkTime - ((System.nanoTime() - startTime)/1000000) < 5) {
+			    			if (this.commandLine) System.out.println("Zeitscheibe abgelaufen");
+			    			break;
+			    		}
+			    	
+			    	// Rating für aktuellen Move berechnen. Legale Moves werden nach 
+			    	// ihrem Rating sortiert in einer TreeMap gespeichert
+			    	rating=calculateValue(generatedMoves.get(i), true);
 			    	if (rating == -1) continue;
 			    	
-			    	ArrayList<Integer> possibleMoves;	
-			    	
+			    	// Existiert schon ein Eintrag für das aktuelle Rating wird der Move an diese Liste gehängt
+			    	// Existiert noch kein Eintrag wird eine neue Liste erstellt und in der TreeMap gespeichert
 			    	if (!ratedMoves.containsKey(rating)){
 			    		possibleMoves = new ArrayList<Integer>();			    		
 			    	}
@@ -495,75 +573,17 @@ public class NormalStrategy implements MoveStrategy {
 			    	}
 			    	possibleMoves.add(i);
 		    		ratedMoves.put(rating, possibleMoves);			      
-			    } 
-			    
-			    //Aus den Moves mit dem Besten Rating einen per Zufall auswählen
-			    ArrayList<Integer> bestMoves = ratedMoves.get(ratedMoves.lastKey());
-			    int selectedMove = r.nextInt(bestMoves.size());			    
-		
-		    	// Move übernehmen	
-				this.b = doMove(generatedMoves.get(bestMoves.get(selectedMove)),this.b);
-				
-				long t2 = (System.nanoTime() - t1 )/1000000;
-				System.out.println("Time für Attackermove: " + t2 + "ms");
-		    	return generatedMoves.get(bestMoves.get(selectedMove));
-				//}	
-	}
-
-	@Override
-	public de.fhhannover.inform.hnefatafl.vorgaben.Move calculateDefenderMove(
-			de.fhhannover.inform.hnefatafl.vorgaben.Move arg0, int arg1) {
-		long t1 = System.nanoTime();
-		// Move übernehmen	
-		this.b = doMove(arg0,this.b);
-		
-				
-		//Speichern in Verlaufbaum, muss noch durchdacht werden
-				//verlauf.setRight(new Node<Move>(lastMove));
-				
-				//Abbruchbedingung Zeit muss eingef�gt werden
-				//if(time>= thinktimeInSeconds){
-				//zeit abgelaufen -> Spiel vorbei ?
-				//} else {
-				//Hauptcode zur Berechnung n�chster Schritt
-		
-	 		ArrayList<Move> generatedMoves = generateMoves(BoardContent.DEFENDER);
-	 		generatedMoves.addAll(generateMoves(BoardContent.KING));
-	 		
-		    TreeMap<Integer, ArrayList<Integer>> ratedMoves = new TreeMap<Integer, ArrayList<Integer>>();
-		    int rating;
-		    
-		    
-		 // Moves nach Rating sortiert in TreeMap speichern
-		    
-		    for(int i=0; i<generatedMoves.size(); i++) {
-		    	rating=calculateValue(generatedMoves.get(i), true);
-		    	if (rating == -1) continue;
-		    	
-		    	ArrayList<Integer> possibleMoves;	
-		    	
-		    	if (!ratedMoves.containsKey(rating)){
-		    		possibleMoves = new ArrayList<Integer>();			    		
-		    	}
-		    	else
-		    	{
-		    		possibleMoves = ratedMoves.get(rating);			    			    		
-		    	}
-		    	possibleMoves.add(i);
-	    		ratedMoves.put(rating, possibleMoves);			      
 		    } 		   
 		    
 		    //Aus den Moves mit dem Besten Rating einen per Zufall auswählen
 		    ArrayList<Integer> bestMoves = ratedMoves.get(ratedMoves.lastKey());
 		    int selectedMove = r.nextInt(bestMoves.size());
-		    
 	
-	    	// Move übernehmen	
+	    	// Move auf KI-internem Board übernehmen	
 			this.b = doMove(generatedMoves.get(bestMoves.get(selectedMove)),this.b);
-			long t2 = (System.nanoTime() - t1)/1000000;
 			
-			System.out.println("Time für Defendermove: " + t2 + "ms");
+			long t2 = (System.nanoTime() - startTime)/1000000;			
+			if (this.commandLine) System.out.println("Time für Defendermove: " + t2 + " ms");
 	    	return generatedMoves.get(bestMoves.get(selectedMove));
-				//}	
 	}
 }

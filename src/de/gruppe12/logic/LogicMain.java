@@ -9,10 +9,9 @@ public class LogicMain extends Observable {
 	private Board board;
 	private MoveStrategy attacker, defender;
 	de.fhhannover.inform.hnefatafl.vorgaben.Move currentMove;
-	private boolean waitForMove, gameEnd, defPlayerTurn;
+	private boolean gameEnd, gameLog, commandLine, defPlayerTurn;
 	private int thinkTime;
 	private boolean humanAttacker, humanDefender;
-	private long sleepTime = 10000;
 	private String lastGameLogEvent;
 	private String strAttacker = "Angreifer";
 	private String strDefender = "Verteidiger";
@@ -21,7 +20,9 @@ public class LogicMain extends Observable {
 	
 	
 	public LogicMain(){
-		initLogicMain();			
+		initLogicMain();
+		gameLog = true;
+		commandLine = true;
 	}
 	
 	public void humanAttKiDef(MoveStrategy defender, int thinkTime){
@@ -63,7 +64,6 @@ public class LogicMain extends Observable {
 	private void initLogicMain(){
 		this.board = new Board();
 		this.board.init();
-		this.waitForMove = false;
 		this.currentMove = null;
 		this.defPlayerTurn = false;
 	}
@@ -95,21 +95,35 @@ public class LogicMain extends Observable {
 		this.currentMove = move;
 	}
 	
+	
+	/**
+	 * Loggt auftretende Events für die GUI
+	 * @param event Zu loggendes Event
+	 */
+	
 	private void logGameEvent(String event){
 		if (this.defPlayerTurn){
-			GameLog.logGameEvent(strDefender, event);
-			this.lastGameLogEvent = strDefender + ": " + event;
+			GameLog.logGameEvent(this.strDefender, event);
+			this.lastGameLogEvent = this.strDefender + ": " + event;
 		}
 		else{
-			GameLog.logGameEvent(strAttacker, event);
-			this.lastGameLogEvent = strAttacker + ": " + event;
+			GameLog.logGameEvent(this.strAttacker, event);
+			this.lastGameLogEvent = this.strAttacker + ": " + event;
 		}
 	}
+	
+	/**
+	 * Liest das letzte GameLog Event aus
+	 * @return Letztes GameLog Event
+	 */
 	
 	public String getLastGameLogEvent(){
 		return this.lastGameLogEvent;
 	}
 	
+	/**
+	 * Move-Schleife für die KI. Schleife läuft so lange, wie eine KI am Zug ist.
+	 */
 	private void move(){
 		
 		// Wenn der nächste Spieler eine KI ist, läuft die Schleife weiter
@@ -117,7 +131,8 @@ public class LogicMain extends Observable {
 		// wird die Schleife beendet und muss erneut von der GUI aufgerufen werden
 		
 		while ((this.defPlayerTurn && !this.humanDefender) || 
-				(!this.defPlayerTurn && !this.humanAttacker)){			
+				(!this.defPlayerTurn && !this.humanAttacker)){	
+			if (this.gameEnd) return;
 			try {
 				Thread.sleep(0);
 			} catch (InterruptedException e) {}
@@ -133,30 +148,36 @@ public class LogicMain extends Observable {
 		}	
 	}
 	
-	private void update(de.fhhannover.inform.hnefatafl.vorgaben.Move currentMove2){	
+	/**
+	 * Nimmt einen Move entgegend. Dieser wird geprüft und ggf. ausgeführt. Nach der Ausführung wird die
+	 * GUI benachrichtigt.
+	 * @param move Move der ausgeführt werden soll
+	 */
+	
+	private void update(de.fhhannover.inform.hnefatafl.vorgaben.Move move){	
 		//TODO: Das hier sauber machen und prüfen.. Aber erstmal läufts
-		if (currentMove2 == null){
-			GameLog.logDebugEvent("null Move erhalten");
+		if (move == null){
+			if (this.gameLog) GameLog.logDebugEvent("null Move erhalten");
 			return;
 		}
 		
 		//Erst prüfen ob der Zug erlaubt ist	
-		if (MoveCheck.check(currentMove2, this.board, this.defPlayerTurn)) {	
+		if (MoveCheck.check(move, this.board, this.defPlayerTurn)) {	
 			//Dann den letzen Move speichern
-			saveCurrentMove(currentMove2);
+			saveCurrentMove(move);
 			
 			//Dann prüfen ob Steine geschlagen wurden und neues Board setzen
-			this.board = RemoveCheck.checkForRemove(currentMove2, this.board);
+			this.board = RemoveCheck.checkForRemove(move, this.board);
 			
 			//Und anschließend das Event loggen
-			logGameEvent("Gezogen von: " + currentMove2.getFromCell().getCol() + "," + currentMove2.getFromCell().getRow() + 
-					" nach: " + currentMove2.getToCell().getCol() + "," + currentMove2.getToCell().getRow());
+			if (this.gameLog) logGameEvent("Gezogen von: " + move.getFromCell().getCol() + "," + move.getFromCell().getRow() + 
+					" nach: " + move.getToCell().getCol() + "," + move.getToCell().getRow());
 			
 			// Spieler wechseln
 			this.defPlayerTurn = !this.defPlayerTurn;
 			//Oberserver benachrichtigen
 			setChanged();
-			notifyObservers(currentMove2);
+			notifyObservers(move);
 			
 			synchronized(this) {
 				try {
@@ -172,15 +193,15 @@ public class LogicMain extends Observable {
 			if ((this.defPlayerTurn && !this.humanDefender) ||
 						!this.defPlayerTurn && !this.humanAttacker)
 			{
-				logGameEvent("Ungültiger Zug der KI");
-				logGameEvent(currentMove2.toString());	
+				if (this.gameLog) logGameEvent("Ungültiger Zug der KI");
+				if (this.gameLog) logGameEvent(move.toString());	
 				
-				//### Prototyp von Ende ###
+				//### Prototyp von Ende ###				
 				
-				
-				board.setFinish();
-				if (defPlayerTurn) board.setAttackerWon();
-				else board.setDefenderWon();
+				this.gameEnd = true;
+				this.board.setFinish();
+				if (this.defPlayerTurn) this.board.setAttackerWon();
+				else this.board.setDefenderWon();
 				
 				setChanged();
 				notifyObservers("GameOver");
@@ -199,12 +220,12 @@ public class LogicMain extends Observable {
 			}
 			//Wenn Mensch am zu ist
 			else{
-				logGameEvent("Ungültiger Zug vom Menschen");
-				logGameEvent(currentMove2.toString());	
+				if (this.gameLog) logGameEvent("Ungültiger Zug vom Menschen");
+				if (this.gameLog) logGameEvent(move.toString());	
 				return;
 			}	
 		}		
-		System.out.println(this.board.toString());
+		if (this.commandLine) System.out.println(this.board.toString());
 		
 		try {
 			Thread.sleep(0);
