@@ -133,6 +133,7 @@ public class LogicMain extends Observable {
 		while ((this.defPlayerTurn && !this.humanDefender) || 
 				(!this.defPlayerTurn && !this.humanAttacker)){	
 			if (this.gameEnd) return;
+			if (this.board.isFinished()) return;
 			try {
 				Thread.sleep(0);
 			} catch (InterruptedException e) {}
