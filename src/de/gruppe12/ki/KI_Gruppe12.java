@@ -30,8 +30,8 @@ public class KI_Gruppe12 implements MoveStrategy {
 		name = "normal"; 
 		b = new Board();
 		r = new Random();
-		this.gameLog = true;
-		this.commandLine = true;
+		this.gameLog = false;
+		this.commandLine = false;
 	}
 	
 	@Override
@@ -174,16 +174,27 @@ public class KI_Gruppe12 implements MoveStrategy {
 	      
 	      if(p==BoardContent.ATTACKER){
 	    	  //Bewertung 10
-	    	  if(((toRow==1)&&(toCol==0))||					    
+	    	  if(
+	    		 (((toRow==1)&&(toCol==0))||					    
 			     ((toRow==0)&&(toCol==1))||
 			     ((toRow==0)&&(toCol==11))||
 			     ((toRow==1)&&(toCol==12))||
 			     ((toRow==11)&&(toCol==0))||
 			     ((toRow==12)&&(toCol==1))||
 			     ((toRow==12)&&(toCol==11))||
-			     ((toRow==11)&&(toCol==12)))
+			     ((toRow==11)&&(toCol==12))) 
+			     &&
+			     (((fromRow!=1)&&(fromCol!=0))||					    
+			     ((fromRow!=0)&&(fromCol!=1))||
+			     ((fromRow!=0)&&(fromCol!=11))||
+			     ((fromRow!=1)&&(fromCol!=12))||
+			     ((fromRow!=11)&&(fromCol!=0))||
+			     ((fromRow!=12)&&(fromCol!=1))||
+			     ((fromRow!=12)&&(fromCol!=11))||
+			     ((fromRow!=11)&&(fromCol!=12)))			     
+	    		)
 			    {
-			    	rating+=80;	  
+			    	return rating + 500;	  
 			    }
 	    	  
 	    	  //Bewertung 8 
@@ -221,16 +232,16 @@ public class KI_Gruppe12 implements MoveStrategy {
 	    	  
 	    	  //Wenn König in der Nähe, dann ziehe dahin!
 	    	  if((c1 ==BoardContent.KING)){
-		    	  rating+=500;
+		    	  return rating + 500;
 		      }
 	    	  if((c2 ==BoardContent.KING)){
-		    	  rating+=500;
+	    		  return rating + 500;
 		      }
 	    	  if((c3 ==BoardContent.KING)){
-		    	  rating+=500;
+	    		  return rating + 500;
 		      }
 	    	  if((c4 ==BoardContent.KING)){
-		    	  rating+=500;
+	    		  return rating + 500;
 		      }
 	    	  
 	      }
@@ -402,8 +413,7 @@ public class KI_Gruppe12 implements MoveStrategy {
            		 ((toRow==6)&&(toCol==2))||		    	  
            		 ((toRow==6)&&(toCol==3))||	           			 
          		 ((toRow==6)&&(toCol==4))||	           			 
-         		 ((toRow==6)&&(toCol==5))||	           			 
-           		 ((toRow==6)&&(toCol==6))||	           			 
+         		 ((toRow==6)&&(toCol==5))||	           			            			 
            		 ((toRow==6)&&(toCol==8))||	           			 
            		 ((toRow==6)&&(toCol==9))||	           			 
            		 ((toRow==6)&&(toCol==10))||	           			 
@@ -423,11 +433,16 @@ public class KI_Gruppe12 implements MoveStrategy {
            		 ((toRow==12)&&(toCol==6))
            		 ){ 
 	    		  return rating + 5;
+	    	  }
+	    		 if ((toRow==6)&&(toCol==6)){
+	    			 return rating + 1;
+	    		 }
+	    		  
 	    	  } else {
 			    	//Felder mit Bewertung REST 		    	  
 		    		  return rating + 2;
 		    	  }
-	    	  }
+	    	  
 	      
 	      //Berechnung für Verteidiger?
 	    //extra Berechnung für Deffender
@@ -462,6 +477,10 @@ public class KI_Gruppe12 implements MoveStrategy {
 		      if (((fromRow==5)&&(fromCol==6))||
 		      	((fromRow==6)&&(fromCol==6))||
 		      	((fromRow==6)&&(fromCol==7))||
+		      	((fromRow==4)&&(fromCol==6))||
+		      	((fromRow==8)&&(fromCol==6))||
+		      	((fromRow==6)&&(fromCol==8))||
+		      	((fromRow==6)&&(fromCol==4))||
 		      	((fromRow==7)&&fromCol==6)){
 		    	  rating +=100;
 		      }

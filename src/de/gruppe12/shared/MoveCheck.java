@@ -15,7 +15,7 @@ import de.gruppe12.logic.GameLog;
 
 public class MoveCheck {
 	static final int boardSize = 12;
-	static boolean gamelog=true;
+	static boolean gamelog=false;
 	
 	
 	/** check
@@ -40,9 +40,7 @@ public class MoveCheck {
 		if(gamelog) GameLog.logDebugEvent("__________Zug erlaubt__________");
 		
 		if(gamelog) System.out.println("check brauchte: " + String.valueOf((System.nanoTime()-time1)/1000000) +" ms");
-		gamelog=true;	
-		
-		
+
 		return true;
 	}
 	

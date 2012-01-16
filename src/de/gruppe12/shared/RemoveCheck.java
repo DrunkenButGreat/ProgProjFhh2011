@@ -17,7 +17,7 @@ import de.gruppe12.logic.GameLog;
 
 public class RemoveCheck {
 	
-	private static boolean gamelog = true;
+	private static boolean gamelog = false;
 	
 	/** checkForRemove
 	 * 
@@ -40,9 +40,7 @@ public class RemoveCheck {
 		temp = checkForEnd(currentMove, board);
 		
 		if(gamelog) System.out.println("Removecheck brauchte "+ (System.nanoTime() - time1) / 1000+" µs");
-		
-		gamelog = true;
-		
+	
 		return temp;
 		
 	}

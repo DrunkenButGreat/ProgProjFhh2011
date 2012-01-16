@@ -21,8 +21,8 @@ public class LogicMain extends Observable {
 	
 	public LogicMain(){
 		initLogicMain();
-		gameLog = true;
-		commandLine = true;
+		gameLog = false;
+		commandLine = false;
 	}
 	
 	public void humanAttKiDef(MoveStrategy defender, int thinkTime){
