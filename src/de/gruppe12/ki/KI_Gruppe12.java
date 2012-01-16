@@ -438,10 +438,7 @@ public class KI_Gruppe12 implements MoveStrategy {
 	    			 return rating + 1;
 	    		 }
 	    		  
-	    	  } else {
-			    	//Felder mit Bewertung REST 		    	  
-		    		  return rating + 2;
-		    	  }
+	    	  } 
 	    	  
 	      
 	      //Berechnung für Verteidiger?
@@ -474,16 +471,33 @@ public class KI_Gruppe12 implements MoveStrategy {
 		    	  rating+=20;
 		      }
 		      
-		      if (((fromRow==5)&&(fromCol==6))||
-		      	((fromRow==6)&&(fromCol==6))||
+		      if (
+		        ((fromRow==5)&&(fromCol==6))||
+		      	((fromRow==6)&&(fromCol==5))||
 		      	((fromRow==6)&&(fromCol==7))||
+		      	((fromRow==7)&&(fromCol==6))
+		      	){
+		    	  if(fromRow == toRow){
+		    		  rating+= Math.abs(fromCol-toCol) * 50;
+		    	  }
+		    	  else{
+		    		  rating+= Math.abs(fromRow-toRow) * 50;
+		    	  }
+		    }
+		      
+		      if (
 		      	((fromRow==4)&&(fromCol==6))||
 		      	((fromRow==8)&&(fromCol==6))||
 		      	((fromRow==6)&&(fromCol==8))||
-		      	((fromRow==6)&&(fromCol==4))||
-		      	((fromRow==7)&&fromCol==6)){
-		    	  rating +=100;
-		      }
+		      	((fromRow==6)&&(fromCol==4))
+		      	){
+		    	  if(fromRow == toRow){
+		    		  rating+= Math.abs(fromCol-toCol) * 20;
+		    	  }
+		    	  else{
+		    		  rating+= Math.abs(fromRow-toRow) * 20;
+		    	  }
+		    }
 		      
 	      }
 	      if (this.commandLine) System.out.println(move.toString() + "Value: " + rating);
