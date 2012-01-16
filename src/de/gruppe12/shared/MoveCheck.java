@@ -47,7 +47,7 @@ public class MoveCheck {
 	
 	/** checkIsMoving
 	 * 
-	 * Prüft ob ein Stein wirklich bewegt wurde
+	 * Prï¿½ft ob ein Stein wirklich bewegt wurde
 	 * 
 	 * @param currentMove : Der Aktuelle Zug
 	 * @param board : Das aktuelle Board
@@ -174,7 +174,7 @@ public class MoveCheck {
 	 * Prï¿½t ob der Boardcontent der Quell-Zelle und der Zielzelle gleich ist.
 	 * Sonst Betrugsversuch
 	 * 
-	 * UPDATE: Da scheinbar der BoardContent in den Moves egals ist. Auf minimale Prüfung geändert.
+	 * UPDATE: Da scheinbar der BoardContent in den Moves egals ist. Auf minimale Prï¿½fung geï¿½ndert.
 	 * 
 	 * @param move: Der zu Analysierende Zug
 	 * @return : true/false
@@ -182,7 +182,8 @@ public class MoveCheck {
 	private static boolean checkBoardContent(de.fhhannover.inform.hnefatafl.vorgaben.Move currentMove, Board board){
 		
 		/* Pruefe ob das Zielfeld frei ist. */
-		if(board.getCellBC(currentMove.getToCell())!=BoardContent.EMPTY){
+		if((board.getCellBC(currentMove.getToCell())!=BoardContent.EMPTY) &&
+				(board.getCellBC(currentMove.getToCell()) != BoardContent.INVALID)){
 			if(gamelog) GameLog.logDebugEvent("BoardContent des Zieles nicht Leer");
 			return false;
 		}

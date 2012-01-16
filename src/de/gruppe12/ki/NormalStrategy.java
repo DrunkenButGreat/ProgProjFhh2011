@@ -50,42 +50,34 @@ public class NormalStrategy implements MoveStrategy {
 	 * 
 	 * @return ein Array mit allen m�glichen Moves
 	 */
-	private Move[] generateMoves(BoardContent type) {
-		Move[] mList = new Move[624]; 
-		Cell[] cList = new Cell[26];
-		int m1=0;
-		int c1=0;
+	private ArrayList<Move> generateMoves(BoardContent type) {
+		ArrayList<Move> mList = new ArrayList<Move>(); 
+		ArrayList<Cell> cList = new ArrayList<Cell>();
 		
 		//prüft wo Steine sind
 		for(int i=0;i<=12;i++){
 			for(int j=0;j<=12;j++){
 				//speichert nur wenn Typ gleich ist
 				if(b.getCell(i,j).getContent() == type){
-					cList[c1]=new Cell(i,j, type);
-					c1++;
+					cList.add(new Cell(i,j, type));
 				}
 			}
 		}
-		for(int i=0;i<c1;i++){
-			int space_to_right=12-cList[i].getCol();
-			int space_to_bottom=12-cList[i].getRow();
+		for(int i=0;i<cList.size();i++){
+			int space_to_right=12-cList.get(i).getCol();
+			int space_to_bottom=12-cList.get(i).getRow();
 			for(int j=1;j<=space_to_right;j++){
-				mList[m1]=new Move(cList[i],new Cell(cList[i].getCol()+j,cList[i].getRow(), cList[i].getContent()));
-				m1++;
+				mList.add(new Move(cList.get(i),new Cell(cList.get(i).getCol()+j,cList.get(i).getRow(), cList.get(i).getContent())));
 			}
 			for(int j=1;j<=space_to_bottom;j++){
-				mList[m1]=new Move(cList[i],new Cell(cList[i].getCol(),cList[i].getRow()+j, cList[i].getContent()));
-				m1++;		
+				mList.add(new Move(cList.get(i),new Cell(cList.get(i).getCol(),cList.get(i).getRow()+j, cList.get(i).getContent())));		
 			}
-			for(int j=cList[i].getCol();j>0;j--){
-				mList[m1]=new Move(cList[i],new Cell(cList[i].getCol()-j,cList[i].getRow(), cList[i].getContent()));
-				m1++;
+			for(int j=cList.get(i).getCol();j>0;j--){
+				mList.add(new Move(cList.get(i),new Cell(cList.get(i).getCol()-j,cList.get(i).getRow(), cList.get(i).getContent())));
 			}
-			for(int j=cList[i].getRow();j>0;j--){
-				mList[m1]=new Move(cList[i],new Cell(cList[i].getCol(),cList[i].getRow()-j, cList[i].getContent()));
-				m1++;		
-			}
-			
+			for(int j=cList.get(i).getRow();j>0;j--){
+				mList.add(new Move(cList.get(i),new Cell(cList.get(i).getCol(),cList.get(i).getRow()-j, cList.get(i).getContent())));		
+			}			
 		}		
 		return mList;
 	}
@@ -236,7 +228,8 @@ public class NormalStrategy implements MoveStrategy {
 		    		 ((row==12)&&(col==0))||
 		    		 ((row==12)&&(col==12))
 		    		 ){
-		    		  value=10000;
+		    		  System.out.println("-------------------------------------------------------------------------------");
+		    		  return 10000;
 		    	  }
 		    	  //Felder mit Bewertung 8
 		    	  if(((row==1)&&(col==1))||
@@ -251,7 +244,7 @@ public class NormalStrategy implements MoveStrategy {
 				     ((row==11)&&(col==11))||
 				     ((row==12)&&(col==11)))
 				    {
-				    		  value=1000;
+				    		  return 1000;
 				    }
 		    	//Felder mit Bewertung 6: 
 		    	  if(((row==0)&&(col==2))||
@@ -275,7 +268,7 @@ public class NormalStrategy implements MoveStrategy {
            			 ((row==11)&&(col==10))||		    	  
            			 ((row==12)&&(col==10))
            			 ){
-		    		  value=800;
+		    		  return 800;
 		    	  }
 		    	  //Felder mit Bewertung 4
 		    	  if(((row==3)&&(col==0))||
@@ -307,7 +300,7 @@ public class NormalStrategy implements MoveStrategy {
 			         ((row==9)&&(col==11))||
 			         ((row==9)&&(col==12))
 				     ){
-		    		  value=400;
+		    		  return 400;
 		    	  }
 		    	  
 		    	//Felder mit Bewertung 3: LO:
@@ -351,7 +344,7 @@ public class NormalStrategy implements MoveStrategy {
 			         ((row==11)&&(col==8))||
 			         ((row==12)&&(col==8))
 		    	  	 ){
-		    		  value=6;
+		    		  return 6;
 		    	  }		//}	
 		       //Felder mit Bewertung 1:
 		    	  if(((row==6)&&(col==0))||
@@ -379,7 +372,7 @@ public class NormalStrategy implements MoveStrategy {
 	           		 ((row==11)&&(col==6))||
 	           		 ((row==12)&&(col==6))
 	           		 ){ 
-		    		  value=5;
+		    		  return 5;
 		    	  } else {
 				    	//Felder mit Bewertung REST 
 			    	  
@@ -481,14 +474,14 @@ public class NormalStrategy implements MoveStrategy {
 				//zeit abgelaufen -> Spiel vorbei ?
 				//} else {
 				//Hauptcode zur Berechnung n�chster Schritt
-			    Move[] generatedMoves = generateMoves(BoardContent.ATTACKER);
+			    ArrayList<Move> generatedMoves = generateMoves(BoardContent.ATTACKER);
 			    TreeMap<Integer, ArrayList<Integer>> ratedMoves = new TreeMap<Integer, ArrayList<Integer>>();
 			    int rating;
 			    
 			    // Moves nach Rating sortiert in TreeMap speichern
 			    
-			    for(int i=0; i<generatedMoves.length; i++) {
-			    	rating=calculateValue(generatedMoves[i], false);
+			    for(int i=0; i<generatedMoves.size(); i++) {
+			    	rating=calculateValue(generatedMoves.get(i), false);
 			    	if (rating == -1) continue;
 			    	
 			    	ArrayList<Integer> possibleMoves;	
@@ -509,11 +502,11 @@ public class NormalStrategy implements MoveStrategy {
 			    int selectedMove = r.nextInt(bestMoves.size());			    
 		
 		    	// Move übernehmen	
-				this.b = doMove(generatedMoves[bestMoves.get(selectedMove)],this.b);
+				this.b = doMove(generatedMoves.get(bestMoves.get(selectedMove)),this.b);
 				
-				long t2 = (System.nanoTime() - t1 )/1000;
+				long t2 = (System.nanoTime() - t1 )/1000000;
 				System.out.println("Time für Attackermove: " + t2 + "ms");
-		    	return generatedMoves[bestMoves.get(selectedMove)];
+		    	return generatedMoves.get(bestMoves.get(selectedMove));
 				//}	
 	}
 
@@ -534,15 +527,8 @@ public class NormalStrategy implements MoveStrategy {
 				//} else {
 				//Hauptcode zur Berechnung n�chster Schritt
 		
-	 		Move[] generatedMoves = generateMoves(BoardContent.DEFENDER);
-	 		Move[] generatedKingMoves = generateMoves(BoardContent.KING);
-	 		Move[] allGeneratedMoves = new Move[1000];
-	 		for (int i = 0; i<500; i++){
-	 			allGeneratedMoves[i] = generatedKingMoves[i];
-	 		}
-	 		for (int i = 500; i<1000; i++){
-	 			allGeneratedMoves[i] = generatedMoves[i - 500];
-	 		}
+	 		ArrayList<Move> generatedMoves = generateMoves(BoardContent.DEFENDER);
+	 		generatedMoves.addAll(generateMoves(BoardContent.KING));
 	 		
 		    TreeMap<Integer, ArrayList<Integer>> ratedMoves = new TreeMap<Integer, ArrayList<Integer>>();
 		    int rating;
@@ -550,8 +536,8 @@ public class NormalStrategy implements MoveStrategy {
 		    
 		 // Moves nach Rating sortiert in TreeMap speichern
 		    
-		    for(int i=0; i<allGeneratedMoves.length; i++) {
-		    	rating=calculateValue(allGeneratedMoves[i], true);
+		    for(int i=0; i<generatedMoves.size(); i++) {
+		    	rating=calculateValue(generatedMoves.get(i), true);
 		    	if (rating == -1) continue;
 		    	
 		    	ArrayList<Integer> possibleMoves;	
@@ -573,11 +559,11 @@ public class NormalStrategy implements MoveStrategy {
 		    
 	
 	    	// Move übernehmen	
-			this.b = doMove(allGeneratedMoves[bestMoves.get(selectedMove)],this.b);
-			long t2 = (System.nanoTime() - t1)/1000;
+			this.b = doMove(generatedMoves.get(bestMoves.get(selectedMove)),this.b);
+			long t2 = (System.nanoTime() - t1)/1000000;
 			
 			System.out.println("Time für Defendermove: " + t2 + "ms");
-	    	return allGeneratedMoves[bestMoves.get(selectedMove)];
+	    	return generatedMoves.get(bestMoves.get(selectedMove));
 				//}	
 	}
 }
