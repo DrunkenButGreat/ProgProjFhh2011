@@ -1,26 +1,21 @@
 package de.gruppe12.gui;
 
 import java.awt.Point;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.TreeMap;
 
-import javax.swing.SwingUtilities;
-
 import de.fhhannover.inform.hnefatafl.vorgaben.BoardContent;
 import de.fhhannover.inform.hnefatafl.vorgaben.MoveStrategy;
 import de.gruppe12.logic.LogicMain;
 import de.gruppe12.logic.StrategyLoader;
-import de.gruppe12.shared.Board;
 import de.gruppe12.shared.Cell;
 import de.gruppe12.shared.Move;
 
 public class GuiController implements Observer{
-	private final String kiPathName= "Ki.jar";
+	private final String kiPathName= "C:\\Kis";
 	private final MoveAnimation anim;
 	private GameGui gui;
 	private LogicMain logic;
@@ -172,19 +167,14 @@ public class GuiController implements Observer{
 
 	protected Map<String, String> getStrats() {
 		ArrayList<String> moveStrategies= null;
-		try {
-			moveStrategies= StrategyLoader.listContent(kiPathName);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		moveStrategies= StrategyLoader.listContent(kiPathName);
 		moveStrategies= StrategyLoader.filterExtension(moveStrategies, ".class");
 		
 		Map<String, String> shortPathMap= new TreeMap<String, String>();
 		for (String s: moveStrategies) {
 			String filename;
 			if (s.contains("/")) {
-				filename= s.substring(s.lastIndexOf('/')+1, s.lastIndexOf('.'));
+				filename= s.substring(0, s.indexOf(".jar"))+"-"+s.substring(s.lastIndexOf('/')+1, s.lastIndexOf('.'));
 			} else {
 				filename= s.substring(0, s.lastIndexOf('.'));
 			}

@@ -24,20 +24,28 @@ import de.fhhannover.inform.hnefatafl.vorgaben.MoveStrategy;
 
 public class StrategyLoader {
 	
-	/** listContent
+			
+	/** listContentOfJar
+	 * 
+	 * @deprecated
 	 * 
 	 * �ffnet eine Zip oder Jar datei und gibt ihren Inahlt aus
 	 * 
 	 * @param uri 	: Pfad zur Datei
 	 * @return		: Eine Arraylist mit alle Dateien samt relativer Pfade
-	 * @throws IOException
 	 */
-	public static ArrayList<String> listContent(String uri) throws IOException{
-		return listContent(uri,"");
+	private static ArrayList<String> listContentOfJar(String uri){
+		return listContentOfJar(uri,"");
 	    
 	}
 	
-	public static ArrayList<String> listContent(String uri, String extension){
+	/** listContentOfJar
+	 * 
+	 * @param extension
+	 * @param uri 	: Pfad zur Datei
+	 * @return		: Eine Arraylist mit alle Dateien samt relativer Pfade
+	 */
+	private static ArrayList<String> listContentOfJar(String uri, String extension){
 		
 		ArrayList<String> ar = new ArrayList<String>();
 		
@@ -47,25 +55,35 @@ public class StrategyLoader {
 	          Enumeration<? extends ZipEntry> e=zf.entries();
 	          while (e.hasMoreElements()) {
 	              ZipEntry ze=(ZipEntry)e.nextElement();
-	                 ar.add(extension+"-"+ze.toString());
+	              if(extension.length()==0) 
+	            	  ar.add(ze.toString());
+	              else 
+	            	  ar.add(extension+"-"+ze.toString());
 	          }
 	          zf.close();	       
 		 } catch (Exception e) {
-			 
+			 e.printStackTrace();
 		 }
 	     
 	     return ar;
 	}
 	
-	public static ArrayList<String> listContent(String uri, Boolean folder) throws IOException{
-		if(!folder) return listContent(uri);
+	/** listContent
+	 * 
+	 * Testet ob der Pfad eine Datei ist oder ein Ornder und Listet entweder alle klasses in allen Jars oder nur in einer Jar
+	 * 
+	 * @param uri
+	 * @return
+	 */
+	public static ArrayList<String> listContent(String uri){
+		File dir = new File(uri);
+		if(!dir.isDirectory()) return listContentOfJar(uri,dir.getName());
 		
 		ArrayList<String> classNames = new ArrayList<String>();
 		
-		File dir = new File(uri);
 		if(dir.isDirectory()){
 			for(File file : dir.listFiles()){
-				classNames.addAll(listContent(file.getAbsolutePath(),file.getName()));
+				classNames.addAll(listContentOfJar(file.getAbsolutePath(),file.getName()));
 			}
 		}
 		
@@ -107,15 +125,16 @@ public class StrategyLoader {
     public static MoveStrategy getStrategy( String path, String classname ) throws Exception 
     {
     	 
-    	 URL jarURL = new File(path).toURI().toURL();
+    	 URL jarURL = new File(path+"/"+classname.substring(0,classname.indexOf('-'))).toURI().toURL();
     	 
-    	 String binaryName= classname.substring(0, classname.lastIndexOf('.'));
+    	 String binaryName= classname.substring(classname.indexOf('-')+1, classname.lastIndexOf('.'));
     	 binaryName= binaryName.replace('/', '.');
     	 
     	 ClassLoader classLoader =    new URLClassLoader(new URL[]{jarURL});
 
     	 return (MoveStrategy) classLoader.loadClass(binaryName).newInstance();
     }
+    
     
     /**getFromClassPath
      * 
