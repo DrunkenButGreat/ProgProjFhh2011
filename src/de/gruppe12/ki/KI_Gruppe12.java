@@ -247,19 +247,19 @@ public class KI_Gruppe12 implements MoveStrategy {
 	      }
 	      //extra Berechnung für König
 	      //   0  1  2  3  4  5  6  7  8  9  10 11 12
-	      // 0|10|08|08|04|03|02|01|02|03|04|08|08|10
+	      // 0|10|08|08|06|06|02|01|02|06|06|08|08|10
 	      // 1|08|06|06|04|03|02|01|02|03|04|06|06|08
 	      // 2|08|06|06|04|03|02|01|02|03|04|06|06|08
-	      // 3|04|04|04|04|03|02|01|02|03|04|04|04|04
-	      // 4|03|03|03|03|03|02|01|02|03|03|03|03|03
+	      // 3|06|04|04|04|03|02|01|02|03|04|04|04|06
+	      // 4|06|03|03|03|03|02|01|02|03|03|03|03|06
 	      // 5|02|02|02|02|02|02|01|02|02|02|02|02|02
 	      // 6|01|01|01|01|01|01|01|01|01|01|01|01|01
 	      // 7|02|02|02|02|02|02|01|02|02|02|02|02|02
-	      // 8|03|03|03|03|03|02|01|02|03|03|03|03|03
-	      // 9|04|04|04|04|03|02|01|02|03|04|04|04|04
+	      // 8|06|03|03|03|03|02|01|02|03|03|03|03|0
+	      // 9|06|04|04|04|03|02|01|02|03|04|04|04|06
 	      //10|08|06|06|04|03|02|01|02|03|04|06|06|08
 	      //11|08|06|06|04|03|02|01|02|03|04|06|06|08
-	      //12|10|08|08|04|03|02|01|02|03|04|08|08|10
+	      //12|10|08|08|06|06|02|01|02|06|06|08|08|10
 	       
 	      if(p==BoardContent.KING){
 	    	  
@@ -294,7 +294,7 @@ public class KI_Gruppe12 implements MoveStrategy {
 			     ((toRow==1)&&(toCol==12))||
 			     ((toRow==0)&&(toCol==10))||
 			     ((toRow==2)&&(toCol==12))||			     
-			     
+
 			     ((toRow==11)&&(toCol==0))||
 			     ((toRow==12)&&(toCol==1))||
 			     ((toRow==10)&&(toCol==0))||
@@ -312,40 +312,54 @@ public class KI_Gruppe12 implements MoveStrategy {
     			 ((toRow==2)&&(toCol==2))||
     			 ((toRow==2)&&(toCol==1))||	    	  
     			 ((toRow==1)&&(toCol==1))||
+    			 ((toRow==3)&&(toCol==0))||
+		         ((toRow==0)&&(toCol==3))||
+		         ((toRow==4)&&(toCol==0))||
+		         ((toRow==0)&&(toCol==4))||
     			 
     			 ((toRow==10)&&(toCol==1))||	    	  
     			 ((toRow==10)&&(toCol==2))||		    	  
     			 ((toRow==11)&&(toCol==1))||		    	  
-    			 ((toRow==11)&&(toCol==2))||		    	  
+    			 ((toRow==11)&&(toCol==2))||	
+		         ((toRow==12)&&(toCol==9))||
+		         ((toRow==9)&&(toCol==12))||
+		         ((toRow==8)&&(toCol==0))||
+		         ((toRow==12)&&(toCol==4))||
     			 
     			 ((toRow==10)&&(toCol==11))||          			 
     			 ((toRow==10)&&(toCol==10))||	    	  
     			 ((toRow==11)&&(toCol==11))||		    	  
-    			 ((toRow==11)&&(toCol==10))||		    	   			 
-    			 	 
+    			 ((toRow==11)&&(toCol==10))||
+		         ((toRow==12)&&(toCol==3))||
+		         ((toRow==9)&&(toCol==0))||
+		         ((toRow==0)&&(toCol==8))||
+		         ((toRow==4)&&(toCol==12))||
+		         ((toRow==8)&&(toCol==12))||
+		         ((toRow==0)&&(toCol==9))||
+		         ((toRow==1)&&(toCol==3))||
     			 ((toRow==1)&&(toCol==10))||	
     			 ((toRow==1)&&(toCol==11))||	
     			 ((toRow==2)&&(toCol==10))||	
-    			 ((toRow==2)&&(toCol==11))
+    			 ((toRow==2)&&(toCol==11))||
+    			 ((toRow==12)&&(toCol==8))
     			 ){
-	    		  return rating + 800;
+	    		  return rating + 2000;
 	    	  }
 	    	  //Felder mit Bewertung 4
-	    	  if(((toRow==3)&&(toCol==0))||
+	    	  if(
 		         ((toRow==3)&&(toCol==1))||
 		         ((toRow==3)&&(toCol==2))||
 		         ((toRow==3)&&(toCol==3))||
 		         ((toRow==2)&&(toCol==3))||
-		         ((toRow==1)&&(toCol==3))||
-		         ((toRow==0)&&(toCol==3))||
-		         ((toRow==9)&&(toCol==0))||
+
+
 		         ((toRow==9)&&(toCol==1))||
 		         ((toRow==9)&&(toCol==2))||
 		         ((toRow==9)&&(toCol==3))||
 		         ((toRow==10)&&(toCol==3))||
 		         ((toRow==11)&&(toCol==3))||
-		         ((toRow==12)&&(toCol==3))||
-		         ((toRow==0)&&(toCol==9))||
+
+
 		         ((toRow==1)&&(toCol==9))||
 		         ((toRow==2)&&(toCol==9))||
 		         ((toRow==3)&&(toCol==9))||
@@ -355,26 +369,25 @@ public class KI_Gruppe12 implements MoveStrategy {
 		         ((toRow==9)&&(toCol==9))||
 		         ((toRow==10)&&(toCol==9))||
 		         ((toRow==11)&&(toCol==9))||
-		         ((toRow==12)&&(toCol==9))||
+
 		         ((toRow==9)&&(toCol==10))||
-		         ((toRow==9)&&(toCol==11))||
-		         ((toRow==9)&&(toCol==12))
+		         ((toRow==9)&&(toCol==11))
+
 			     ){
-	    		  return rating + 400;
+	    		  return rating + 1000;
 	    	  }
 	    	  
 	    	//Felder mit Bewertung 3: LO:
-	    	  if(((toRow==4)&&(toCol==0))||
-		         ((toRow==4)&&(toCol==1))||
+	    	  if(((toRow==4)&&(toCol==1))||
 		         ((toRow==4)&&(toCol==2))||
 		         ((toRow==4)&&(toCol==3))||
 		         ((toRow==4)&&(toCol==4))||
-		         ((toRow==0)&&(toCol==4))||
+	
 		         ((toRow==1)&&(toCol==4))||
 		         ((toRow==2)&&(toCol==4))||
 		         ((toRow==3)&&(toCol==4))||
 
-		         ((toRow==8)&&(toCol==0))||
+
 		         ((toRow==8)&&(toCol==1))||
 		         ((toRow==8)&&(toCol==2))||
 		         ((toRow==8)&&(toCol==3))||
@@ -382,9 +395,9 @@ public class KI_Gruppe12 implements MoveStrategy {
 		         ((toRow==9)&&(toCol==4))||
 		         ((toRow==10)&&(toCol==4))||
 		         ((toRow==11)&&(toCol==4))||
-		         ((toRow==12)&&(toCol==4))||
 
-		         ((toRow==0)&&(toCol==8))||
+
+
 		         ((toRow==1)&&(toCol==8))||
 		         ((toRow==2)&&(toCol==8))||
 		         ((toRow==3)&&(toCol==8))||
@@ -392,19 +405,19 @@ public class KI_Gruppe12 implements MoveStrategy {
 		         ((toRow==4)&&(toCol==9))||
 		         ((toRow==4)&&(toCol==10))||
 		         ((toRow==4)&&(toCol==11))||
-		         ((toRow==4)&&(toCol==12))||
+
 
 		         ((toRow==8)&&(toCol==8))||
-		         ((toRow==8)&&(toCol==12))||
+
 		         ((toRow==8)&&(toCol==11))||
 		         ((toRow==8)&&(toCol==10))||
 		         ((toRow==8)&&(toCol==9))||
 		         ((toRow==9)&&(toCol==8))||
 		         ((toRow==10)&&(toCol==8))||
-		         ((toRow==11)&&(toCol==8))||
-		         ((toRow==12)&&(toCol==8))
+		         ((toRow==11)&&(toCol==8))
+		         
 	    	  	 ){
-	    		  return rating + 6;
+	    		  return rating + 50;
 	    	  }
 	    	  
 	       //Felder mit Bewertung 1:
@@ -432,7 +445,7 @@ public class KI_Gruppe12 implements MoveStrategy {
            		 ((toRow==11)&&(toCol==6))||
            		 ((toRow==12)&&(toCol==6))
            		 ){ 
-	    		  return rating + 5;
+	    		  return rating + 10;
 	    	  }
 	    		 if ((toRow==6)&&(toCol==6)){
 	    			 return rating + 1;
