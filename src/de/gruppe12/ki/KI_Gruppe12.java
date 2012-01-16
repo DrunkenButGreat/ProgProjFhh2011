@@ -194,7 +194,7 @@ public class KI_Gruppe12 implements MoveStrategy {
 			     ((fromRow!=11)&&(fromCol!=12)))			     
 	    		)
 			    {
-			    	return rating + 500;	  
+			    	return rating + 550;	  
 			    }
 	    	  
 	    	  //Bewertung 8 
