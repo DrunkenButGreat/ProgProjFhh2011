@@ -127,10 +127,10 @@ public class KI_Gruppe12 implements MoveStrategy {
 	      //Figur die Bewegt wird
 	      BoardContent p = move.getFromCell().getContent();
 	      //Felder in umgebung
-		  BoardContent c1 = b.getCell(move.getToCell().getCol()+1,move.getToCell().getRow()).getContent();
-		  BoardContent c2 = b.getCell(move.getToCell().getCol()+2,move.getToCell().getRow()).getContent();
+		  BoardContent c1 = b.getCell(move.getToCell().getCol(),move.getToCell().getRow()-1).getContent();
+		  BoardContent c2 = b.getCell(move.getToCell().getCol()+1,move.getToCell().getRow()).getContent();
 		  BoardContent c3 = b.getCell(move.getToCell().getCol(),move.getToCell().getRow()+1).getContent();
-		  BoardContent c4 = b.getCell(move.getToCell().getCol(),move.getToCell().getRow()+2).getContent();
+		  BoardContent c4 = b.getCell(move.getToCell().getCol()-1,move.getToCell().getRow()).getContent();
 	      
 		  
 		  //testet, wenn Gegner und kein leeres Feld steigt Value
@@ -264,16 +264,16 @@ public class KI_Gruppe12 implements MoveStrategy {
 	      if(p==BoardContent.KING){
 	    	  
 	    	  if(c1==BoardContent.EMPTY){
-		    	  rating+=100;
+		    	  rating+=500;
 		      }
 		      if(c2==BoardContent.EMPTY){
-		    	  rating+=100;
+		    	  rating+=500;
 		      }
 		      if(c3==BoardContent.EMPTY){
-		    	  rating+=100;
+		    	  rating+=500;
 		      }
 		      if(c4==BoardContent.EMPTY){
-		    	  rating+=100;
+		    	  rating+=500;
 		      }
 	    	  
 	    	  //Felder mit Bewertung 10
