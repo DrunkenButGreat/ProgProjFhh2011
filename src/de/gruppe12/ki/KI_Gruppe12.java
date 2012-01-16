@@ -18,14 +18,14 @@ import de.gruppe12.shared.*;
 * �nderungen: 10.12. KI verbessert!
 */
 
-public class NormalStrategy implements MoveStrategy {
+public class KI_Gruppe12 implements MoveStrategy {
 	private boolean gameLog, commandLine;
 	private int grpNr;
 	private String name;
 	private Board b;
 	private Random r;
 	
-	public NormalStrategy(){
+	public KI_Gruppe12(){
 		grpNr = 12;
 		name = "normal"; 
 		b = new Board();

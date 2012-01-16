@@ -4,13 +4,13 @@ import java.io.IOException;
 import java.util.Scanner;
 
 import de.fhhannover.inform.hnefatafl.vorgaben.BoardContent;
-import de.gruppe12.ki.NormalStrategy;
+import de.gruppe12.ki.KI_Gruppe12;
 import de.gruppe12.shared.Cell;
 import de.gruppe12.shared.Move;
 
 public class main {
 	
-	static NormalStrategy n = new NormalStrategy();			
+	static KI_Gruppe12 n = new KI_Gruppe12();			
 	static LogicMain main = new LogicMain();
 	/**
 	 * @param args

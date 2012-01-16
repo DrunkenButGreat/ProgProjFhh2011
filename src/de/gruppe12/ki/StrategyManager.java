@@ -8,7 +8,7 @@ import de.fhhannover.inform.hnefatafl.vorgaben.MoveStrategy;
 * Company: Gruppe 12 <p>
 * @author Markus
 * @version 1.0.1 04.12.2011
-* Änderungen: 04.12. javadoc erweitert, getStrategie verbessert
+* ï¿½nderungen: 04.12. javadoc erweitert, getStrategie verbessert
 */
 
 public class StrategyManager {
@@ -30,9 +30,9 @@ public class StrategyManager {
 	 * 
 	 * @return alle Strategien
 	 */
-	//muss noch überarbeitet werden!!
+	//muss noch ï¿½berarbeitet werden!!
 	public MoveStrategy[] getStrategies(){
-		MoveStrategy[] stListe = new NormalStrategy[12];
+		MoveStrategy[] stListe = new KI_Gruppe12[12];
 		return stListe;
 	}
 	
@@ -41,7 +41,7 @@ public class StrategyManager {
 	 *  
 	 * @param getNr
 	 * @param strategyName
-	 * @return gibt die Strategie zurück die mit den übergebenen Parametern übereinstimmt
+	 * @return gibt die Strategie zurï¿½ck die mit den ï¿½bergebenen Parametern ï¿½bereinstimmt
 	 */
 	public MoveStrategy getStrategy(int getNr, String strategyName){
 		MoveStrategy[] list= getStrategies();

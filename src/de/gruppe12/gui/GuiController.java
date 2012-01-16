@@ -25,7 +25,7 @@ public class GuiController implements Observer{
 	private GameGui gui;
 	private LogicMain logic;
 	private MoveStrategy[] moveStrats;
-	private static int thinkTime= 5000;
+	private static int thinkTime= 100000;
 	private String lastMoveLog= null;
 	private BoardContent[][] board= null;
 	
