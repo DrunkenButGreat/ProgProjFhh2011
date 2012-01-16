@@ -26,7 +26,9 @@ public class MoveCheck {
 	 * @param currentMove
 	 * @return
 	 */
-	public static Boolean check (de.fhhannover.inform.hnefatafl.vorgaben.Move currentMove, Board board, Boolean isDefTurn){ 	
+	public static Boolean check (de.fhhannover.inform.hnefatafl.vorgaben.Move currentMove, Board board, Boolean isDefTurn){
+		long time1 = System.nanoTime();
+		
 		if (!checkIsMoving(currentMove, board)) return false;
 		if (!checkInBoard(currentMove, board)) return false;
 		if (!checkCorrectPlayer(currentMove, board, isDefTurn)) return false;
@@ -36,7 +38,11 @@ public class MoveCheck {
 		if (!checkFreeWay(currentMove, board)) return false;
 	
 		if(gamelog) GameLog.logDebugEvent("__________Zug erlaubt__________");
-		gamelog=true;
+		
+		if(gamelog) System.out.println("check brauchte: " + String.valueOf((System.nanoTime()-time1)/1000000) +" ms");
+		gamelog=true;	
+		
+		
 		return true;
 	}
 	

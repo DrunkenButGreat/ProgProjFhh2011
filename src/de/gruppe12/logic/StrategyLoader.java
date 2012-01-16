@@ -12,14 +12,10 @@ package de.gruppe12.logic;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -71,7 +67,7 @@ public class StrategyLoader {
     	
     	for (String s: ar){
    	 		//Wenn entsprechender Dateityp zur neuen Liste hinzufuegen
-   	 		if(s.endsWith(filter)){
+   	 		if(s.endsWith(filter)&&!s.contains("$")){
    	 			newList.add(s);
    	 		}
    	 	}
@@ -91,7 +87,7 @@ public class StrategyLoader {
      */
     public static MoveStrategy getStrategy( String path, String classname ) throws Exception 
     {
-    	 @SuppressWarnings("deprecation")
+    	 
     	 URL jarURL = new File(path).toURI().toURL();
     	 
     	 String binaryName= classname.substring(0, classname.lastIndexOf('.'));

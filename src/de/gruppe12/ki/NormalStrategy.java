@@ -23,7 +23,11 @@ public class NormalStrategy implements MoveStrategy {
 	private String name;
 	//private Node<Move> verlauf;
 	private Board b;
-	private Random r;
+	Random r;
+	static int[] tval = new int[10];
+>>>>>>> branch 'master' of ssh://git@github.com/nedien/ProgProjFhh2011.git
+
+	static int[] tval = new int[10];
 	
 	public NormalStrategy(){
 		grpNr = 12;
@@ -125,8 +129,8 @@ public class NormalStrategy implements MoveStrategy {
 			  }
 		      
 		      //extra Berechnungen beginnen hier:
-		      int row=m.getToCell().getRow();
-		      int col=m.getToCell().getCol();
+		      final int row=m.getToCell().getRow();
+		      final int col=m.getToCell().getCol();
 		      
 		      //extra Berechnung f�r Attacker
 		      //   0   1  2  3  4  5  6  7  8  9 10 11 12
@@ -145,6 +149,13 @@ public class NormalStrategy implements MoveStrategy {
 		      //12|xx|10|08|xx|xx|xx|xx|xx|xx|xx|08|10|xx
 		      
 		      if(p==BoardContent.ATTACKER){
+		    	  
+		    	 Thread th1 = new Thread(new Runnable(){
+		    		  
+		    		
+					@Override
+					public void run() {
+						
 		    	  //Bewertung 10
 		    	  if(((row==1)&&(col==1))|
 						     ((row==1)&&(col==2))||
@@ -158,32 +169,60 @@ public class NormalStrategy implements MoveStrategy {
 						     ((row==11)&&(col==11))||
 						     ((row==12)&&(col==11)))
 						    {
-						    		  value+=10;	  
+						    		  tval[0]=10;	  
 						    }
-		    	  //Bewertung 8 
-		    	  if(((row==0)&&(col==2))|
-		           			 ((row==1)&&(col==2))||
-		           			 ((row==2)&&(col==2))||	    	  
-		           			 ((row==2)&&(col==0))||
-		           			 ((row==2)&&(col==1))||
-		           			 ((row==10)&&(col==0))||
-		           			 ((row==10)&&(col==2))||
-		           			 ((row==10)&&(col==2))||	    	  
-		           			 ((row==11)&&(col==2))||		    	  
-		           			 ((row==12)&&(col==2))||		    	  
-		           			 ((row==0)&&(col==2))||		    	  
-		           			 ((row==1)&&(col==2))||		    	  
-		           			 ((row==2)&&(col==2))||
-		           			 ((row==2)&&(col==11))||          			 
-		           			 ((row==2)&&(col==12))||	    	  
-		           			 ((row==10)&&(col==10))||		    	  
-		           			 ((row==10)&&(col==11))||		    	  
-		           			 ((row==10)&&(col==12))||		    	  
-		           			 ((row==11)&&(col==10))||		    	  
-		           			 ((row==12)&&(col==10))
-		           			 ){
-				    		  value+=8;
-				    	  }
+					
+					}
+		    		  
+		    	  });
+		    	  
+		    	  Thread th2 = new Thread(new Runnable(){
+
+					@Override
+					public void run() {
+					
+			    	  //Bewertung 8 
+			    	  if(((row==0)&&(col==2))|
+			           			 ((row==1)&&(col==2))||
+			           			 ((row==2)&&(col==2))||	    	  
+			           			 ((row==2)&&(col==0))||
+			           			 ((row==2)&&(col==1))||
+			           			 ((row==10)&&(col==0))||
+			           			 ((row==10)&&(col==2))||
+			           			 ((row==10)&&(col==2))||	    	  
+			           			 ((row==11)&&(col==2))||		    	  
+			           			 ((row==12)&&(col==2))||		    	  
+			           			 ((row==0)&&(col==2))||		    	  
+			           			 ((row==1)&&(col==2))||		    	  
+			           			 ((row==2)&&(col==2))||
+			           			 ((row==2)&&(col==11))||          			 
+			           			 ((row==2)&&(col==12))||	    	  
+			           			 ((row==10)&&(col==10))||		    	  
+			           			 ((row==10)&&(col==11))||		    	  
+			           			 ((row==10)&&(col==12))||		    	  
+			           			 ((row==11)&&(col==10))||		    	  
+			           			 ((row==12)&&(col==10))
+			           			 ){
+					    		  tval[1]=8;
+					    	  }
+			
+					}
+		    		  
+		    	  });
+		    	  
+		    	  th1.start();
+		    	  th2.start();
+		    	  
+		    	  /* warten auf Threads */
+		    	  while(th1.isAlive()&&th2.isAlive()){
+		    		  try {
+						Thread.sleep(10);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+		    	  }
+		    	  
+		    	  value = value + tval[0] + tval[1];
 		    	  
 		    	  //Wenn K�nig in der N�he, dann ziehe dahin!
 		    	  if((c1 ==BoardContent.KING)){
@@ -396,52 +435,114 @@ public class NormalStrategy implements MoveStrategy {
 		      //10|10|xx|xx|xx|08|xx|xx|xx|xx|xx|08|xx|xx
 		      //11|xx|10|xx|08|xx|xx|xx|xx|xx|xx|xx|08|xx
 		      //12|xx|xx|10|xx|xx|xx|xx|xx|xx|xx|08|08|xx
-		      if(p==BoardContent.ATTACKER){
-		    	  //links oben  
-		    	  if(((row==2)&&(col==0))||
-		    		 ((row==1)&&(col==1))||
-		    		 ((row==0)&&(col==2))
-		    		 ){
-		    		  value+=100;
+		      if(p==BoardContent.DEFENDER){
+		    	  
+		    	  Thread th1 = new Thread(new Runnable(){
+
+					@Override
+					public void run() {
+					
+				    	  //links oben  
+				    	  if(((row==2)&&(col==0))||
+				    		 ((row==1)&&(col==1))||
+				    		 ((row==0)&&(col==2))
+				    		 ){
+				    		  tval[0]=100;
+				    	  }
+				    	  
+						}
+			    		  
+			    	  });
+		    	  
+		    	  Thread th2 = new Thread(new Runnable(){
+
+					@Override
+					public void run() {
+
+					      //links unten 
+					    	  if(((row==10)&&(col==0))||
+							     ((row==11)&&(col==1))||
+							     ((row==12)&&(col==0))
+							      ){
+							    		  tval[1]=100;
+							      }
+						}
+			    		  
+			    	  });
+		    	  
+		    	  Thread th3 = new Thread(new Runnable(){
+
+					@Override
+					public void run() {
+					
+					    //rechts oben
+					    	  if(((row==0)&&(col==10))||
+							   	 ((row==1)&&(col==11))||
+							   	 ((row==2)&&(col==12))
+							   	 ){
+							    	  tval[2]=100;
+							     } 
+						}
+			    		  
+			    	  });
+		    	  
+		    	  Thread th4 = new Thread(new Runnable(){
+
+					@Override
+					public void run() {
+
+				    	  //rechts unten
+				    	  if(((row==10)&&(col==12))||
+				    		((row==11)&&(col==11))||
+							((row==12)&&(col==10))
+				    			 ){
+						    	  tval[3]=100;
+						     } 
+					}
+		    		  
+		    	  });
+		    	  
+		    	  
+		    	  Thread th5 = new Thread(new Runnable(){
+
+					@Override
+					public void run() {
+
+					    //rest 
+					    	  if(((row==11)&&(col==3))||
+							     ((row==10)&&(col==4))||
+							     ((row==9)&&(col==5))||
+							     ((row==8)&&(col==6))||
+							     ((row==7)&&(col==7))||
+							     ((row==8)&&(col==8))||
+							     ((row==9)&&(col==9))||
+							     ((row==10)&&(col==10))||
+							     ((row==11)&&(col==11))||
+							     ((row==12)&&(col==11))||				     				     
+							     ((row==12)&&(col==10))
+							     ){
+							    		  tval[4]=8;
+							     }
+					}
+		    		  
+		    	  });
+		    	  
+		    	  th1.start();
+		    	  th2.start();
+		    	  th3.start();
+		    	  th4.start();
+		    	  th5.start();
+		    	  
+		    	  while(th1.isAlive()&&th2.isAlive()&&th3.isAlive()&&th4.isAlive()&&th5.isAlive()){
+		    		  try {
+						Thread.sleep(10);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
 		    	  }
-		      //links unten 
-		    	  if(((row==10)&&(col==0))||
-				     ((row==11)&&(col==1))||
-				     ((row==12)&&(col==0))
-				      ){
-				    		  value+=100;
-				      }
-		    //rechts oben
-		    	  if(((row==0)&&(col==10))||
-				   	 ((row==1)&&(col==11))||
-				   	 ((row==2)&&(col==12))
-				   	 ){
-				    	  value+=100;
-				     } 
 		    	  
-		    	  //rechts unten
-		    	  if(((row==10)&&(col==12))||
-		    		((row==11)&&(col==11))||
-					((row==12)&&(col==10))
-		    			 ){
-				    	  value+=100;
-				     } 
+		    	  value = tval[0]+tval[1]+tval[2]+tval[3]+tval[4];
 		    	  
-		    //rest 
-		    	  if(((row==11)&&(col==3))||
-				     ((row==10)&&(col==4))||
-				     ((row==9)&&(col==5))||
-				     ((row==8)&&(col==6))||
-				     ((row==7)&&(col==7))||
-				     ((row==8)&&(col==8))||
-				     ((row==9)&&(col==9))||
-				     ((row==10)&&(col==10))||
-				     ((row==11)&&(col==11))||
-				     ((row==12)&&(col==11))||				     				     
-				     ((row==12)&&(col==10))
-				     ){
-				    		  value+=8;
-				     }
 		      }
 		      System.out.println(m.toString() + "Value: " + value);
 		      return value;
