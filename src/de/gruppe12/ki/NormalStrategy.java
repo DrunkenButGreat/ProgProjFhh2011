@@ -25,9 +25,7 @@ public class NormalStrategy implements MoveStrategy {
 	private Board b;
 	Random r;
 	static int[] tval = new int[10];
->>>>>>> branch 'master' of ssh://git@github.com/nedien/ProgProjFhh2011.git
 
-	static int[] tval = new int[10];
 	
 	public NormalStrategy(){
 		grpNr = 12;
