@@ -15,7 +15,7 @@ import de.gruppe12.shared.Cell;
 import de.gruppe12.shared.Move;
 
 public class GuiController implements Observer{
-	private final String kiPathName= "C:\\Kis";
+	private final String kiPathName;
 	private final MoveAnimation anim;
 	private GameGui gui;
 	private LogicMain logic;
@@ -26,6 +26,11 @@ public class GuiController implements Observer{
 	
 	public GuiController() {
 		anim= new MoveAnimation(this);
+		if(System.getProperty("os.name").contains("Windows")){
+			kiPathName= "C:\\Kis";
+		} else {
+			kiPathName= "/opt/Kis";
+		}
 	}
 	
 	protected void setGameGui(GameGui gui) {
