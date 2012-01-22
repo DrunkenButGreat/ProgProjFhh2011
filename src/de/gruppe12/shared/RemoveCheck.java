@@ -85,9 +85,9 @@ public class RemoveCheck {
 		 * Es g�be sonst eine Index out of Bound Exception
 		 */
 		
-		// Links gucken und evtl entfernen
+		// Links gucken und evtl entfernen, wenn eigner Stein hinter Gegner - oder wenn Turm hinter Gegner
 		try{
-			if(tboard[x-1][y]==opposite(me)&&tboard[x-2][y]==me){
+			if(tboard[x-1][y]==opposite(me)&&(tboard[x-2][y]==me || (x==2 && (y==0 || y==12)))){
 				tboard[x-1][y] = BoardContent.EMPTY;
 				if(gamelog) GameLog.logDebugEvent(opposite(me).toString() + " entfernt: " + (x - 1) + ", " + y);
 			}
@@ -95,9 +95,9 @@ public class RemoveCheck {
 			
 		}
 		
-		// Rechts gucken und evtl entfernen
+		// Rechts gucken und evtl entfernen, wenn eigner Stein hinter Gegner - oder wenn Turm hinter Gegner
 			try{
-				if(tboard[x+1][y]==opposite(me)&&tboard[x+2][y]==me){
+				if(tboard[x+1][y]==opposite(me)&&(tboard[x+2][y]==me || (x==10 && (y==0 || y==12)))){
 					tboard[x+1][y] = BoardContent.EMPTY;
 					if(gamelog) GameLog.logDebugEvent(opposite(me).toString() + " entfernt: " + (x + 1) + ", " + y);
 				}
@@ -105,9 +105,9 @@ public class RemoveCheck {
 				
 			}
 		
-		// Unten gucken und evtl entfernen
+		// Unten gucken und evtl entfernen, wenn eigner Stein hinter Gegner - oder wenn Turm hinter Gegner
 			try{
-				if(tboard[x][y+1]==opposite(me)&&tboard[x][y+2]==me){
+				if(tboard[x][y+1]==opposite(me)&&(tboard[x][y+2]==me || (y==10 && (x==0 || x==12)))){
 					tboard[x][y+1] = BoardContent.EMPTY;
 					if(gamelog) GameLog.logDebugEvent(opposite(me).toString() + " entfernt: " + x + ", " + (y + 1));
 				}
@@ -115,9 +115,9 @@ public class RemoveCheck {
 				
 			}
 			
-			// Unten gucken und evtl entfernen
+			// Unten gucken und evtl entfernen, wenn eigner Stein hinter Gegner - oder wenn Turm hinter Gegner
 			try{
-				if(tboard[x][y-1]==opposite(me)&&tboard[x][y-2]==me){
+				if(tboard[x][y-1]==opposite(me)&&(tboard[x][y-2]==me || (y==2 && (x==0 || x==12)))){
 					tboard[x][y-1] = BoardContent.EMPTY;
 					if(gamelog) GameLog.logDebugEvent(opposite(me).toString() + " entfernt: " + x + ", " + (y - 1));
 				}
@@ -143,16 +143,38 @@ public class RemoveCheck {
 		BoardContent tboard[][] = board.get();
 		Board tb = board;		
 		
-		// Prüfen ob alle Fluchburgen blockiert sind
-		if (board.getCell(0, 1).getContent() == BoardContent.ATTACKER &&
-				board.getCell(1, 0).getContent() == BoardContent.ATTACKER &&
-				board.getCell(11, 0).getContent() == BoardContent.ATTACKER &&
-				board.getCell(12, 1).getContent() == BoardContent.ATTACKER &&
-				board.getCell(0, 11).getContent() == BoardContent.ATTACKER &&
-				board.getCell(1, 12).getContent() == BoardContent.ATTACKER &&
-				board.getCell(12, 11).getContent() == BoardContent.ATTACKER &&
-				board.getCell(11, 12).getContent() == BoardContent.ATTACKER
-				){
+		// Prüfen ob alle Fluchtburgen blockiert sind
+		boolean leftTopCornerblocked= (board.getCell(0, 2).getContent().equals(BoardContent.ATTACKER) &&
+									   board.getCell(2, 0).getContent().equals(BoardContent.ATTACKER)) &&
+									  (board.getCell(1, 1).getContent().equals(BoardContent.ATTACKER) ||
+									   (board.getCell(1, 2).getContent().equals(BoardContent.ATTACKER) &&
+									   board.getCell(2, 1).getContent().equals(BoardContent.ATTACKER)));
+		
+		boolean rightTopCornerblocked = (board.getCell(10, 0).getContent().equals(BoardContent.ATTACKER) &&
+				   						board.getCell(12, 2).getContent().equals(BoardContent.ATTACKER)) &&
+				   						(board.getCell(11, 1).getContent().equals(BoardContent.ATTACKER) ||
+				   						(board.getCell(10, 1).getContent().equals(BoardContent.ATTACKER) &&
+				   						board.getCell(11, 2).getContent().equals(BoardContent.ATTACKER)));
+		
+		boolean leftBottomCornerblocked = (board.getCell(0, 10).getContent().equals(BoardContent.ATTACKER) &&
+										   board.getCell(2, 12).getContent().equals(BoardContent.ATTACKER)) &&
+										 (board.getCell(1, 11).getContent().equals(BoardContent.ATTACKER) ||
+										(board.getCell(1, 10).getContent().equals(BoardContent.ATTACKER) &&
+										board.getCell(2, 11).getContent().equals(BoardContent.ATTACKER)));
+		
+		boolean rightBottomCornerblocked = (board.getCell(10, 12).getContent().equals(BoardContent.ATTACKER) &&
+										board.getCell(12, 10).getContent().equals(BoardContent.ATTACKER)) &&
+										(board.getCell(11, 11).getContent().equals(BoardContent.ATTACKER) ||
+										(board.getCell(10, 11).getContent().equals(BoardContent.ATTACKER) &&
+										board.getCell(11, 10).getContent().equals(BoardContent.ATTACKER)));
+		
+		if (leftBottomCornerblocked) System.out.println("LB B");
+		if (leftTopCornerblocked) System.out.println("LT B");
+		if (rightBottomCornerblocked) System.out.println("RB B");
+		if (rightTopCornerblocked) System.out.println("RT B");
+		
+		// Wenn alle Fluchtburgen blockiert sind -> Angreifer gewinnt
+		if (leftTopCornerblocked && rightTopCornerblocked && leftBottomCornerblocked && rightBottomCornerblocked){
 			tb.setFinish();
 			tb.setAttackerWon();
 			if(gamelog) GameLog.logDebugEvent("Spielende");
@@ -160,7 +182,7 @@ public class RemoveCheck {
 		}
 		
 		
-		// K�nig zieht auf Burg beendet die Methode und setzt das Finish Flag
+		// "K�nig zieht auf Burg" beendet die Methode und setzt das Finish Flag
 		if(currentMove.getToCell().getContent()==BoardContent.KING &&
 				((x==0&&y==0) || (x==0&&y==tboard[0].length-1) || (x==tboard.length-1&&y==0) || (x==tboard.length-1&&y==tboard[0].length-1))
 		) {

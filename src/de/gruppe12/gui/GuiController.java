@@ -126,7 +126,7 @@ public class GuiController implements Observer{
 	
 	protected void initHvHGame() {
 		logic.humanDefHumanAtt(thinkTime);
-		board= null;
+		board= logic.getBoard().get();
 	}
 	
 	protected String getLastMoveLog() {

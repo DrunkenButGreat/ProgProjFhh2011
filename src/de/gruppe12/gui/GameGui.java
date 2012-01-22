@@ -580,31 +580,22 @@ public class GameGui extends JFrame {
 
 
 	public static void main(String[] args) {
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				GameGui inst= null;
-				inst = new GameGui();
-				
-				LogicMain logicMain= new LogicMain();
-				inst.getController().setLogicMain(logicMain);
-				
-				inst.setLocationRelativeTo(null);
-				inst.setVisible(true);
-				
-				try {
-					GameLog.init("testfile.txt");
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
-			}
-		});
+		GameGui gameGui = new GameGui();
 		
+		LogicMain logicMain= new LogicMain();
+		gameGui.getController().setLogicMain(logicMain);
 		
+		gameGui.setLocationRelativeTo(null);
+		gameGui.setVisible(true);
+		
+		try {
+			GameLog.init("logfile.txt");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}	
 	}
 	
-	protected GuiController getController() {
+	public GuiController getController() {
 		return controller;
 	}
 	/**
@@ -617,6 +608,7 @@ public class GameGui extends JFrame {
 	protected void update() {
 		String logString= controller.getLastMoveLog();
 		if (logString!= null) {
+			System.out.println(logString);
 			logListModel.addElement(logString);
 		}
 		
