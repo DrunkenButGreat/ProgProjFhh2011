@@ -14,6 +14,15 @@ public class MoveAnimation {
 		running= false;
 	}
 	
+	/**
+	 * startAnimation
+	 * 
+	 * startet eine neue Animation. Zuerst wird die Animationszeit in abhängigkeit von der Entfernung berechnet
+	 * und anschließend wird ein AnimationTimer gestartet
+	 * 
+	 * @param sourceCell : Zelle mit zu bewegender Figur
+	 * @param destCell : Zielzelle der Figur
+	 */
 	protected void startAnimation(Point sourceCell, Point destCell) {
 		this.sourceCell= sourceCell;
 		this.destCell= destCell;
@@ -22,32 +31,69 @@ public class MoveAnimation {
 		new AnimationTimer(this).start();
 	}
 
+	/**
+	 * berechntet Animationsdauer in Abhängigkeit von der Entfernung zwischen Ursprungs und Ziel Zelle
+	 */
 	private void initAnimationTimers() {
 		int distance= Math.max(Math.abs(sourceCell.x-destCell.x), Math.abs(sourceCell.y-destCell.y));
 		remainingDuration= animationDuration= distance*durationPerCrossedCell;
 	}
 
+	/**
+	 * getRemainingDuration
+	 * 
+	 * gibt die noch verbleibende Animationszeit in ms zurück
+	 * 
+	 * @return remaining Duration
+	 */
 	protected int getRemainingDuration() {
 		return remainingDuration;
 	}
 
+	/**
+	 * end
+	 * 
+	 * sagt dem GuiController, dass es sich das aktuelle Brett speichern kann,
+	 * setzt (Animation) running auf false
+	 * und weckt die schlafende Logik auf
+	 * 
+	 */
 	protected void end() {
 		gc.refreshBoard();
 		running= false;
 		gc.update();
 		gc.wakeLogic();
 	}
-
+	
+	/**
+	 * update
+	 * 
+	 * zieht von der Restdauer die verstrichene Dauer ab und bewirkt ein repaint der GUI
+	 * 
+	 * @param dT : verstrichene Zeit
+	 */
 	protected void update(long dT) {
 		remainingDuration-= dT;
 		remainingDuration= Math.max(0, remainingDuration);
 		gc.update();
 	}
 
+	/**
+	 * gibt wider ob derzeitig eine Animation läuft
+	 * 
+	 * @return boolean isRunning
+	 */
 	protected boolean isRunning() {
 		return running;
 	}
 
+	/**
+	 * getStonePosition
+	 * 
+	 * berechnet die Position des bewegten Steins in Abhängigkeit zur Rest Animationsdauer
+	 * 
+	 * @return double Array mit x und y Position des Steins
+	 */
 	protected double[] getStonePosition() {
 		return new double[] {
 				destCell.x+ (sourceCell.x-destCell.x)*remainingDuration/(double)animationDuration,
@@ -55,6 +101,11 @@ public class MoveAnimation {
 		};
 	}
 
+	/**
+	 * getSrcCell
+	 * 
+	 * @return gibt die Zelle wider, von der aus die Figur gestartet ist
+	 */
 	protected Point getSrcCell() {
 		return sourceCell;
 	}

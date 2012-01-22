@@ -36,15 +36,34 @@ public class GuiController implements Observer{
 	protected void setkiPathName(String name) {
 		kiPathName= name;
 	}
-	
+
 	public void setLogicMain(LogicMain logic) {
 		this.logic= logic;
 		logic.addObserver(this);
 	}
 	
+	/**
+	 * gameFinished
+	 * 
+	 * fragt das Board ab, ob das Spiel beendet ist
+	 * 
+	 * @return boolean ob Spiel zu Ende ist
+	 */
 	protected boolean gameFinished() {
 		return logic.getBoard().isFinished();
 	}
+	
+	protected boolean isDefendersTurn() {
+		return logic.getDefPlayerTurn();
+	}
+	
+	/**
+	 * isPlayersTurn
+	 * 
+	 * @param cellX
+	 * @param cellY
+	 * @return boolean ob Zelle dem Spieler gehört, der am Zug ist
+	 */
 	
 	protected boolean isPlayersTurn(int cellX, int cellY) {
 		boolean defTurn= logic.getDefPlayerTurn();
@@ -57,11 +76,26 @@ public class GuiController implements Observer{
 		return result;
 	}
 	
+	/**
+	 * getBoard
+	 * 
+	 * @return BoardContent Array
+	 */
 	protected BoardContent[][] getBoard() {
 		if (board==null) board= getBoardCopy();
 		return board;
 	}
 	
+	/**
+	 * doMove
+	 * 
+	 * ruft die move() Methode der LogicMain auf. 
+	 * 
+	 * @param srcX : x-Wert der zu bewegenden Spielfigur
+	 * @param srcY : y-Wert der zu bewegenden Spielfigur
+	 * @param destX : x-Wert der Ziel Zelle
+	 * @param destY : y-Wert der Ziel Zelle
+	 */
 	protected void doMove(final int srcX, final int srcY, final int destX, final int destY) {
 		new Thread() {
 			@Override public void run() {
@@ -70,10 +104,20 @@ public class GuiController implements Observer{
 		}.start();
 	}
 
+	/**
+	 * update
+	 * 
+	 * implementiert Observer-Interface Methode. Wenn ein Move Objekt übergeben wird, 
+	 * wird eine Move Animation gestartet.
+	 * 
+	 * Wenn ein String mit "GameOver" übergeben wird, wird die Update Methode der GUI aufgerufen um das Spielende anzuzeigen.
+	 * 
+	 */
 	@Override
 	public void update(Observable obsSrc, Object obj) {
 		if (obj instanceof Move) {
 			lastMoveLog= logic.getLastGameLogEvent();
+			System.out.println(lastMoveLog);
 			Move move= (Move)obj;
 			Point sourceCell= new Point(move.getFromCell().getCol(), move.getFromCell().getRow());
 			Point destCell= new Point(move.getToCell().getCol(), move.getToCell().getRow());
@@ -97,15 +141,32 @@ public class GuiController implements Observer{
 		return null;
 	}
 	
+	/**
+	 * logicAwaitsPlayerMove
+	 * 
+	 * @return boolean-Wert ob Logik momentan auf Spieler Move wartet
+	 */
 	protected boolean logicAwaitsPlayerMove() {
 		//return logic.isWaiting();
 		return true;
 	}
 	
+	/**
+	 * update
+	 * 
+	 * ruft update()-Methode der GUI auf
+	 */
 	protected void update() {
 		gui.update();
 	}
 	
+	/**
+	 * getBoardCopy
+	 * 
+	 * gibt eine Kopie des aktuellen Boardinhalts wieder (um Steine für Animation temporär zu speichern)
+	 * 
+	 * @return BoardContent Array
+	 */
 	private BoardContent[][] getBoardCopy() {
 		BoardContent[][] boardcopy= new BoardContent[13][13];
 		for (int i=0; i<boardcopy.length; i++) {
@@ -116,25 +177,54 @@ public class GuiController implements Observer{
 		return boardcopy; 
 	}
 	
+	/**
+	 * refreshBoard
+	 * 
+	 * setzt das Board Attribut auf das aktuelle Board der Logik
+	 * 
+	 */
 	protected void refreshBoard() {
 		board= getBoardCopy();
 	}
 	
+	/**
+	 * getAnimation
+	 * 
+	 * @return aktuelle MoveAnimation
+	 */
 	protected MoveAnimation getAnimation() {
 		return anim;
 	}
 	
+	/**
+	 * initHvHGame
+	 * 
+	 * ruft Methode der Logik auf um Mensch vs Mensch Spiel zu starten
+	 */
 	protected void initHvHGame() {
 		logic.humanDefHumanAtt(thinkTime);
 		board= null;
 	}
 	
+	/**
+	 * getLastMoveLog
+	 * 
+	 * @return LogString des letzten Moves
+	 */
 	protected String getLastMoveLog() {
 		String last= lastMoveLog;
 		lastMoveLog= null;
 		return last;
 	}
 	
+	/**
+	 * initHvAGame
+	 * 
+	 * ruft Methode der Logik auf um Mensch vs KI Spiel zu starten
+	 * 
+	 * @param humanIsAttacker 
+	 * @param aiMoveStrategyName : Name der KI Strategie Class
+	 */
 	protected void initHvAGame(boolean humanIsAttacker, String aiMoveStrategyName) {
 		MoveStrategy mStrat= null;
 		try {
@@ -147,7 +237,14 @@ public class GuiController implements Observer{
 		board = null;
 	}
 
-	
+	/**
+	 * initAvaGame
+	 * 
+	 * ruft Methode der Logik auf um KI vs KI Spiel zu starten
+	 * 
+	 * @param offenderMoveStrategyName : Name der Angreifer KI Class
+	 * @param defenderMoveStrategyName : Name der Verteidiger KI Class
+	 */
 	protected void initAvAGame(final String offenderMoveStrategyName, final String defenderMoveStrategyName) {
 		new Thread () {
 			@Override
@@ -166,10 +263,22 @@ public class GuiController implements Observer{
 		board = null;
 	}
 	
+	/**
+	 * defenderWon
+	 * 
+	 * @return boolean-Wert der widergibt ob Verteidiger gewonnen hat 
+	 */
 	protected boolean defenderWon() {
 		return !logic.getBoard().attackerWon();
 	}
 
+	/**
+	 * getStrats
+	 * 
+	 * liefert eine Map mit kurzen Namen als Key und relativem Pfad als Wert
+	 *  
+	 * @return Map, die alle .class Dateien, die im aktuellen Ki Jar Pfad sind, speichert
+	 */
 	protected Map<String, String> getStrats() {
 		ArrayList<String> moveStrategies= null;
 		try {
@@ -194,6 +303,11 @@ public class GuiController implements Observer{
 		return shortPathMap;
 	}
 
+	/**
+	 * wakeLogic
+	 * 
+	 * weckt LogicMain nach Beenden der MoveAnimation
+	 */
 	protected void wakeLogic() {
 		synchronized (logic) {
 			logic.notifyAll();

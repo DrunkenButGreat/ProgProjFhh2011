@@ -21,7 +21,7 @@ public class LogicMain extends Observable {
 	
 	public LogicMain(){
 		initLogicMain();
-		gameLog = false;
+		gameLog = true;
 		commandLine = false;
 	}
 	
@@ -104,11 +104,11 @@ public class LogicMain extends Observable {
 	private void logGameEvent(String event){
 		if (this.defPlayerTurn){
 			GameLog.logGameEvent(this.strDefender, event);
-			this.lastGameLogEvent = this.strDefender + ": " + event;
+			this.lastGameLogEvent = "Def: " + event;
 		}
 		else{
 			GameLog.logGameEvent(this.strAttacker, event);
-			this.lastGameLogEvent = this.strAttacker + ": " + event;
+			this.lastGameLogEvent = "Att: " + event;
 		}
 	}
 	
@@ -171,7 +171,7 @@ public class LogicMain extends Observable {
 			this.board = RemoveCheck.checkForRemove(move, this.board);
 			
 			//Und anschließend das Event loggen
-			if (this.gameLog) logGameEvent("Gezogen von: " + move.getFromCell().getCol() + "," + move.getFromCell().getRow() + 
+			if (this.gameLog) logGameEvent("Von: " + move.getFromCell().getCol() + "," + move.getFromCell().getRow() + 
 					" nach: " + move.getToCell().getCol() + "," + move.getToCell().getRow());
 			
 			// Spieler wechseln

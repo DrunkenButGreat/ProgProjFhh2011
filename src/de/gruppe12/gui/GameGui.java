@@ -10,9 +10,6 @@ import javax.swing.border.TitledBorder;
 
 import javax.imageio.ImageIO;
 
-import de.gruppe12.logic.GameLog;
-import de.gruppe12.logic.LogicMain;
-
 /** 
  * GameGui
  * 
@@ -38,7 +35,7 @@ public class GameGui extends JFrame {
 	private JPanel jpnlAiVsAi;
 	private JPanel jpnlGamePanel;
 	
-	private JPanel jpnlBoardDisplay;
+	private JPanelBoardDisplay jpnlBoardDisplay;
 	private JPanel jpnlGameInfo;
 	
 	private final Font font;
@@ -49,18 +46,21 @@ public class GameGui extends JFrame {
 	
 	private final DefaultListModel logListModel;
 	
+	private String playerAttackerName;
+	private String playerDefenderName;
+	
+	
 	/* ActionListener, der Buttons mit {ENTER} zu aktivieren ermoeglicht */ 
 	private KeyListener enterListener;
 	/* FocusListener, der den Inhalt eines JTextFields bei Fokus-Gewinn markiert */
 	private FocusListener markOnFocus;
 
 	private Map<String, String> moveStrategies;
-
 	private JComboBox jcbAi;
-
 	private JComboBox jcbOffenderAi;
-
 	private JComboBox jcbDefenderAi;
+
+	private JTextField jtfCurrentPlayer;
 	
 	/** 
 	 * GameGui Konstruktor
@@ -288,14 +288,18 @@ public class GameGui extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				setAttackerName(jtfPlayer1.getText());
+				setDefenderName(jtfPlayer2.getText());
 				controller.initHvHGame();
 				cardLO.show(cardLOContainer, cardNameGamePanel);
+				jpnlBoardDisplay.resetSelectedCell();
+				update();
 			}
 		});
 
 		jpnlHumanVsHuman.addComponentListener(new ComponentAdapter() {
 			@Override public void componentResized(ComponentEvent e) {
-				int fontSize= jtfPlayer1.getHeight()/5;
+				int fontSize= jtfPlayer1.getHeight()/3;
 				int fontSizeSmall= (int) Math.round(fontSize*0.7);
 				if (fontSize==0) return;
 				jtfPlayer1.setFont(font.deriveFont(Font.BOLD, fontSize));
@@ -308,6 +312,15 @@ public class GameGui extends JFrame {
 		
 	}
 	
+	protected void setAttackerName(String name) {
+		playerAttackerName= name;
+	}
+	
+	protected void setDefenderName(String name) {
+		playerDefenderName= name;
+	}
+		
+
 	/**
 	 * buildHumanVsAi
 	 * 
@@ -390,9 +403,20 @@ public class GameGui extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				String strat= moveStrategies.get((String)jcbAi.getSelectedItem());
-				controller.initHvAGame(jrbPlayer.isSelected(), strat);
+				boolean humanIsAttacker= jrbPlayer.isSelected();
+				String kiShortName= (String)jcbAi.getSelectedItem();
+				if (humanIsAttacker) {
+					setAttackerName(jtfPlayer.getText());
+					setDefenderName(kiShortName);
+				} else {
+					setAttackerName(kiShortName);
+					setDefenderName(jtfPlayer.getText());
+				}
+				String strat= moveStrategies.get(kiShortName);
+				controller.initHvAGame(humanIsAttacker, strat);
 				cardLO.show(cardLOContainer, cardNameGamePanel);
+				jpnlBoardDisplay.resetSelectedCell();
+				update();
 			}
 		});
 		
@@ -445,13 +469,26 @@ public class GameGui extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				String offStrat= moveStrategies.get((String)jcbOffenderAi.getSelectedItem());
-				String defStrat= moveStrategies.get((String)jcbDefenderAi.getSelectedItem());
+				String offStratShort=(String)jcbOffenderAi.getSelectedItem();
+				String defStratShort=(String)jcbDefenderAi.getSelectedItem();
+				
+				setAttackerName(offStratShort);
+				setDefenderName(defStratShort);
+				
+				String offStrat= moveStrategies.get(offStratShort);
+				String defStrat= moveStrategies.get(defStratShort);
 				cardLO.show(cardLOContainer, cardNameGamePanel);
 				controller.initAvAGame(offStrat, defStrat);
+				jpnlBoardDisplay.resetSelectedCell();
+				update();
 			}
 		});
 	}
+	/**
+	 * buildGamePanel
+	 * 
+	 * baut das GamePanel auf (bestehend aus jpnlGameInfo und jpnlBoardDisplay)
+	 */
 
 	private void buildGamePanel() {
 		jpnlGamePanel= new JPanel();
@@ -474,6 +511,9 @@ public class GameGui extends JFrame {
 	private void buildBoardDisplay() {
 		jpnlBoardDisplay= new JPanelBoardDisplay(controller);
 		jpnlBoardDisplay.setMinimumSize(new Dimension(300,300));
+		jpnlBoardDisplay.setOpaque(true);
+		jpnlBoardDisplay.setBackground(Color.LIGHT_GRAY);
+		jpnlBoardDisplay.setBorder(BorderFactory.createEtchedBorder());
 	}
 	
 	/**
@@ -487,21 +527,34 @@ public class GameGui extends JFrame {
 		
 		JList jlstLog= new JList(logListModel);
 		jlstLog.setPreferredSize(new Dimension(250, 0));
-		jlstLog.setBorder(BorderFactory.createTitledBorder("Log:"));
+		jlstLog.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Log:"));
 		TitledBorder tb= (TitledBorder) jlstLog.getBorder();
-		tb.setTitleJustification(TitledBorder.CENTER);
-		tb.setTitleFont(font.deriveFont(16F));
+		//tb.setTitleJustification(TitledBorder.CENTER);
+		tb.setTitleFont(font.deriveFont(12F));
+		jlstLog.setOpaque(true);
+		jlstLog.setBackground(Color.LIGHT_GRAY);
+		jlstLog.setFont(font.deriveFont(14F));
 		
 		jpnlGameInfo.setLayout(new BorderLayout());
 		jpnlGameInfo.add(jlstLog, BorderLayout.CENTER);
+		
+		jtfCurrentPlayer = new JTextField();
+		jtfCurrentPlayer.setEditable(false);
+		jtfCurrentPlayer.setFont(font.deriveFont(14F));
+		jtfCurrentPlayer.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Turn:"));
+		((TitledBorder) jtfCurrentPlayer.getBorder()).setTitleFont(font.deriveFont(12F));
+		jpnlGameInfo.add(jtfCurrentPlayer, BorderLayout.NORTH);
+		jtfCurrentPlayer.setOpaque(true);
+		jtfCurrentPlayer.setBackground(Color.LIGHT_GRAY);
 		
 	}
 	
 	/**
 	 * buildMenuBar
 	 * 
-	 * baut die Menueleiste auf, die das Beenden des Spiels und 
-	 * das Starten eines neuen Spiels ermoeglicht
+	 * baut die Menueleiste auf, die das Beenden des Spiels, 
+	 * das Starten eines neuen Spiels und die Auswahl
+	 * der KI Jar Datei ermoeglicht
 	 * 
 	 */
 
@@ -535,7 +588,7 @@ public class GameGui extends JFrame {
 		
 		jmGame.add(jmiNewGame);
 		
-		
+		//Ki Jar/Zip Auswahl Möglichkeit
 		JMenu jmSettings= new JMenu("Optionen");
 		JMenuItem jmiKiJarChooser= new JMenuItem("Ki Jar Datei auswählen");
 		final JFileChooser jfcKiJarChooser= new JFileChooser();
@@ -586,6 +639,12 @@ public class GameGui extends JFrame {
 		if (logString!= null) {
 			logListModel.addElement(logString);
 		}
+		
+		String currentPlayer;
+		if (controller.isDefendersTurn()) currentPlayer= "Defender ("+playerDefenderName+")";
+		else currentPlayer= "Attacker ("+ playerAttackerName+")";
+		
+		jtfCurrentPlayer.setText(currentPlayer);
 		
 		SwingUtilities.invokeLater(new Runnable() {
 			

@@ -10,6 +10,7 @@ import javax.swing.JPanel;
 import de.fhhannover.inform.hnefatafl.vorgaben.BoardContent;
 
 public class JPanelBoardDisplay extends JPanel {
+	private final Point unselected= new Point(-1,-1);
 	private static final long serialVersionUID = 1L;
 	private GuiController gc;
 	private int fieldSize;
@@ -25,9 +26,16 @@ public class JPanelBoardDisplay extends JPanel {
 	private Image offenderIcon;
 	private Image offenderWinImage;
 	
+	/**
+	 * JPanelBoardDisplay
+	 * 
+	 * Konstruktor, der die Ressourcen l‰dt, den GuiController speichert und anschlieﬂend ein repaint aufruft
+	 * 
+	 * @param gc : GuiController zur Interaktion
+	 */
 	public JPanelBoardDisplay(final GuiController gc) {
 		this.gc= gc;
-		selectedCell= new Point(-1,-1);
+		selectedCell= new Point(unselected);
 		try {
 			boardImage= ImageIO.read(getClass().getResource("images/boardimage.bmp"));
 			kingIcon= ImageIO.read(getClass().getResource("images/kingicon.gif"));
@@ -58,9 +66,9 @@ public class JPanelBoardDisplay extends JPanel {
 				if (gc.isPlayersTurn(cell.x, cell.y)) {
 					selectedCell.setLocation(cell);
 
-				} else if (!selectedCell.equals(new Point(-1, -1))) {
+				} else if (!selectedCell.equals(unselected)) {
 					gc.doMove(selectedCell.x, selectedCell.y, cell.x, cell.y);
-					selectedCell.setLocation(-1, -1);
+					selectedCell.setLocation(unselected);
 				}
 				repaint();
 				
@@ -74,6 +82,10 @@ public class JPanelBoardDisplay extends JPanel {
 			 */
 
 		});
+	}
+	
+	protected void resetSelectedCell() {
+		selectedCell.setLocation(unselected);
 	}
 	
 	/**
@@ -112,36 +124,14 @@ public class JPanelBoardDisplay extends JPanel {
 				
 		board= gc.getBoard();
 		
-		int roughBoardSize= (int)(Math.min(getWidth(), getHeight()) * 0.8);
+		int roughBoardSize= (int)(Math.min(getWidth(), getHeight()) * 0.9);
 		fieldSize = roughBoardSize/15;
 		boardStartX = (getWidth()-roughBoardSize)/2;
 		boardStartY = (getHeight()-roughBoardSize)/2;
 		
-		//Brett zeichnen
-		tempg.setColor(Color.ORANGE);
+
 		tempg.drawImage(boardImage, boardStartX-fieldSize, boardStartY-fieldSize, boardStartX-fieldSize+fieldSize*17, boardStartY-fieldSize+fieldSize*17, 0, 0, boardImage.getWidth(null), boardImage.getHeight(null), null);
-		//tempg.drawRect(boardStartX-fieldSize, boardStartY-fieldSize, fieldSize*17, fieldSize*17);
-		
-		/*//Tuerme zeichnen
-		int towerSize= 2*fieldSize;
-		tempg.setColor(Color.GREEN);
-		tempg.drawRect(boardStartX, boardStartY, towerSize, towerSize);
-		tempg.drawRect(boardStartX+13*fieldSize, boardStartY, towerSize, towerSize);
-		tempg.drawRect(boardStartX,boardStartY+13*fieldSize, towerSize, towerSize);
-		tempg.drawRect(boardStartX+13*fieldSize, boardStartY+13*fieldSize, towerSize, towerSize);
-		
-		//Tron markieren
-		tempg.drawLine(boardStartX+7*fieldSize, boardStartY+7*fieldSize, boardStartX+8*fieldSize, boardStartY+8*fieldSize);
-		tempg.drawLine(boardStartX+7*fieldSize, boardStartY+8*fieldSize, boardStartX+8*fieldSize, boardStartY+7*fieldSize);
-		
-		for (int i=0; i<13; i++) {
-			for (int j=0; j<13; j++) {
-				if (!( (i==j && (i==0 || i==12)) || (i==0 && j==12) || (i==12 && j==0) )){
-					tempg.setColor(Color.GREEN);
-					tempg.drawRect(boardStartX+fieldSize*(i+1), boardStartY+fieldSize*(j+1), fieldSize, fieldSize);
-				}
-			}
-		}*/
+
 		for (int i=0; i<13; i++) {
 			for (int j=0; j<13; j++) {
 				if (board[i][j]!=BoardContent.EMPTY && board[i][j]!=BoardContent.INVALID) {
@@ -152,7 +142,7 @@ public class JPanelBoardDisplay extends JPanel {
 		
 		
 
-		if (!selectedCell.equals(new Point(-1,-1))) {
+		if (!selectedCell.equals(unselected)) {
 			tempg.setColor(Color.BLUE);
 			
 			tempg.drawRect(boardStartX+fieldSize*(selectedCell.x+1), boardStartY+fieldSize*(selectedCell.y+1), fieldSize, fieldSize);
@@ -173,7 +163,17 @@ public class JPanelBoardDisplay extends JPanel {
 		tempg.dispose();
 	}
 
-	private void drawStone(int i, int j, BoardContent bc, Graphics2D g) {
+	/**
+	 * drawStone
+	 * 
+	 * zeichnet Spielfigur an der Zelle xy (Icon h‰ngt vom BoardContent ab)
+	 * 
+	 * @param x : X-Position der Figur
+	 * @param y : Y-Position der Figur
+	 * @param bc : Typ der Figur
+	 * @param g : Graphics Objekt
+	 */
+	private void drawStone(int x, int y, BoardContent bc, Graphics2D g) {
 		Image img = null;
 		if (bc==BoardContent.ATTACKER) img= offenderIcon;
 		else if (bc==BoardContent.DEFENDER) img= defenderIcon;
@@ -181,27 +181,18 @@ public class JPanelBoardDisplay extends JPanel {
 		
 		if (gc.getAnimation().isRunning()) {
 			Point cell= gc.getAnimation().getSrcCell();
-			if (i== cell.x && j== cell.y) {
+			if (x== cell.x && y== cell.y) {
 				double[] pos= gc.getAnimation().getStonePosition();
 					g.drawImage(img, 
 							(int)Math.round(boardStartX+fieldSize*(pos[0]+1)+1), 
 							(int)Math.round(boardStartY+fieldSize*(pos[1]+1)+1), 
 							fieldSize-2, fieldSize-2, null);
-				/*} else {
-					g.fillOval(
-							(int)Math.round(boardStartX+fieldSize*(pos[0]+1)+4), 
-							(int)Math.round(boardStartY+fieldSize*(pos[1]+1)+4), 
-							fieldSize-8, fieldSize-8);
-				}*/
 				return;
 			}
 		}
 			g.drawImage(img, 
-					(int)Math.round(boardStartX+fieldSize*(i+1)+1), 
-					(int)Math.round(boardStartY+fieldSize*(j+1)+1), 
+					(int)Math.round(boardStartX+fieldSize*(x+1)+1), 
+					(int)Math.round(boardStartY+fieldSize*(y+1)+1), 
 					fieldSize-2, fieldSize-2, null);
-		/*} else {
-			g.fillOval(boardStartX+fieldSize*(i+1)+4, boardStartY+fieldSize*(j+1)+4, fieldSize-8, fieldSize-8);
-		}*/
 	}
 }
