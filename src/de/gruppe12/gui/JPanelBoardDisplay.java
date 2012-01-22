@@ -28,16 +28,14 @@ public class JPanelBoardDisplay extends JPanel {
 	public JPanelBoardDisplay(final GuiController gc) {
 		this.gc= gc;
 		selectedCell= new Point(-1,-1);
-		//setOpaque(false);
 		try {
-			boardImage= ImageIO.read(new File("images/boardimage.bmp"));
-			kingIcon= ImageIO.read(new File("images/kingicon.gif"));
-			defenderIcon= ImageIO.read(new File("images/defendericon.gif"));
-			offenderIcon= ImageIO.read(new File("images/offendericon.gif"));
-			defenderWinImage= ImageIO.read(new File("images/defbannerimg.gif"));
-			offenderWinImage= ImageIO.read(new File("images/offbannerimg.gif"));
+			boardImage= ImageIO.read(getClass().getResource("images/boardimage.bmp"));
+			kingIcon= ImageIO.read(getClass().getResource("images/kingicon.gif"));
+			defenderIcon= ImageIO.read(getClass().getResource("images/defendericon.gif"));
+			offenderIcon= ImageIO.read(getClass().getResource("images/offendericon.gif"));
+			defenderWinImage= ImageIO.read(getClass().getResource("images/defbannerimg.gif"));
+			offenderWinImage= ImageIO.read(getClass().getResource("images/offbannerimg.gif"));
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		

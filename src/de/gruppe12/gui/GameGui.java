@@ -6,6 +6,7 @@ import java.io.*;
 import java.util.Map;
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 
 import javax.imageio.ImageIO;
 
@@ -54,6 +55,12 @@ public class GameGui extends JFrame {
 	private FocusListener markOnFocus;
 
 	private Map<String, String> moveStrategies;
+
+	private JComboBox jcbAi;
+
+	private JComboBox jcbOffenderAi;
+
+	private JComboBox jcbDefenderAi;
 	
 	/** 
 	 * GameGui Konstruktor
@@ -71,7 +78,7 @@ public class GameGui extends JFrame {
 		}
 		Font tempfont;
 		try {
-			tempfont= Font.createFont(Font.TRUETYPE_FONT, new File("images/Viking_n.ttf"));
+			tempfont= Font.createFont(Font.TRUETYPE_FONT, getClass().getResourceAsStream("images/Viking_n.ttf"));
 		} catch (Exception e) {
 			tempfont= Font.getFont("Arial");
 		}
@@ -100,7 +107,7 @@ public class GameGui extends JFrame {
 	private void initGUI() {
 		
 		try {
-			setIconImage(ImageIO.read(new File("images/viking icon.gif")));
+			setIconImage(ImageIO.read(getClass().getResource("images/viking icon.gif")));
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
 		}
@@ -318,7 +325,7 @@ public class GameGui extends JFrame {
 		final JLabel jlbAi= new JLabel("KI:");
 		final JLabel jlbAngreifer= new JLabel("Angreifer:   ");
 		final JTextField jtfPlayer= new JTextField("   Spieler 1   ");
-		final JComboBox jcbAi= new JComboBox(moveStrategies.keySet().toArray());
+		jcbAi = new JComboBox(moveStrategies.keySet().toArray());
 		final JRadioButton jrbPlayer= new JRadioButton("Spieler  ");
 		final JRadioButton jrbAi= new JRadioButton("KI");
 		ActionListener buttonToggle= new ActionListener() {
@@ -403,8 +410,8 @@ public class GameGui extends JFrame {
 		
 		final JLabel jlbOffenderAi= new JLabel("Angreifer KI:");
 		final JLabel jlbDefenderAi= new JLabel("Verteidiger KI:   ");
-		final JComboBox jcbOffenderAi= new JComboBox(moveStrategies.keySet().toArray());
-		final JComboBox jcbDefenderAi= new JComboBox(moveStrategies.keySet().toArray());
+		jcbOffenderAi = new JComboBox(moveStrategies.keySet().toArray());
+		jcbDefenderAi = new JComboBox(moveStrategies.keySet().toArray());
 
 
 		
@@ -481,6 +488,9 @@ public class GameGui extends JFrame {
 		JList jlstLog= new JList(logListModel);
 		jlstLog.setPreferredSize(new Dimension(250, 0));
 		jlstLog.setBorder(BorderFactory.createTitledBorder("Log:"));
+		TitledBorder tb= (TitledBorder) jlstLog.getBorder();
+		tb.setTitleJustification(TitledBorder.CENTER);
+		tb.setTitleFont(font.deriveFont(16F));
 		
 		jpnlGameInfo.setLayout(new BorderLayout());
 		jpnlGameInfo.add(jlstLog, BorderLayout.CENTER);
@@ -527,74 +537,40 @@ public class GameGui extends JFrame {
 		
 		
 		JMenu jmSettings= new JMenu("Optionen");
-		JMenu jmHelp= new JMenu("Hilfe");
+		JMenuItem jmiKiJarChooser= new JMenuItem("Ki Jar Datei auswählen");
+		final JFileChooser jfcKiJarChooser= new JFileChooser();
+		jmiKiJarChooser.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				int returnVal= jfcKiJarChooser.showOpenDialog(cardLOContainer);
+				if (returnVal == JFileChooser.APPROVE_OPTION) {
+					String filename= jfcKiJarChooser.getSelectedFile().getPath();
+					controller.setkiPathName(filename);
+					moveStrategies= controller.getStrats();
+					jcbAi.removeAllItems();
+					jcbDefenderAi.removeAllItems();
+					jcbOffenderAi.removeAllItems();
+					for (String s : moveStrategies.keySet()) {
+						jcbAi.addItem(s);
+						jcbDefenderAi.addItem(s);
+						jcbOffenderAi.addItem(s);
+					}
+				}
+			}
+		});
+		jmSettings.add(jmiKiJarChooser);
+	
+		//JMenu jmHelp= new JMenu("Hilfe");
 		
 		jmbMenuBar.add(jmFile);
 		jmbMenuBar.add(jmGame);
 		jmbMenuBar.add(jmSettings);
-		jmbMenuBar.add(jmHelp);			
-		
-		/*### Dev Buttons ####*/
-		ActionListener devListener= new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				cardLO.show(cardLOContainer, ((JMenuItem)e.getSource()).getActionCommand());
-			}
-		};
-		
-		JMenu jmDevelopment= new JMenu("DevButton");
-		JMenuItem jmiStartMenu= new JMenuItem(cardNameStartMenu);
-		JMenuItem jmiHvH= new JMenuItem(cardNameHvH);
-		JMenuItem jmiHvA= new JMenuItem(cardNameHvA);
-		JMenuItem jmiAvA= new JMenuItem(cardNameAvA);
-		JMenuItem jmiGamePanel= new JMenuItem(cardNameGamePanel);
-		
-		jmiStartMenu.addActionListener(devListener);
-		jmiHvH.addActionListener(devListener);
-		jmiHvA.addActionListener(devListener);
-		jmiAvA.addActionListener(devListener);
-		jmiGamePanel.addActionListener(devListener);
-
-		
-		jmDevelopment.add(jmiStartMenu);
-		jmDevelopment.add(jmiHvH);
-		jmDevelopment.add(jmiHvA);
-		jmDevelopment.add(jmiAvA);
-		jmDevelopment.add(jmiGamePanel);
-		
-		jmbMenuBar.add(jmDevelopment);
-		/*######### ######### #########*/
+		//jmbMenuBar.add(jmHelp);			
 	}
 
 
 
-
-
-
-	/**
-	 * dient dem Testen der GUI
-	 * 
-	 * @param args
-	 */
-
-
-	public static void main(String[] args) {
-		GameGui gameGui = new GameGui();
-		
-		LogicMain logicMain= new LogicMain();
-		gameGui.getController().setLogicMain(logicMain);
-		
-		gameGui.setLocationRelativeTo(null);
-		gameGui.setVisible(true);
-		
-		try {
-			GameLog.init("logfile.txt");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}	
-	}
-	
 	public GuiController getController() {
 		return controller;
 	}
@@ -608,7 +584,6 @@ public class GameGui extends JFrame {
 	protected void update() {
 		String logString= controller.getLastMoveLog();
 		if (logString!= null) {
-			System.out.println(logString);
 			logListModel.addElement(logString);
 		}
 		

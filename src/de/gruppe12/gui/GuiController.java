@@ -3,28 +3,24 @@ package de.gruppe12.gui;
 import java.awt.Point;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.TreeMap;
 
-import javax.swing.SwingUtilities;
 
 import de.fhhannover.inform.hnefatafl.vorgaben.BoardContent;
 import de.fhhannover.inform.hnefatafl.vorgaben.MoveStrategy;
 import de.gruppe12.logic.LogicMain;
 import de.gruppe12.logic.StrategyLoader;
-import de.gruppe12.shared.Board;
 import de.gruppe12.shared.Cell;
 import de.gruppe12.shared.Move;
 
 public class GuiController implements Observer{
-	private final String kiPathName= "Ki.jar";
+	private String kiPathName;
 	private final MoveAnimation anim;
 	private GameGui gui;
 	private LogicMain logic;
-	private MoveStrategy[] moveStrats;
 	private static int thinkTime= 1000;
 	private String lastMoveLog= null;
 	private BoardContent[][] board= null;
@@ -35,6 +31,10 @@ public class GuiController implements Observer{
 	
 	protected void setGameGui(GameGui gui) {
 		this.gui= gui;
+	}
+	
+	protected void setkiPathName(String name) {
+		kiPathName= name;
 	}
 	
 	public void setLogicMain(LogicMain logic) {
@@ -126,7 +126,7 @@ public class GuiController implements Observer{
 	
 	protected void initHvHGame() {
 		logic.humanDefHumanAtt(thinkTime);
-		board= logic.getBoard().get();
+		board= null;
 	}
 	
 	protected String getLastMoveLog() {
@@ -138,13 +138,13 @@ public class GuiController implements Observer{
 	protected void initHvAGame(boolean humanIsAttacker, String aiMoveStrategyName) {
 		MoveStrategy mStrat= null;
 		try {
-			mStrat = StrategyLoader.getStrategy(kiPathName, aiMoveStrategyName);
+			mStrat = StrategyLoader.getStrategy(kiPathName, aiMoveStrategyName.substring(1));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		if (humanIsAttacker) logic.humanAttKiDef(mStrat, thinkTime);
 		else logic.humanDefKiAtt(mStrat, thinkTime);
-		board = logic.getBoard().get(); 
+		board = null;
 	}
 
 	
@@ -155,15 +155,15 @@ public class GuiController implements Observer{
 				MoveStrategy offStrat= null;
 				MoveStrategy defStrat= null;
 				try {
-					offStrat = StrategyLoader.getStrategy(kiPathName, offenderMoveStrategyName);
-					defStrat = StrategyLoader.getStrategy(kiPathName, defenderMoveStrategyName);
+					offStrat = StrategyLoader.getStrategy(kiPathName, offenderMoveStrategyName.substring(1));
+					defStrat = StrategyLoader.getStrategy(kiPathName, defenderMoveStrategyName.substring(1));
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 				logic.KiDefKiAtt(defStrat, offStrat, thinkTime);
 			}
 		}.start();
-		board = logic.getBoard().get();
+		board = null;
 	}
 	
 	protected boolean defenderWon() {

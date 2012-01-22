@@ -51,7 +51,6 @@ public class StrategyLoader {
 	          }
 	          zf.close();	       
 		 } catch (Exception e) {
-			 
 		 }
 	     
 	     return ar;
