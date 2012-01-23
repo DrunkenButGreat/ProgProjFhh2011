@@ -11,7 +11,9 @@
 package de.gruppe12.logic;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
@@ -103,17 +105,40 @@ public class StrategyLoader {
      * @return
      * @throws Exception
      */
-    public static MoveStrategy getStrategy( String path, String classname ) throws Exception 
+    public static MoveStrategy getStrategy( String path, String classname )
     {
-    	 
-    	 URL jarURL = new File(path).toURI().toURL();
-    	 
-    	 String binaryName= classname.substring(0, classname.lastIndexOf('.'));
-    	 binaryName= binaryName.replace('/', '.');
-    	 
-    	 ClassLoader classLoader =    new URLClassLoader(new URL[]{jarURL});
-
-    	 return (MoveStrategy) classLoader.loadClass(binaryName).newInstance();
+    	 try{
+	    	 URL jarURL = new File(path).toURI().toURL();
+	    	 
+	    	 String binaryName= classname.substring(0, classname.lastIndexOf('.'));
+	    	 binaryName= binaryName.replace('/', '.');
+	    	 
+	    	 ClassLoader classLoader =    new URLClassLoader(new URL[]{jarURL});
+	
+	    	 return (MoveStrategy) classLoader.loadClass(binaryName).newInstance();
+    	
+    	} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+    	System.out.println("Scheinbar ist ein Fehler aufgetreten");
+    	return null;
+    }
+    
+    /**
+     * 
+     * @param file
+     * @return
+     * @throws Exception
+     */
+    public static MoveStrategy getStrategy( File file )
+    {
+    	return getStrategy(file.getAbsolutePath(), file.getName());
     }
     
     /**getFromClassPath
