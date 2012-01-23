@@ -228,7 +228,7 @@ public class GuiController implements Observer{
 	protected void initHvAGame(boolean humanIsAttacker, String aiMoveStrategyName) {
 		MoveStrategy mStrat= null;
 		try {
-			mStrat = StrategyLoader.getStrategy(kiPathName, aiMoveStrategyName.substring(1));
+			mStrat = StrategyLoader.getStrategy(kiPathName, aiMoveStrategyName);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -252,8 +252,8 @@ public class GuiController implements Observer{
 				MoveStrategy offStrat= null;
 				MoveStrategy defStrat= null;
 				try {
-					offStrat = StrategyLoader.getStrategy(kiPathName, offenderMoveStrategyName.substring(1));
-					defStrat = StrategyLoader.getStrategy(kiPathName, defenderMoveStrategyName.substring(1));
+					offStrat = StrategyLoader.getStrategy(kiPathName, offenderMoveStrategyName);
+					defStrat = StrategyLoader.getStrategy(kiPathName, defenderMoveStrategyName);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

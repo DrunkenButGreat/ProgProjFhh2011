@@ -11,7 +11,6 @@
 package de.gruppe12.logic;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -114,10 +113,20 @@ public class StrategyLoader {
     public static MoveStrategy getStrategy( String path, String classname )
     {
     	if(path.contains(classname)){
-    		if(path.contains("de")) path = path.replace("K"+classname, "");
-    		//TODO: Da ein Buchstabe zu wenig übergeben wird diese Lösung / Muss aber gefixt werden.
-    		classname = path.substring(path.indexOf("de"),path.length()).replace("\\","/")+"K"+classname;
-    	}
+    		if(path.contains("de")){
+    			path = path.replace("K"+classname, "");
+        		classname = path.substring(path.indexOf("de"),path.length()).replace("\\","/");
+    		}
+    		if(path.contains("com")){
+    			path = path.replace(classname, "");
+        		classname = path.substring(path.indexOf("com"),path.length()).replace("\\","/");
+    		}
+    		if(path.contains("org")){
+    			path = path.replace(classname, "");
+        		classname = path.substring(path.indexOf("org"),path.length()).replace("\\","/");
+    		}
+    		
+    	} else classname = classname.substring(1);
     	
     	try{
 	    	 URL jarURL = new File(path).toURI().toURL();
