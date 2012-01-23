@@ -312,11 +312,11 @@ public class GameGui extends JFrame {
 		
 	}
 	
-	protected void setAttackerName(String name) {
+	private void setAttackerName(String name) {
 		playerAttackerName= name;
 	}
 	
-	protected void setDefenderName(String name) {
+	private void setDefenderName(String name) {
 		playerDefenderName= name;
 	}
 		

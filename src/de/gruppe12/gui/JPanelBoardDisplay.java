@@ -99,7 +99,7 @@ public class JPanelBoardDisplay extends JPanel {
 	 * 
 	 */
 	
-	protected Point getCellOf(int x, int y) {
+	private Point getCellOf(int x, int y) {
 		Point result= new Point();
 		
 		result.x= (x-boardStartX)/fieldSize-1;
