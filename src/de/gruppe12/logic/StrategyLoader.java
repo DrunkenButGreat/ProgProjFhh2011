@@ -43,6 +43,12 @@ public class StrategyLoader {
 		
 		ArrayList<String> ar = new ArrayList<String>();
 		
+		if(uri!=null&&uri.contains("class")){
+			File f = new File(uri);
+			ar.add(f.getName());
+			return ar;
+		}
+		
 		//Jar ï¿½ffnen und Durchsuchen
 		 try {
 	          ZipFile zf=new ZipFile(uri);
@@ -107,7 +113,13 @@ public class StrategyLoader {
      */
     public static MoveStrategy getStrategy( String path, String classname )
     {
-    	 try{
+    	if(path.contains(classname)){
+    		if(path.contains("de")) path = path.replace("K"+classname, "");
+    		//TODO: Da ein Buchstabe zu wenig übergeben wird diese Lösung / Muss aber gefixt werden.
+    		classname = path.substring(path.indexOf("de"),path.length()).replace("\\","/")+"K"+classname;
+    	}
+    	
+    	try{
 	    	 URL jarURL = new File(path).toURI().toURL();
 	    	 
 	    	 String binaryName= classname.substring(0, classname.lastIndexOf('.'));
