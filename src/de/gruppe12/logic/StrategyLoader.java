@@ -113,18 +113,9 @@ public class StrategyLoader {
     public static MoveStrategy getStrategy( String path, String classname )
     {
     	if(path.contains(classname)){
-    		if(path.contains("de")){
-    			path = path.replace("K"+classname, "");
-        		classname = path.substring(path.indexOf("de"),path.length()).replace("\\","/");
-    		}
-    		if(path.contains("com")){
-    			path = path.replace(classname, "");
-        		classname = path.substring(path.indexOf("com"),path.length()).replace("\\","/");
-    		}
-    		if(path.contains("org")){
-    			path = path.replace(classname, "");
-        		classname = path.substring(path.indexOf("org"),path.length()).replace("\\","/");
-    		}
+    		if(path.contains("de")) classname = path.substring(path.indexOf("de"),path.length()).replace("\\","/");
+    		if(path.contains("com")) classname = path.substring(path.indexOf("com"),path.length()).replace("\\","/");
+    		if(path.contains("org")) classname = path.substring(path.indexOf("org"),path.length()).replace("\\","/");
     		
     	} else classname = classname.substring(1);
     	
