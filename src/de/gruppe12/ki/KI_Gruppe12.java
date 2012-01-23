@@ -158,9 +158,9 @@ public class KI_Gruppe12 implements MoveStrategy {
 	      
 	      //extra Berechnung für Attacker
 	      //   0   1  2  3  4  5  6  7  8  9 10 11 12
-	      // 0|xx|10|08|xx|xx|xx|xx|xx|xx|xx|08|10|xx
-	      // 1|10|08|08|xx|xx|xx|xx|xx|xx|xx|08|08|10
-	      // 2|08|08|08|xx|xx|xx|xx|xx|xx|xx|08|08|08
+	      // 0|xx|10|10|xx|xx|xx|xx|xx|xx|xx|10|10|xx
+	      // 1|10|10|10|xx|xx|xx|xx|xx|xx|xx|10|10|10
+	      // 2|10|10|10|xx|xx|xx|xx|xx|xx|xx|10|10|10
 	      // 3|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx
 	      // 4|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx
 	      // 5|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx
@@ -168,9 +168,9 @@ public class KI_Gruppe12 implements MoveStrategy {
 	      // 7|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx
 	      // 8|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx
 	      // 9|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx|xx
-	      //10|08|08|08|xx|xx|xx|xx|xx|xx|xx|08|08|08
-	      //11|10|08|08|xx|xx|xx|xx|xx|xx|xx|08|08|10
-	      //12|xx|10|08|xx|xx|xx|xx|xx|xx|xx|08|10|xx
+	      //10|10|10|10|xx|xx|xx|xx|xx|xx|xx|10|10|10
+	      //11|10|10|10|xx|xx|xx|xx|xx|xx|xx|10|08|10
+	      //12|xx|10|10|xx|xx|xx|xx|xx|xx|xx|10|10|xx
 	      
 	      if(p==BoardContent.ATTACKER){
 	    	  //Bewertung 10
@@ -182,53 +182,71 @@ public class KI_Gruppe12 implements MoveStrategy {
 			     ((toRow==11)&&(toCol==0))||
 			     ((toRow==12)&&(toCol==1))||
 			     ((toRow==12)&&(toCol==11))||
-			     ((toRow==11)&&(toCol==12))) 
-			     &&
-			     (((fromRow!=1)&&(fromCol!=0))||					    
-			     ((fromRow!=0)&&(fromCol!=1))||
-			     ((fromRow!=0)&&(fromCol!=11))||
-			     ((fromRow!=1)&&(fromCol!=12))||
-			     ((fromRow!=11)&&(fromCol!=0))||
-			     ((fromRow!=12)&&(fromCol!=1))||
-			     ((fromRow!=12)&&(fromCol!=11))||
-			     ((fromRow!=11)&&(fromCol!=12)))			     
-	    		)
-			    {
-			    	return rating + 550;	  
-			    }
-	    	  
-	    	  //Bewertung 8 
-	    	  if(((toRow==0)&&(toCol==2))||
+			     ((toRow==11)&&(toCol==12)) ||
+			     ((toRow==0)&&(toCol==2))||
        			 ((toRow==1)&&(toCol==2))||
        			 ((toRow==2)&&(toCol==2))||
        			 ((toRow==2)&&(toCol==1))||	    	  
        			 ((toRow==1)&&(toCol==1))||
-       			 ((toRow==2)&&(toCol==0))||
-       			 
+       			 ((toRow==2)&&(toCol==0))||       			 
        			 ((toRow==10)&&(toCol==0))||
        			 ((toRow==10)&&(toCol==1))||	    	  
        			 ((toRow==10)&&(toCol==2))||		    	  
        			 ((toRow==11)&&(toCol==1))||		    	  
        			 ((toRow==11)&&(toCol==2))||		    	  
-       			 ((toRow==12)&&(toCol==2))||	
-       			 
+       			 ((toRow==12)&&(toCol==2))||	       			 
        			 ((toRow==10)&&(toCol==12))||
        			 ((toRow==10)&&(toCol==11))||          			 
        			 ((toRow==10)&&(toCol==10))||	    	  
        			 ((toRow==11)&&(toCol==11))||		    	  
        			 ((toRow==11)&&(toCol==10))||		    	  
-       			 ((toRow==12)&&(toCol==10))||  			 
-       			 
-       			 
+       			 ((toRow==12)&&(toCol==10))||
        			 ((toRow==0)&&(toCol==10))||		 
        			 ((toRow==1)&&(toCol==10))||	
        			 ((toRow==1)&&(toCol==11))||	
        			 ((toRow==2)&&(toCol==10))||	
        			 ((toRow==2)&&(toCol==11))||	
-       			 ((toRow==2)&&(toCol==12))
-       			 ){
-			    		  rating+=40;
-			    	}
+       			 ((toRow==2)&&(toCol==12))) 
+			     &&
+			     (
+			     !((fromRow==1)&&(fromCol==0))&&					    
+			     !((fromRow==0)&&(fromCol==1))&&
+			     !((fromRow==0)&&(fromCol==11))&&
+			     !((fromRow==1)&&(fromCol==12))&&
+			     !((fromRow==11)&&(fromCol==0))&&
+			     !((fromRow==12)&&(fromCol==1))&&
+			     !((fromRow==12)&&(fromCol==11))&&
+			     !((fromRow==11)&&(fromCol==12))&&
+			     !((fromRow==0)&&(fromCol!=2))&&
+       			 !((fromRow==1)&&(fromCol!=2))&&
+       			 !((fromRow==2)&&(fromCol==2))&&
+       			 !((fromRow==2)&&(fromCol==1))&&	    	  
+       			 !((fromRow==1)&&(fromCol==1))&&
+       			 !((fromRow==2)&&(fromCol==0))&&       			 
+       			 !((fromRow==10)&&(fromCol==0))&&
+       			 !((fromRow==10)&&(fromCol==1))&&	    	  
+       			 !((fromRow==10)&&(fromCol==2))&&		    	  
+       			 !((fromRow==11)&&(fromCol==1))&&		    	  
+       			 !((fromRow==11)&&(fromCol==2))&&		    	  
+       			 !((fromRow==12)&&(fromCol==2))&&       			 
+       			 !((fromRow==10)&&(fromCol==12))&&
+       			 !((fromRow==10)&&(fromCol==11))&&          			 
+       			 !((fromRow==10)&&(fromCol==10))&&	    	  
+       			 !((fromRow==11)&&(fromCol==11))&&		    	  
+       			 !((fromRow==11)&&(fromCol==10))&&		    	  
+       			 !((fromRow==12)&&(fromCol==10))&&
+       			 !((fromRow==0)&&(fromCol==10))&&		 
+       			 !((fromRow==1)&&(fromCol==10))&&	
+       			 !((fromRow==1)&&(fromCol==11))&&	
+       			 !((fromRow==2)&&(fromCol==10))&&	
+       			 !((fromRow==2)&&(fromCol==11))&&	
+       			 !((fromRow==2)&&(fromCol==12))))
+	    		
+			    {
+			    	return rating + 550;	  
+			    }
+	    	  
+	    	 
 	    	  
 	    	  //Wenn König in der Nähe, dann ziehe dahin!
 	    	  if((c1 ==BoardContent.KING)){
