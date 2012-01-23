@@ -18,6 +18,7 @@ import de.gruppe12.logic.GameLog;
 public class RemoveCheck {
 	
 	private static boolean gamelog = false;
+	private static boolean commandLine = true;
 	
 	/** checkForRemove
 	 * 
@@ -176,10 +177,10 @@ public class RemoveCheck {
 				   						(board.getCell(12, 11).getContent().equals(BoardContent.ATTACKER)) &&
 										board.getCell(11, 12).getContent().equals(BoardContent.ATTACKER));
 		
-		if (leftBottomCornerblocked) System.out.println("LB B");
-		if (leftTopCornerblocked) System.out.println("LT B");
-		if (rightBottomCornerblocked) System.out.println("RB B");
-		if (rightTopCornerblocked) System.out.println("RT B");
+		if (commandLine) if(leftBottomCornerblocked) System.out.println("LB B");
+		if (commandLine) if (leftTopCornerblocked) System.out.println("LT B");
+		if (commandLine) if (rightBottomCornerblocked) System.out.println("RB B");
+		if (commandLine) if (rightTopCornerblocked) System.out.println("RT B");
 		
 		// Wenn alle Fluchtburgen blockiert sind -> Angreifer gewinnt
 		if (leftTopCornerblocked && rightTopCornerblocked && leftBottomCornerblocked && rightBottomCornerblocked){
