@@ -11,6 +11,7 @@ public class LogicMain extends Observable {
 	de.fhhannover.inform.hnefatafl.vorgaben.Move currentMove;
 	private boolean gameEnd, gameLog, commandLine, defPlayerTurn;
 	private int thinkTime;
+	private int extraThinkTime = 100;
 	private boolean humanAttacker, humanDefender;
 	private String lastGameLogEvent;
 	private String strAttacker = "Angreifer";
@@ -125,28 +126,52 @@ public class LogicMain extends Observable {
 	 * Move-Schleife für die KI. Schleife läuft so lange, wie eine KI am Zug ist.
 	 */
 	private void move(){
-		
+		long startTime;
 		// Wenn der nächste Spieler eine KI ist, läuft die Schleife weiter
 		// wenn der nächste Spieler ein Mensch ist, 
 		// wird die Schleife beendet und muss erneut von der GUI aufgerufen werden
-		
-		while ((this.defPlayerTurn && !this.humanDefender) || 
-				(!this.defPlayerTurn && !this.humanAttacker)){	
-			if (this.gameEnd) return;
-			if (this.board.isFinished()) return;
-			try {
-				Thread.sleep(0);
-			} catch (InterruptedException e) {}
+		while ((defPlayerTurn && !humanDefender) || 
+				(!defPlayerTurn && !humanAttacker)){	
+			if (gameEnd) return;
+			if (board.isFinished()) return;
 			
-			// Wenn die Verteidiger KI am Zug ist
-			if (this.defPlayerTurn && !this.humanDefender){	
-				update(defender.calculateDefenderMove(this.currentMove, this.thinkTime));
-			}
-			// Wenn die Angreifer KI am Zug ist
-			else if (!this.defPlayerTurn && !this.humanAttacker){
-				update(attacker.calculateAttackerMove(this.currentMove, this.thinkTime));	
-			}
-		}	
+			Thread th1 = new Thread(new Runnable(){
+				@Override
+				public void run() {
+						// Wenn die Verteidiger KI am Zug ist
+						if (defPlayerTurn && !humanDefender){	
+							update(defender.calculateDefenderMove(currentMove, thinkTime));
+						}
+						// Wenn die Angreifer KI am Zug ist
+						else if (!defPlayerTurn && !humanAttacker){
+							update(attacker.calculateAttackerMove(currentMove, thinkTime));	
+						}
+				}
+			});		
+			
+			// Move-Abfrage in neuem Thread starten
+			th1.start();
+			
+			// Startzeit festhalten
+			startTime = System.currentTimeMillis();			
+			
+		   while (th1.isAlive()) {
+			   try {
+				   th1.join(thinkTime + extraThinkTime);
+				   if (((System.currentTimeMillis() - startTime) > (thinkTime + extraThinkTime))
+			                  && th1.isAlive()) {
+					   
+		            		// Thread unterbrechen, wenn Zeit abgelaufen
+		                	th1.interrupt();
+		                	update(null);
+		                	return;
+			            }				   
+			   } catch (InterruptedException e) {
+				   update(null);
+				   return;				
+			   }	           
+	        }		   
+		}		
 	}
 	
 	/**
@@ -156,9 +181,21 @@ public class LogicMain extends Observable {
 	 */
 	
 	private void update(de.fhhannover.inform.hnefatafl.vorgaben.Move move){	
-		//TODO: Das hier sauber machen und prüfen.. Aber erstmal läufts
 		if (move == null){
 			if (this.gameLog) GameLog.logDebugEvent("null Move erhalten");
+			
+			if ((this.defPlayerTurn && !this.humanDefender) ||
+					!this.defPlayerTurn && !this.humanAttacker){
+				if (this.gameLog) logGameEvent("Ungültiger Zug der KI");			
+				
+				this.gameEnd = true;
+				this.board.setFinish();
+				if (this.defPlayerTurn) this.board.setAttackerWon();
+				else this.board.setDefenderWon();
+				
+				setChanged();
+				notifyObservers("GameOver");
+			}			
 			return;
 		}
 		
