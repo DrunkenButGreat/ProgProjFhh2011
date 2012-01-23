@@ -55,12 +55,17 @@ public class GameGui extends JFrame {
 	/* FocusListener, der den Inhalt eines JTextFields bei Fokus-Gewinn markiert */
 	private FocusListener markOnFocus;
 
-	private Map<String, String> moveStrategies;
 	private JComboBox jcbAi;
 	private JComboBox jcbOffenderAi;
 	private JComboBox jcbDefenderAi;
 
 	private JTextField jtfCurrentPlayer;
+
+	private JComboBox jcbAiPath;
+
+	private JComboBox jcbOffenderAiPath;
+
+	private JComboBox jcbDefenderAiPath;
 	
 	/** 
 	 * GameGui Konstruktor
@@ -91,7 +96,7 @@ public class GameGui extends JFrame {
 		cardLOContainer= getContentPane();
 		logListModel= new DefaultListModel();
 		
-		moveStrategies= controller.getStrats();
+		//moveStrategies= controller.getStrats();
 		
 		initGUI();
 		
@@ -338,7 +343,9 @@ public class GameGui extends JFrame {
 		final JLabel jlbAi= new JLabel("KI:");
 		final JLabel jlbAngreifer= new JLabel("Angreifer:   ");
 		final JTextField jtfPlayer= new JTextField("   Spieler 1   ");
-		jcbAi = new JComboBox(moveStrategies.keySet().toArray());
+		final JLabel jlbAiPath= new JLabel("KI Path:");
+		jcbAiPath = new JComboBox();
+		jcbAi = new JComboBox();
 		final JRadioButton jrbPlayer= new JRadioButton("Spieler  ");
 		final JRadioButton jrbAi= new JRadioButton("KI");
 		ActionListener buttonToggle= new ActionListener() {
@@ -362,10 +369,11 @@ public class GameGui extends JFrame {
 		addToGBPanel(0, 0, 1, 1, 0.2, 1, Box.createGlue(), jpnlHumanVsAi);
 		addToGBPanel(1, 1, 1, 1, 0, 1, jlbPlayer, jpnlHumanVsAi);
 		addToGBPanel(2, 1, 2, 1, 1, 1, jtfPlayer, jpnlHumanVsAi);
-		addToGBPanel(0, 2, 1, 1, 0, 0.5, Box.createGlue(), jpnlHumanVsAi);
-		addToGBPanel(1, 3, 1, 1, 0, 1, jlbAi, jpnlHumanVsAi);
-		addToGBPanel(2, 3, 2, 1, 1, 1, jcbAi, jpnlHumanVsAi);
-		//addToGBPanel(0, 4, 1, 1, 0, 0.1, Box.createGlue(), jpnlHumanVsAi);
+		addToGBPanel(0, 2, 1, 1, 0, 1, Box.createGlue(), jpnlHumanVsAi);
+		addToGBPanel(1, 3, 1, 1, 0, 0.6, jlbAiPath, jpnlHumanVsAi);
+		addToGBPanel(2, 3, 2, 1, 1, 0.6, jcbAiPath, jpnlHumanVsAi);
+		addToGBPanel(1, 4, 1, 1, 0, 1, jlbAi, jpnlHumanVsAi);
+		addToGBPanel(2, 4, 2, 1, 1, 1, jcbAi, jpnlHumanVsAi);
 		addToGBPanel(1, 5, 1, 1, 0, 1, jlbAngreifer, jpnlHumanVsAi);
 		addToGBPanel(2, 5, 1, 1, 0, 1, jrbPlayer , jpnlHumanVsAi);
 		addToGBPanel(3, 5, 1, 1, 0.5, 1, jrbAi, jpnlHumanVsAi);
@@ -385,9 +393,11 @@ public class GameGui extends JFrame {
 		jpnlHumanVsAi.addComponentListener(new ComponentAdapter() {
 			@Override public void componentResized(ComponentEvent e) {
 				int fontSize= jtfPlayer.getHeight()/5;
+				int fontSizeSmall= (int) Math.round(fontSize*0.7);
 				int fontSizeBig= (int) Math.round(fontSize*1.3);
+				int fontSizeExtraBig= (int) Math.round(fontSize*2.0);
 				if (fontSize==0) return;
-				jtfPlayer.setFont(font.deriveFont(Font.BOLD, fontSize));
+				jtfPlayer.setFont(font.deriveFont(Font.BOLD, fontSizeExtraBig));
 				jcbAi.setFont(font.deriveFont(Font.BOLD, fontSizeBig));
 				jlbPlayer.setFont(font.deriveFont(Font.BOLD, fontSizeBig));
 				jlbAi.setFont(font.deriveFont(Font.BOLD, fontSizeBig));
@@ -395,6 +405,8 @@ public class GameGui extends JFrame {
 				jbtnStart.setFont(font.deriveFont(Font.BOLD, fontSize));
 				jrbPlayer.setFont(font.deriveFont(Font.BOLD, fontSize));
 				jrbAi.setFont(font.deriveFont(Font.BOLD, fontSize));
+				jcbAiPath.setFont(font.deriveFont(Font.BOLD, fontSizeSmall));
+				jlbAiPath.setFont(font.deriveFont(Font.BOLD, fontSizeSmall));
 			}
 		});
 		
@@ -412,11 +424,29 @@ public class GameGui extends JFrame {
 					setAttackerName(kiShortName);
 					setDefenderName(jtfPlayer.getText());
 				}
+				
+				String stratShortPath= (String)jcbAiPath.getSelectedItem();
+				String stratPath= controller.getKiFolderList().get(stratShortPath);
+				Map<String, String> moveStrategies= controller.getStrats(stratPath);
 				String strat= moveStrategies.get(kiShortName);
-				controller.initHvAGame(humanIsAttacker, strat);
+				
+				controller.initHvAGame(humanIsAttacker, stratPath, strat);
 				cardLO.show(cardLOContainer, cardNameGamePanel);
 				jpnlBoardDisplay.resetSelectedCell();
 				update();
+			}
+		});
+		
+		jcbAiPath.addItemListener(new ItemListener() {
+			
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				jcbAi.removeAll();
+				String aiPath= controller.getKiFolderList().get((String)jcbAiPath.getSelectedItem());
+				for (String s: controller.getStrats(aiPath).keySet()) {
+					jcbAi.addItem(s);
+				}
+				
 			}
 		});
 		
@@ -434,33 +464,46 @@ public class GameGui extends JFrame {
 		
 		final JLabel jlbOffenderAi= new JLabel("Angreifer KI:");
 		final JLabel jlbDefenderAi= new JLabel("Verteidiger KI:   ");
-		jcbOffenderAi = new JComboBox(moveStrategies.keySet().toArray());
-		jcbDefenderAi = new JComboBox(moveStrategies.keySet().toArray());
+		final JLabel jlbAiPath= new JLabel("KI Path:");
+		final JLabel jlbAiPath2= new JLabel("KI Path:");
+		jcbOffenderAiPath = new JComboBox();
+		jcbDefenderAiPath = new JComboBox();
+		jcbOffenderAi = new JComboBox();
+		jcbDefenderAi = new JComboBox();
 
 
 		
 		final JButton jbtnStart= new JButton("Spiel starten");
 		jpnlAiVsAi.setLayout(new GridBagLayout());
 		addToGBPanel(0, 0, 1, 1, 0.2, 1, Box.createGlue(), jpnlAiVsAi);
-		addToGBPanel(1, 1, 1, 1, 0, 1, jlbOffenderAi, jpnlAiVsAi);
-		addToGBPanel(2, 1, 2, 1, 1, 1, jcbOffenderAi, jpnlAiVsAi);
-		addToGBPanel(0, 2, 1, 1, 0.2, 1, Box.createGlue(), jpnlAiVsAi);
-		addToGBPanel(1, 3, 1, 1, 0, 1, jlbDefenderAi, jpnlAiVsAi);
-		addToGBPanel(2, 3, 2, 1, 1, 1, jcbDefenderAi, jpnlAiVsAi);
-		addToGBPanel(0, 4, 1, 1, 0.2, 1, Box.createGlue(), jpnlAiVsAi);
-		addToGBPanel(1, 6, 3, 1, 1, 1, jbtnStart, jpnlAiVsAi);
-		addToGBPanel(4, 7, 1, 1, 0.2, 1, Box.createGlue(), jpnlAiVsAi);
+		addToGBPanel(1, 1, 1, 1, 0, 0.6, jlbAiPath, jpnlAiVsAi);
+		addToGBPanel(2, 1, 2, 1, 1, 0.6, jcbOffenderAiPath, jpnlAiVsAi);
+		addToGBPanel(1, 2, 1, 1, 0, 1, jlbOffenderAi, jpnlAiVsAi);
+		addToGBPanel(2, 2, 2, 1, 1, 1, jcbOffenderAi, jpnlAiVsAi);
+		addToGBPanel(0, 3, 1, 1, 0.2, 1, Box.createGlue(), jpnlAiVsAi);
+		addToGBPanel(1, 4, 1, 1, 0, 0.6, jlbAiPath2, jpnlAiVsAi);
+		addToGBPanel(2, 4, 2, 1, 1, 0.6, jcbDefenderAiPath, jpnlAiVsAi);
+		addToGBPanel(1, 5, 1, 1, 0, 1, jlbDefenderAi, jpnlAiVsAi);
+		addToGBPanel(2, 5, 2, 1, 1, 1, jcbDefenderAi, jpnlAiVsAi);
+		addToGBPanel(0, 6, 1, 1, 0.2, 1, Box.createGlue(), jpnlAiVsAi);
+		addToGBPanel(1, 8, 3, 1, 1, 1, jbtnStart, jpnlAiVsAi);
+		addToGBPanel(4, 9, 1, 1, 0.2, 1, Box.createGlue(), jpnlAiVsAi);
 		
 		jpnlHumanVsAi.addComponentListener(new ComponentAdapter() {
 			@Override public void componentResized(ComponentEvent e) {
 				int fontSize= jcbOffenderAi.getHeight()/3;
 				int fontSizeSmall= (int) Math.round(fontSize*0.7);
+				int fontSizeExtraSmall= (int) Math.round(fontSize*0.5);
 				if (fontSize==0) return;
 				jcbOffenderAi.setFont(font.deriveFont(Font.BOLD, fontSize));
 				jcbDefenderAi.setFont(font.deriveFont(Font.BOLD, fontSize));
 				jlbOffenderAi.setFont(font.deriveFont(Font.BOLD, fontSizeSmall));
 				jlbDefenderAi.setFont(font.deriveFont(Font.BOLD, fontSizeSmall));
 				jbtnStart.setFont(font.deriveFont(Font.BOLD, fontSize));
+				jlbAiPath.setFont(font.deriveFont(Font.BOLD, fontSizeExtraSmall));
+				jlbAiPath2.setFont(font.deriveFont(Font.BOLD, fontSizeExtraSmall));
+				jcbDefenderAiPath.setFont(font.deriveFont(Font.BOLD, fontSizeExtraSmall));
+				jcbOffenderAiPath.setFont(font.deriveFont(Font.BOLD, fontSizeExtraSmall));
 			}
 		});
 		
@@ -475,12 +518,46 @@ public class GameGui extends JFrame {
 				setAttackerName(offStratShort);
 				setDefenderName(defStratShort);
 				
-				String offStrat= moveStrategies.get(offStratShort);
-				String defStrat= moveStrategies.get(defStratShort);
+				String shortOffStratPath= (String)jcbOffenderAiPath.getSelectedItem();
+				String offStratPath= controller.getKiFolderList().get(shortOffStratPath);
+				Map<String, String> offMoveStrategies= controller.getStrats(offStratPath);
+				String offStrat= offMoveStrategies.get(offStratShort);
+				
+				String shortDefStratPath= (String)jcbOffenderAiPath.getSelectedItem();
+				String defStratPath= controller.getKiFolderList().get(shortDefStratPath);
+				Map<String, String> defMoveStrategies= controller.getStrats(offStratPath);
+				String defStrat= defMoveStrategies.get(defStratShort);
+				
 				cardLO.show(cardLOContainer, cardNameGamePanel);
-				controller.initAvAGame(offStrat, defStrat);
+				controller.initAvAGame(offStratPath, offStrat, defStratPath, defStrat);
 				jpnlBoardDisplay.resetSelectedCell();
 				update();
+			}
+		});
+		
+		jcbOffenderAiPath.addItemListener(new ItemListener() {
+			
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				jcbOffenderAi.removeAll();
+				String aiPath= controller.getKiFolderList().get((String)jcbOffenderAiPath.getSelectedItem());
+				for (String s: controller.getStrats(aiPath).keySet()) {
+					jcbOffenderAi.addItem(s);
+				}
+				
+			}
+		});
+		
+		jcbDefenderAiPath.addItemListener(new ItemListener() {
+			
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				jcbDefenderAi.removeAll();
+				String aiPath= controller.getKiFolderList().get((String)jcbDefenderAiPath.getSelectedItem());
+				for (String s: controller.getStrats(aiPath).keySet()) {
+					jcbDefenderAi.addItem(s);
+				}
+				
 			}
 		});
 	}
@@ -588,9 +665,10 @@ public class GameGui extends JFrame {
 		
 		jmGame.add(jmiNewGame);
 		
-		//Ki Jar/Zip Auswahl Möglichkeit
+		
 		JMenu jmSettings= new JMenu("Optionen");
-		JMenuItem jmiKiJarChooser= new JMenuItem("Ki Jar Datei auswählen");
+		//Ki Jar/Zip Auswahl Möglichkeit
+		JMenuItem jmiKiJarChooser= new JMenuItem("Ki Jar Datei hinzufügen");
 		final JFileChooser jfcKiJarChooser= new JFileChooser();
 		jmiKiJarChooser.addActionListener(new ActionListener() {
 			
@@ -599,20 +677,37 @@ public class GameGui extends JFrame {
 				int returnVal= jfcKiJarChooser.showOpenDialog(cardLOContainer);
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
 					String filename= jfcKiJarChooser.getSelectedFile().getPath();
-					controller.setkiPathName(filename);
-					moveStrategies= controller.getStrats();
-					jcbAi.removeAllItems();
-					jcbDefenderAi.removeAllItems();
-					jcbOffenderAi.removeAllItems();
-					for (String s : moveStrategies.keySet()) {
-						jcbAi.addItem(s);
-						jcbDefenderAi.addItem(s);
-						jcbOffenderAi.addItem(s);
+					String shortPath= controller.addKiPathName(filename);
+					if (shortPath!=null) {
+						jcbAiPath.addItem(shortPath);
+						jcbOffenderAiPath.addItem(shortPath);
+						jcbDefenderAiPath.addItem(shortPath);
 					}
 				}
 			}
 		});
 		jmSettings.add(jmiKiJarChooser);
+		
+		JMenuItem jmiKiFolderChooser= new JMenuItem("OrdnerPfad hinzufügen");
+		final JFileChooser jfcKiFolderChooser= new JFileChooser();
+		jfcKiFolderChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		jmiKiFolderChooser.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				int returnVal= jfcKiFolderChooser.showOpenDialog(cardLOContainer);
+				if (returnVal == JFileChooser.APPROVE_OPTION) {
+					String filename= jfcKiFolderChooser.getSelectedFile().getPath();
+					String shortPath= controller.addKiPathName(filename);
+					if (shortPath!=null) {
+						jcbAiPath.addItem(shortPath);
+						jcbOffenderAiPath.addItem(shortPath);
+						jcbDefenderAiPath.addItem(shortPath);
+					}
+				}
+			}
+		});
+		jmSettings.add(jmiKiFolderChooser);
 	
 		//JMenu jmHelp= new JMenu("Hilfe");
 		

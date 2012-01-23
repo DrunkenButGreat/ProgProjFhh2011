@@ -3,6 +3,7 @@ package de.gruppe12.gui;
 import java.awt.Point;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
@@ -17,8 +18,7 @@ import de.gruppe12.shared.Cell;
 import de.gruppe12.shared.Move;
 
 public class GuiController implements Observer{
-	private static boolean commandLine;
-	private String kiPathName;
+	private Map<String, String> kiPaths= new HashMap<String, String>();
 	private final MoveAnimation anim;
 	private GameGui gui;
 	private LogicMain logic;
@@ -28,15 +28,26 @@ public class GuiController implements Observer{
 	
 	public GuiController() {
 		anim= new MoveAnimation(this);
-		commandLine = false;
 	}
 	
 	protected void setGameGui(GameGui gui) {
 		this.gui= gui;
 	}
 	
-	protected void setkiPathName(String name) {
-		kiPathName= name;
+	protected String addKiPathName(String name) {
+		String shortName= name.substring(name.lastIndexOf('\\')+1);
+		if (shortName.contains(".")) shortName= shortName.substring(0, shortName.indexOf("."));
+		if (kiPaths.containsKey(shortName)) {
+			if (kiPaths.containsValue(name)) return null;
+			int extraIndex=1;
+			while (kiPaths.containsKey(shortName+"("+extraIndex+")")) {
+				extraIndex++;
+			}
+			shortName+="("+extraIndex+")";
+			
+		}
+		kiPaths.put(shortName, name);
+		return shortName;
 	}
 
 	public void setLogicMain(LogicMain logic) {
@@ -64,7 +75,7 @@ public class GuiController implements Observer{
 	 * 
 	 * @param cellX
 	 * @param cellY
-	 * @return boolean ob Zelle dem Spieler gehï¿½rt, der am Zug ist
+	 * @return boolean ob Zelle dem Spieler gehört, der am Zug ist
 	 */
 	
 	protected boolean isPlayersTurn(int cellX, int cellY) {
@@ -109,17 +120,16 @@ public class GuiController implements Observer{
 	/**
 	 * update
 	 * 
-	 * implementiert Observer-Interface Methode. Wenn ein Move Objekt ï¿½bergeben wird, 
+	 * implementiert Observer-Interface Methode. Wenn ein Move Objekt übergeben wird, 
 	 * wird eine Move Animation gestartet.
 	 * 
-	 * Wenn ein String mit "GameOver" ï¿½bergeben wird, wird die Update Methode der GUI aufgerufen um das Spielende anzuzeigen.
+	 * Wenn ein String mit "GameOver" übergeben wird, wird die Update Methode der GUI aufgerufen um das Spielende anzuzeigen.
 	 * 
 	 */
 	@Override
 	public void update(Observable obsSrc, Object obj) {
 		if (obj instanceof Move) {
 			lastMoveLog= logic.getLastGameLogEvent();
-			if (commandLine)System.out.println(lastMoveLog);
 			Move move= (Move)obj;
 			Point sourceCell= new Point(move.getFromCell().getCol(), move.getFromCell().getRow());
 			Point destCell= new Point(move.getToCell().getCol(), move.getToCell().getRow());
@@ -165,7 +175,7 @@ public class GuiController implements Observer{
 	/**
 	 * getBoardCopy
 	 * 
-	 * gibt eine Kopie des aktuellen Boardinhalts wieder (um Steine fï¿½r Animation temporï¿½r zu speichern)
+	 * gibt eine Kopie des aktuellen Boardinhalts wieder (um Steine für Animation temporär zu speichern)
 	 * 
 	 * @return BoardContent Array
 	 */
@@ -227,10 +237,10 @@ public class GuiController implements Observer{
 	 * @param humanIsAttacker 
 	 * @param aiMoveStrategyName : Name der KI Strategie Class
 	 */
-	protected void initHvAGame(boolean humanIsAttacker, String aiMoveStrategyName) {
+	protected void initHvAGame(boolean humanIsAttacker, String path, String aiMoveStrategyName) {
 		MoveStrategy mStrat= null;
 		try {
-			mStrat = StrategyLoader.getStrategy(kiPathName, aiMoveStrategyName);
+			mStrat = StrategyLoader.getStrategy(path, aiMoveStrategyName);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -247,15 +257,15 @@ public class GuiController implements Observer{
 	 * @param offenderMoveStrategyName : Name der Angreifer KI Class
 	 * @param defenderMoveStrategyName : Name der Verteidiger KI Class
 	 */
-	protected void initAvAGame(final String offenderMoveStrategyName, final String defenderMoveStrategyName) {
+	protected void initAvAGame(final String path1, final String offenderMoveStrategyName, final String path2, final String defenderMoveStrategyName) {
 		new Thread () {
 			@Override
 			public void run() {
 				MoveStrategy offStrat= null;
 				MoveStrategy defStrat= null;
 				try {
-					offStrat = StrategyLoader.getStrategy(kiPathName, offenderMoveStrategyName);
-					defStrat = StrategyLoader.getStrategy(kiPathName, defenderMoveStrategyName);
+					offStrat = StrategyLoader.getStrategy(path1, offenderMoveStrategyName.substring(1));
+					defStrat = StrategyLoader.getStrategy(path2, defenderMoveStrategyName.substring(1));
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -273,6 +283,10 @@ public class GuiController implements Observer{
 	protected boolean defenderWon() {
 		return !logic.getBoard().attackerWon();
 	}
+	
+	protected Map<String, String> getKiFolderList() {
+		return kiPaths;
+	}
 
 	/**
 	 * getStrats
@@ -281,10 +295,10 @@ public class GuiController implements Observer{
 	 *  
 	 * @return Map, die alle .class Dateien, die im aktuellen Ki Jar Pfad sind, speichert
 	 */
-	protected Map<String, String> getStrats() {
+	protected Map<String, String> getStrats(String path) {
 		ArrayList<String> moveStrategies= null;
 		try {
-			moveStrategies= StrategyLoader.listContent(kiPathName);
+			moveStrategies= StrategyLoader.listContent(path);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
