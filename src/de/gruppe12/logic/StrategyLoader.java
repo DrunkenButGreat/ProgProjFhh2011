@@ -130,16 +130,6 @@ public class StrategyLoader {
     	return null;
     }
     
-    /**
-     * 
-     * @param file
-     * @return
-     * @throws Exception
-     */
-    public static MoveStrategy getStrategy( File file )
-    {
-    	return getStrategy(file.getAbsolutePath(), file.getName());
-    }
     
     /**getFromClassPath
      * 
