@@ -11,7 +11,7 @@ public class LogicMain extends Observable {
 	de.fhhannover.inform.hnefatafl.vorgaben.Move currentMove;
 	private boolean gameEnd, gameLog, commandLine, defPlayerTurn;
 	private int thinkTime;
-	private int extraThinkTime = 100;
+	private int extraThinkTime = 1000;
 	private boolean humanAttacker, humanDefender;
 	private String lastGameLogEvent;
 	private String strAttacker = "Angreifer";
@@ -22,7 +22,7 @@ public class LogicMain extends Observable {
 	
 	public LogicMain(){
 		initLogicMain();
-		gameLog = true;
+		gameLog = false;
 		commandLine = false;
 	}
 	

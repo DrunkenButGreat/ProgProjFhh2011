@@ -18,7 +18,7 @@ import de.gruppe12.logic.GameLog;
 public class RemoveCheck {
 	
 	private static boolean gamelog = false;
-	private static boolean commandLine = true;
+	private static boolean commandLine = false;
 	
 	/** checkForRemove
 	 * 

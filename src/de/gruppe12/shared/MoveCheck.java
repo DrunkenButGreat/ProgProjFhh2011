@@ -37,10 +37,8 @@ public class MoveCheck {
 		if (!checkBoardContent(currentMove, board)) return false;
 		if (!checkFreeWay(currentMove, board)) return false;
 	
-		if(gamelog) GameLog.logDebugEvent("__________Zug erlaubt__________");
-		
+		if(gamelog) GameLog.logDebugEvent("__________Zug erlaubt__________");		
 		if(gamelog) System.out.println("check brauchte: " + String.valueOf((System.nanoTime()-time1)/1000000) +" ms");
-
 		return true;
 	}
 	

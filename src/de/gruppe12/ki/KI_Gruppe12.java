@@ -246,8 +246,6 @@ public class KI_Gruppe12 implements MoveStrategy {
 			    	return rating + 550;	  
 			    }
 	    	  
-	    	 
-	    	  
 	    	  //Wenn König in der Nähe, dann ziehe dahin!
 	    	  if((c1 ==BoardContent.KING)){
 		    	  return rating + 500;

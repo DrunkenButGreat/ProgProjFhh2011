@@ -17,6 +17,7 @@ import de.gruppe12.shared.Cell;
 import de.gruppe12.shared.Move;
 
 public class GuiController implements Observer{
+	private static boolean commandLine;
 	private String kiPathName;
 	private final MoveAnimation anim;
 	private GameGui gui;
@@ -27,6 +28,7 @@ public class GuiController implements Observer{
 	
 	public GuiController() {
 		anim= new MoveAnimation(this);
+		commandLine = false;
 	}
 	
 	protected void setGameGui(GameGui gui) {
@@ -62,7 +64,7 @@ public class GuiController implements Observer{
 	 * 
 	 * @param cellX
 	 * @param cellY
-	 * @return boolean ob Zelle dem Spieler gehört, der am Zug ist
+	 * @return boolean ob Zelle dem Spieler gehï¿½rt, der am Zug ist
 	 */
 	
 	protected boolean isPlayersTurn(int cellX, int cellY) {
@@ -107,17 +109,17 @@ public class GuiController implements Observer{
 	/**
 	 * update
 	 * 
-	 * implementiert Observer-Interface Methode. Wenn ein Move Objekt übergeben wird, 
+	 * implementiert Observer-Interface Methode. Wenn ein Move Objekt ï¿½bergeben wird, 
 	 * wird eine Move Animation gestartet.
 	 * 
-	 * Wenn ein String mit "GameOver" übergeben wird, wird die Update Methode der GUI aufgerufen um das Spielende anzuzeigen.
+	 * Wenn ein String mit "GameOver" ï¿½bergeben wird, wird die Update Methode der GUI aufgerufen um das Spielende anzuzeigen.
 	 * 
 	 */
 	@Override
 	public void update(Observable obsSrc, Object obj) {
 		if (obj instanceof Move) {
 			lastMoveLog= logic.getLastGameLogEvent();
-			System.out.println(lastMoveLog);
+			if (commandLine)System.out.println(lastMoveLog);
 			Move move= (Move)obj;
 			Point sourceCell= new Point(move.getFromCell().getCol(), move.getFromCell().getRow());
 			Point destCell= new Point(move.getToCell().getCol(), move.getToCell().getRow());
@@ -163,7 +165,7 @@ public class GuiController implements Observer{
 	/**
 	 * getBoardCopy
 	 * 
-	 * gibt eine Kopie des aktuellen Boardinhalts wieder (um Steine für Animation temporär zu speichern)
+	 * gibt eine Kopie des aktuellen Boardinhalts wieder (um Steine fï¿½r Animation temporï¿½r zu speichern)
 	 * 
 	 * @return BoardContent Array
 	 */
