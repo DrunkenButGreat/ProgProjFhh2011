@@ -144,17 +144,45 @@ public class RemoveCheck {
 		Board tb = board;		
 		
 		// Prüfen ob alle Fluchtburgen blockiert sind
-		 // Prüfen ob alle Fluchburgen blockiert sind
-
-		if (board.getCell(0, 1).getContent() == BoardContent.ATTACKER &&
-		    board.getCell(1, 0).getContent() == BoardContent.ATTACKER &&
-		    board.getCell(11, 0).getContent() == BoardContent.ATTACKER &&
-		    board.getCell(12, 1).getContent() == BoardContent.ATTACKER &&
-		    board.getCell(0, 11).getContent() == BoardContent.ATTACKER &&
-		    board.getCell(1, 12).getContent() == BoardContent.ATTACKER &&
-		    board.getCell(12, 11).getContent() == BoardContent.ATTACKER &&
-		    board.getCell(11, 12).getContent() == BoardContent.ATTACKER
-			){
+		boolean leftTopCornerblocked= (board.getCell(0, 2).getContent().equals(BoardContent.ATTACKER) &&
+									   board.getCell(2, 0).getContent().equals(BoardContent.ATTACKER)) &&									   
+									  (board.getCell(1, 1).getContent().equals(BoardContent.ATTACKER) ||
+									   (board.getCell(1, 2).getContent().equals(BoardContent.ATTACKER) &&
+									   board.getCell(2, 1).getContent().equals(BoardContent.ATTACKER)) ||
+									  (board.getCell(0, 1).getContent().equals(BoardContent.ATTACKER)) &&
+									   board.getCell(1, 0).getContent().equals(BoardContent.ATTACKER));
+		
+		boolean rightTopCornerblocked = (board.getCell(10, 0).getContent().equals(BoardContent.ATTACKER) &&
+				   						board.getCell(12, 2).getContent().equals(BoardContent.ATTACKER)) &&
+				   						(board.getCell(11, 1).getContent().equals(BoardContent.ATTACKER) ||
+				   						(board.getCell(10, 1).getContent().equals(BoardContent.ATTACKER) &&
+				   						board.getCell(11, 2).getContent().equals(BoardContent.ATTACKER)) ||
+				   						(board.getCell(11, 0).getContent().equals(BoardContent.ATTACKER)) &&
+										board.getCell(12, 1).getContent().equals(BoardContent.ATTACKER));
+		
+		boolean leftBottomCornerblocked = (board.getCell(0, 10).getContent().equals(BoardContent.ATTACKER) &&
+										   board.getCell(2, 12).getContent().equals(BoardContent.ATTACKER)) &&
+										 (board.getCell(1, 11).getContent().equals(BoardContent.ATTACKER) ||
+										(board.getCell(1, 10).getContent().equals(BoardContent.ATTACKER) &&
+										board.getCell(2, 11).getContent().equals(BoardContent.ATTACKER))||
+				   						(board.getCell(0, 11).getContent().equals(BoardContent.ATTACKER)) &&
+										board.getCell(1, 12).getContent().equals(BoardContent.ATTACKER));
+		
+		boolean rightBottomCornerblocked = (board.getCell(10, 12).getContent().equals(BoardContent.ATTACKER) &&
+										board.getCell(12, 10).getContent().equals(BoardContent.ATTACKER)) &&
+										(board.getCell(11, 11).getContent().equals(BoardContent.ATTACKER) ||
+										(board.getCell(10, 11).getContent().equals(BoardContent.ATTACKER) &&
+										board.getCell(11, 10).getContent().equals(BoardContent.ATTACKER))||
+				   						(board.getCell(12, 11).getContent().equals(BoardContent.ATTACKER)) &&
+										board.getCell(11, 12).getContent().equals(BoardContent.ATTACKER));
+		
+		if (leftBottomCornerblocked) System.out.println("LB B");
+		if (leftTopCornerblocked) System.out.println("LT B");
+		if (rightBottomCornerblocked) System.out.println("RB B");
+		if (rightTopCornerblocked) System.out.println("RT B");
+		
+		// Wenn alle Fluchtburgen blockiert sind -> Angreifer gewinnt
+		if (leftTopCornerblocked && rightTopCornerblocked && leftBottomCornerblocked && rightBottomCornerblocked){
 			tb.setFinish();
 			tb.setAttackerWon();
 			if(gamelog) GameLog.logDebugEvent("Spielende");
