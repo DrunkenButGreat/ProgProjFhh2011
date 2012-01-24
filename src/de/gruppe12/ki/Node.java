@@ -1,13 +1,16 @@
 package de.gruppe12.ki;
 
 /**
-* Die Klasse Node initialisiert einen Baum <p>
-* Copyright: (c) 2011 <p>
-* Company: Gruppe 12 <p>
-* @author Markus
-* @version 1.0.0 21.11.2011
-* Aenderungen: 21.11. - Keine Aenderung 
-*/
+ * Die Klasse Node initialisiert einen Baum
+ * <p>
+ * Copyright: (c) 2011
+ * <p>
+ * Company: Gruppe 12
+ * <p>
+ * 
+ * @author Markus
+ * @version 1.0.0 21.11.2011 Aenderungen: 21.11. - Keine Aenderung
+ */
 
 public class Node<T> {
 

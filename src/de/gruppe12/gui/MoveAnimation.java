@@ -3,46 +3,52 @@ package de.gruppe12.gui;
 import java.awt.Point;
 
 public class MoveAnimation {
-	private static final int durationPerCrossedCell= 100;
+	private static final int durationPerCrossedCell = 100;
 	private Point sourceCell, destCell;
 	private int animationDuration, remainingDuration;
 	private GuiController gc;
 	private boolean running;
-	
+
 	public MoveAnimation(GuiController gc) {
-		this.gc= gc;
-		running= false;
+		this.gc = gc;
+		running = false;
 	}
-	
+
 	/**
 	 * startAnimation
 	 * 
-	 * startet eine neue Animation. Zuerst wird die Animationszeit in abhängigkeit von der Entfernung berechnet
-	 * und anschließend wird ein AnimationTimer gestartet
+	 * startet eine neue Animation. Zuerst wird die Animationszeit in
+	 * abhï¿½ngigkeit von der Entfernung berechnet und anschlieï¿½end wird ein
+	 * AnimationTimer gestartet
 	 * 
-	 * @param sourceCell : Zelle mit zu bewegender Figur
-	 * @param destCell : Zielzelle der Figur
+	 * @param sourceCell
+	 *            : Zelle mit zu bewegender Figur
+	 * @param destCell
+	 *            : Zielzelle der Figur
 	 */
 	protected void startAnimation(Point sourceCell, Point destCell) {
-		this.sourceCell= sourceCell;
-		this.destCell= destCell;
+		this.sourceCell = sourceCell;
+		this.destCell = destCell;
 		initAnimationTimers();
-		running= true;
+		running = true;
 		new AnimationTimer(this).start();
 	}
 
 	/**
-	 * berechntet Animationsdauer in Abhängigkeit von der Entfernung zwischen Ursprungs und Ziel Zelle
+	 * berechntet Animationsdauer in Abhï¿½ngigkeit von der Entfernung zwischen
+	 * Ursprungs und Ziel Zelle
 	 */
 	private void initAnimationTimers() {
-		int distance= Math.max(Math.abs(sourceCell.x-destCell.x), Math.abs(sourceCell.y-destCell.y));
-		remainingDuration= animationDuration= distance*durationPerCrossedCell;
+		int distance = Math.max(Math.abs(sourceCell.x - destCell.x),
+				Math.abs(sourceCell.y - destCell.y));
+		remainingDuration = animationDuration = distance
+				* durationPerCrossedCell;
 	}
 
 	/**
 	 * getRemainingDuration
 	 * 
-	 * gibt die noch verbleibende Animationszeit in ms zurück
+	 * gibt die noch verbleibende Animationszeit in ms zurï¿½ck
 	 * 
 	 * @return remaining Duration
 	 */
@@ -54,32 +60,33 @@ public class MoveAnimation {
 	 * end
 	 * 
 	 * sagt dem GuiController, dass es sich das aktuelle Brett speichern kann,
-	 * setzt (Animation) running auf false
-	 * und weckt die schlafende Logik auf
+	 * setzt (Animation) running auf false und weckt die schlafende Logik auf
 	 * 
 	 */
 	protected void end() {
 		gc.refreshBoard();
-		running= false;
+		running = false;
 		gc.update();
 		gc.wakeLogic();
 	}
-	
+
 	/**
 	 * update
 	 * 
-	 * zieht von der Restdauer die verstrichene Dauer ab und bewirkt ein repaint der GUI
+	 * zieht von der Restdauer die verstrichene Dauer ab und bewirkt ein repaint
+	 * der GUI
 	 * 
-	 * @param dT : verstrichene Zeit
+	 * @param dT
+	 *            : verstrichene Zeit
 	 */
 	protected void update(long dT) {
-		remainingDuration-= dT;
-		remainingDuration= Math.max(0, remainingDuration);
+		remainingDuration -= dT;
+		remainingDuration = Math.max(0, remainingDuration);
 		gc.update();
 	}
 
 	/**
-	 * gibt wider ob derzeitig eine Animation läuft
+	 * gibt wider ob derzeitig eine Animation lï¿½uft
 	 * 
 	 * @return boolean isRunning
 	 */
@@ -90,15 +97,17 @@ public class MoveAnimation {
 	/**
 	 * getStonePosition
 	 * 
-	 * berechnet die Position des bewegten Steins in Abhängigkeit zur Rest Animationsdauer
+	 * berechnet die Position des bewegten Steins in Abhï¿½ngigkeit zur Rest
+	 * Animationsdauer
 	 * 
 	 * @return double Array mit x und y Position des Steins
 	 */
 	protected double[] getStonePosition() {
 		return new double[] {
-				destCell.x+ (sourceCell.x-destCell.x)*remainingDuration/(double)animationDuration,
-				destCell.y+ (sourceCell.y-destCell.y)*remainingDuration/(double)animationDuration
-		};
+				destCell.x + (sourceCell.x - destCell.x) * remainingDuration
+						/ (double) animationDuration,
+				destCell.y + (sourceCell.y - destCell.y) * remainingDuration
+						/ (double) animationDuration };
 	}
 
 	/**

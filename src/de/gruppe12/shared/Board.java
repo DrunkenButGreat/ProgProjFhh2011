@@ -10,33 +10,32 @@ package de.gruppe12.shared;
 
 import de.fhhannover.inform.hnefatafl.vorgaben.BoardContent;
 
-
 public class Board {
-	
+
 	final int fields = 13;
 	private BoardContent[][] board = new BoardContent[fields][fields];
 	private boolean finish, attackerWon;
-	
-	public Board(){
+
+	public Board() {
 		init();
 	}
-	
-	/** init
-	 * setzt das Spielfeld auf die Anfangspositionen
+
+	/**
+	 * init setzt das Spielfeld auf die Anfangspositionen
 	 */
-	public void init(){
-		
+	public void init() {
+
 		finish = false;
-		
+
 		/* Die Positionen setzten die für alle außer dem König tabu sind */
 		board[0][0] = BoardContent.INVALID;
 		board[0][12] = BoardContent.INVALID;
 		board[12][0] = BoardContent.INVALID;
 		board[12][12] = BoardContent.INVALID;
-		
+
 		/* König setzten */
 		board[6][6] = BoardContent.KING;
-		
+
 		/* Verteidiger setzten */
 		board[6][5] = BoardContent.DEFENDER;
 		board[6][4] = BoardContent.DEFENDER;
@@ -50,170 +49,191 @@ public class Board {
 		board[7][7] = BoardContent.DEFENDER;
 		board[5][7] = BoardContent.DEFENDER;
 		board[7][5] = BoardContent.DEFENDER;
-		
+
 		/* Angreifer setzten */
-		
-		for(int i = 4; i<=8; i++){
-			board[0][i] 	= BoardContent.ATTACKER;
-			board[12][i] 	= BoardContent.ATTACKER;
-			board[i][0] 	= BoardContent.ATTACKER;
-			board[i][12] 	= BoardContent.ATTACKER;
+
+		for (int i = 4; i <= 8; i++) {
+			board[0][i] = BoardContent.ATTACKER;
+			board[12][i] = BoardContent.ATTACKER;
+			board[i][0] = BoardContent.ATTACKER;
+			board[i][12] = BoardContent.ATTACKER;
 		}
-		
-		board[6][1] 	= BoardContent.ATTACKER;
-		board[6][11] 	= BoardContent.ATTACKER;
-		board[1][6] 	= BoardContent.ATTACKER;
-		board[11][6] 	= BoardContent.ATTACKER;
-		
+
+		board[6][1] = BoardContent.ATTACKER;
+		board[6][11] = BoardContent.ATTACKER;
+		board[1][6] = BoardContent.ATTACKER;
+		board[11][6] = BoardContent.ATTACKER;
+
 		/* Rest leer setzen */
-		
-		for(int i = 0; i < board.length; i++){
-			for(int j = 0; j < board[i].length; j++){
-				if(board[i][j]==null){
-					board[i][j]=BoardContent.EMPTY;
+
+		for (int i = 0; i < board.length; i++) {
+			for (int j = 0; j < board[i].length; j++) {
+				if (board[i][j] == null) {
+					board[i][j] = BoardContent.EMPTY;
 				}
 			}
 		}
-		
+
 	}
-	
-	public BoardContent[][] get(){
+
+	public BoardContent[][] get() {
 		return board;
 	}
-	
-	/** get
+
+	/**
+	 * get
+	 * 
 	 * @deprecated
 	 * 
-	 * gibt den Paramenter der Position des Arrays aus
+	 *             gibt den Paramenter der Position des Arrays aus
 	 * 
-	 * @param x: X-Koordinate
-	 * @param y: Y-Koordinate
+	 * @param x
+	 *            : X-Koordinate
+	 * @param y
+	 *            : Y-Koordinate
 	 * @return: Gibt einen Typ des Boardcontents zurück.
 	 */
 	@Deprecated
-	public BoardContent get(int x, int y){
+	public BoardContent get(int x, int y) {
 		return board[x][y];
 	}
-	
-	/** set
+
+	/**
+	 * set
 	 * 
-	 * @param board Das Board das neu geschrieben werden soll
+	 * @param board
+	 *            Das Board das neu geschrieben werden soll
 	 */
-	public void set(BoardContent[][] board){
-		/* Testen ob das Board welches gesetzt wird auch die selben Dimensionen hat wie
-		 * das Ursprüngliche
+	public void set(BoardContent[][] board) {
+		/*
+		 * Testen ob das Board welches gesetzt wird auch die selben Dimensionen
+		 * hat wie das Ursprüngliche
 		 */
-		if(board.length==this.board.length && board[0].length==this.board[0].length){
-			this.board=board;
+		if (board.length == this.board.length
+				&& board[0].length == this.board[0].length) {
+			this.board = board;
 		}
 	}
-	
-	/** set
+
+	/**
+	 * set
+	 * 
 	 * @deprecated
 	 * 
-	 * @param x: X-Koordinate
-	 * @param y: Y-Koordinate
-	 * @param bc: Neuer Boardcontent der Celle
+	 * @param x
+	 *            : X-Koordinate
+	 * @param y
+	 *            : Y-Koordinate
+	 * @param bc
+	 *            : Neuer Boardcontent der Celle
 	 */
 	@Deprecated
-	public void set(int x, int y, BoardContent bc){
+	public void set(int x, int y, BoardContent bc) {
 		board[x][y] = bc;
 	}
-	
-	/** to String
+
+	/**
+	 * to String
 	 * 
 	 * Bildet das Ganze Board als String ab
 	 * 
 	 */
 	@Override
-	public String toString(){
+	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("\t" + "0 1 2 3 4 5 6 7 8 9 A B C" + "\n\n\n");
-		for(int i = 0;i < board.length; i++){
+		for (int i = 0; i < board.length; i++) {
 			sb.append(i + "\t");
-			
-			for(int j= 0; j < board[i].length; j++){
-				switch(board[j][i]){
-					case INVALID:
-						sb.append("I ");
-						break;
-					case ATTACKER:
-						sb.append("A ");
-						break;
-					case DEFENDER:
-						sb.append("D ");
-						break;
-					case KING:
-						sb.append("K ");
-						break;
-					case EMPTY:
-						sb.append("  ");
-						break;
-					default:
-						break;
-				}				
+
+			for (int j = 0; j < board[i].length; j++) {
+				switch (board[j][i]) {
+				case INVALID:
+					sb.append("I ");
+					break;
+				case ATTACKER:
+					sb.append("A ");
+					break;
+				case DEFENDER:
+					sb.append("D ");
+					break;
+				case KING:
+					sb.append("K ");
+					break;
+				case EMPTY:
+					sb.append("  ");
+					break;
+				default:
+					break;
+				}
 			}
 			sb.append("\n");
 		}
 		return sb.toString();
 	}
-	
-	public void setFinish(){
+
+	public void setFinish() {
 		finish = true;
 	}
-	
-	public boolean isFinished(){
+
+	public boolean isFinished() {
 		return finish;
 	}
-	
-	
-	/** getCell
+
+	/**
+	 * getCell
 	 * 
 	 * Es kann eine gesammt Cell abgerufen werden
 	 * 
-	 * @param x : Spalte des Boards
-	 * @param y : Reihe des Boards
-	 * @return	�beribt die Zelle mit Inhalt
+	 * @param x
+	 *            : Spalte des Boards
+	 * @param y
+	 *            : Reihe des Boards
+	 * @return �beribt die Zelle mit Inhalt
 	 */
-	public Cell getCell(int x, int y){
-		if (x<0 || x>12 || y<0 || y>12) return new Cell(x,y, BoardContent.INVALID);
-		return new Cell(x,y,board[x][y]);
+	public Cell getCell(int x, int y) {
+		if (x < 0 || x > 12 || y < 0 || y > 12)
+			return new Cell(x, y, BoardContent.INVALID);
+		return new Cell(x, y, board[x][y]);
 	}
-	
-	
-	/** setCell
+
+	/**
+	 * setCell
 	 * 
 	 * Setzte den Inhalt des Boardes ueber die Zelle
 	 * 
-	 * @param cell : Zelle zum einf�gen ins Board
+	 * @param cell
+	 *            : Zelle zum einf�gen ins Board
 	 */
-	public void setCell(Cell cell){
-		int x = cell.getCol(), y=cell.getRow();
+	public void setCell(Cell cell) {
+		int x = cell.getCol(), y = cell.getRow();
 		BoardContent bc = cell.getContent();
-		board[x][y]= bc;
+		board[x][y] = bc;
 	}
-	
-	/**getCellBC
+
+	/**
+	 * getCellBC
 	 * 
-	 * Liefert den BoardContentWert vom Board der Zelle. 
-	 * Praktisch um zu �berpr�fen ob auch die richtigen Informationen getestet werden
+	 * Liefert den BoardContentWert vom Board der Zelle. Praktisch um zu
+	 * �berpr�fen ob auch die richtigen Informationen getestet werden
 	 * 
-	 * @param cell : Zelle -> Zelle auf Board
+	 * @param cell
+	 *            : Zelle -> Zelle auf Board
 	 * @return Einen Boardcontent
 	 */
-	public BoardContent getCellBC(de.fhhannover.inform.hnefatafl.vorgaben.Cell cell){
+	public BoardContent getCellBC(
+			de.fhhannover.inform.hnefatafl.vorgaben.Cell cell) {
 		return board[cell.getCol()][cell.getRow()];
 	}
 
 	public void setAttackerWon() {
-		attackerWon= true;
+		attackerWon = true;
 	}
-	
+
 	public void setDefenderWon() {
-		attackerWon= false;
+		attackerWon = false;
 	}
-	
-	public boolean attackerWon () {
+
+	public boolean attackerWon() {
 		return attackerWon;
 	}
 }
