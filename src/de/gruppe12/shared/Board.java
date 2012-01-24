@@ -77,16 +77,6 @@ public class Board {
 		
 	}
 	
-	/** empty
-	 * 
-	 * @deprecated
-	 * 
-	 * Leert das komplette board
-	 */
-	private void empty(){
-		board = new BoardContent[fields][fields];
-	}
-	
 	public BoardContent[][] get(){
 		return board;
 	}

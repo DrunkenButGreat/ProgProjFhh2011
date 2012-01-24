@@ -6,7 +6,7 @@ package de.gruppe12.ki;
 * Company: Gruppe 12 <p>
 * @author Markus
 * @version 1.0.0 21.11.2011
-* Änderungen: 21.11. - Keine Änderung 
+* Aenderungen: 21.11. - Keine Aenderung 
 */
 
 public class Node<T> {

@@ -11,20 +11,7 @@ import de.fhhannover.inform.hnefatafl.vorgaben.MoveStrategy;
 * �nderungen: 04.12. javadoc erweitert, getStrategie verbessert
 */
 
-public class StrategyManager {
-	private MoveStrategy strategy;
-	
-	/**
-	 * register
-	 * 
-	 * initialisiert eine Spielstrategie
-	 * 
-	 * @param strategy 
-	 */
-	public void register(MoveStrategy strategy){
-	 this.strategy = strategy;
-	}
-	
+public class StrategyManager {	
 	/**
 	 * getStrategies
 	 * 

@@ -1,6 +1,6 @@
 /** StrategyLoader
  * 
- * L�d Strategies aus einer Jar oder dem Classpath
+ * Laed Strategies aus einer Jar oder dem Classpath
  * 
  * Copyright: (c) 2011 <p>
  * Company: Gruppe 12 <p>
@@ -27,7 +27,7 @@ public class StrategyLoader {
 	
 	/** listContent
 	 * 
-	 * �ffnet eine Zip oder Jar datei und gibt ihren Inahlt aus
+	 * Oeffnet eine Zip oder Jar Datei und gibt ihren Inhalt aus
 	 * 
 	 * @param uri 	: Pfad zur Datei
 	 * @return		: Eine Arraylist mit alle Dateien samt relativer Pfade
@@ -138,7 +138,6 @@ public class StrategyLoader {
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}
-    	System.out.println("Scheinbar ist ein Fehler aufgetreten");
     	return null;
     }
     
