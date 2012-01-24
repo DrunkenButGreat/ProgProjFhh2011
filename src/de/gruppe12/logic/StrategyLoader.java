@@ -54,7 +54,7 @@ public class StrategyLoader {
 	          Enumeration<? extends ZipEntry> e=zf.entries();
 	          while (e.hasMoreElements()) {
 	              ZipEntry ze=(ZipEntry)e.nextElement();
-	                 ar.add(extension+"-"+ze.toString());
+	                 ar.add(extension+/*"-"+*/ze.toString());
 	          }
 	          zf.close();	       
 		 } catch (Exception e) {

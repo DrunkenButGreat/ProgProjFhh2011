@@ -268,8 +268,8 @@ public class GuiController implements Observer{
 				MoveStrategy offStrat= null;
 				MoveStrategy defStrat= null;
 				try {
-					offStrat = StrategyLoader.getStrategy(path1, offenderMoveStrategyName.substring(1));
-					defStrat = StrategyLoader.getStrategy(path2, defenderMoveStrategyName.substring(1));
+					offStrat = StrategyLoader.getStrategy(path1, offenderMoveStrategyName);
+					defStrat = StrategyLoader.getStrategy(path2, defenderMoveStrategyName);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

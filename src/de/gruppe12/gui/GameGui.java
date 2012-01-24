@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
+import javax.swing.filechooser.FileFilter;
 
 import javax.imageio.ImageIO;
 
@@ -669,8 +670,20 @@ public class GameGui extends JFrame {
 		
 		JMenu jmSettings= new JMenu("Optionen");
 		//Ki Jar/Zip Auswahl M�glichkeit
-		JMenuItem jmiKiJarChooser= new JMenuItem("Ki Jar Datei hinzuf�gen");
+		JMenuItem jmiKiJarChooser= new JMenuItem("Ki Jar Datei hinzufuegen");
 		final JFileChooser jfcKiJarChooser= new JFileChooser();
+		jfcKiJarChooser.addChoosableFileFilter(new FileFilter() {
+			
+			@Override
+			public String getDescription() {
+				return "JAR (*.jar)";
+			}
+			
+			@Override
+			public boolean accept(File f) {
+				return f.getName().endsWith(".jar") || f.isDirectory();
+			}
+		});
 		jmiKiJarChooser.addActionListener(new ActionListener() {
 			
 			@Override
@@ -689,7 +702,7 @@ public class GameGui extends JFrame {
 		});
 		jmSettings.add(jmiKiJarChooser);
 		
-		JMenuItem jmiKiFolderChooser= new JMenuItem("OrdnerPfad hinzuf�gen");
+		/*JMenuItem jmiKiFolderChooser= new JMenuItem("OrdnerPfad hinzuf�gen");
 		final JFileChooser jfcKiFolderChooser= new JFileChooser();
 		jfcKiFolderChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		jmiKiFolderChooser.addActionListener(new ActionListener() {
@@ -708,7 +721,7 @@ public class GameGui extends JFrame {
 				}
 			}
 		});
-		jmSettings.add(jmiKiFolderChooser);
+		jmSettings.add(jmiKiFolderChooser);*/
 	
 		//JMenu jmHelp= new JMenu("Hilfe");
 		
