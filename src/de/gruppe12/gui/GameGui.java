@@ -189,7 +189,7 @@ public class GameGui extends JFrame {
 		jbtnHumanVsAi.addKeyListener(enterListener);
 		jbtnAiVsAi.addKeyListener(enterListener);
 		
-		/* sorgt bei Groessenaenderung daf�r, dass Schritfgroessen angepasst werden */
+		/* sorgt bei Groessenaenderung dafuer, dass Schritfgroessen angepasst werden */
 		jpnlStartMenu.addComponentListener(new ComponentAdapter() {
 			@Override public void componentResized(ComponentEvent e) {
 				int fontSize= jbtnHumanVsHuman.getHeight()/3;
@@ -659,6 +659,7 @@ public class GameGui extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				logListModel.clear();
 				controller.resetLogic();
 				cardLO.show(cardLOContainer, cardNameStartMenu);
 				jpnlStartMenu.requestFocus();
@@ -669,7 +670,7 @@ public class GameGui extends JFrame {
 		
 		
 		JMenu jmSettings= new JMenu("Optionen");
-		//Ki Jar/Zip Auswahl M�glichkeit
+		//Ki Jar/Zip Auswahl Moeglichkeit
 		JMenuItem jmiKiJarChooser= new JMenuItem("Ki Jar Datei hinzufuegen");
 		final JFileChooser jfcKiJarChooser= new JFileChooser();
 		jfcKiJarChooser.addChoosableFileFilter(new FileFilter() {
@@ -702,7 +703,7 @@ public class GameGui extends JFrame {
 		});
 		jmSettings.add(jmiKiJarChooser);
 		
-		/*JMenuItem jmiKiFolderChooser= new JMenuItem("OrdnerPfad hinzuf�gen");
+		/*JMenuItem jmiKiFolderChooser= new JMenuItem("OrdnerPfad hinzufuegen");
 		final JFileChooser jfcKiFolderChooser= new JFileChooser();
 		jfcKiFolderChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		jmiKiFolderChooser.addActionListener(new ActionListener() {
