@@ -22,7 +22,7 @@ public class GuiController implements Observer{
 	private final MoveAnimation anim;
 	private GameGui gui;
 	private LogicMain logic;
-	private static int thinkTime= 1000;
+	private static int thinkTime= 10000;
 	private String lastMoveLog= null;
 	private BoardContent[][] board= null;
 	
@@ -55,6 +55,10 @@ public class GuiController implements Observer{
 		logic.addObserver(this);
 	}
 	
+	public void resetLogic(){
+		logic.resetLogic();
+	}
+	
 	/**
 	 * gameFinished
 	 * 
@@ -75,7 +79,7 @@ public class GuiController implements Observer{
 	 * 
 	 * @param cellX
 	 * @param cellY
-	 * @return boolean ob Zelle dem Spieler gehört, der am Zug ist
+	 * @return boolean ob Zelle dem Spieler gehï¿½rt, der am Zug ist
 	 */
 	
 	protected boolean isPlayersTurn(int cellX, int cellY) {
@@ -120,10 +124,10 @@ public class GuiController implements Observer{
 	/**
 	 * update
 	 * 
-	 * implementiert Observer-Interface Methode. Wenn ein Move Objekt übergeben wird, 
+	 * implementiert Observer-Interface Methode. Wenn ein Move Objekt ï¿½bergeben wird, 
 	 * wird eine Move Animation gestartet.
 	 * 
-	 * Wenn ein String mit "GameOver" übergeben wird, wird die Update Methode der GUI aufgerufen um das Spielende anzuzeigen.
+	 * Wenn ein String mit "GameOver" ï¿½bergeben wird, wird die Update Methode der GUI aufgerufen um das Spielende anzuzeigen.
 	 * 
 	 */
 	@Override
@@ -175,7 +179,7 @@ public class GuiController implements Observer{
 	/**
 	 * getBoardCopy
 	 * 
-	 * gibt eine Kopie des aktuellen Boardinhalts wieder (um Steine für Animation temporär zu speichern)
+	 * gibt eine Kopie des aktuellen Boardinhalts wieder (um Steine fï¿½r Animation temporï¿½r zu speichern)
 	 * 
 	 * @return BoardContent Array
 	 */

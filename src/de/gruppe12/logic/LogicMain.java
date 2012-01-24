@@ -64,9 +64,14 @@ public class LogicMain extends Observable {
 	
 	private void initLogicMain(){
 		this.board = new Board();
-		this.board.init();
+		this.board.init();		
 		this.currentMove = null;
 		this.defPlayerTurn = false;
+		this.gameEnd = false;
+	}
+	
+	public void resetLogic(){
+		this.gameEnd = true;
 	}
 
 	// Ende der Konstruktoren	

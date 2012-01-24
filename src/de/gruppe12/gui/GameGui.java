@@ -658,6 +658,7 @@ public class GameGui extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				controller.resetLogic();
 				cardLO.show(cardLOContainer, cardNameStartMenu);
 				jpnlStartMenu.requestFocus();
 			}
@@ -667,8 +668,8 @@ public class GameGui extends JFrame {
 		
 		
 		JMenu jmSettings= new JMenu("Optionen");
-		//Ki Jar/Zip Auswahl Möglichkeit
-		JMenuItem jmiKiJarChooser= new JMenuItem("Ki Jar Datei hinzufügen");
+		//Ki Jar/Zip Auswahl Mï¿½glichkeit
+		JMenuItem jmiKiJarChooser= new JMenuItem("Ki Jar Datei hinzufï¿½gen");
 		final JFileChooser jfcKiJarChooser= new JFileChooser();
 		jmiKiJarChooser.addActionListener(new ActionListener() {
 			
@@ -688,7 +689,7 @@ public class GameGui extends JFrame {
 		});
 		jmSettings.add(jmiKiJarChooser);
 		
-		JMenuItem jmiKiFolderChooser= new JMenuItem("OrdnerPfad hinzufügen");
+		JMenuItem jmiKiFolderChooser= new JMenuItem("OrdnerPfad hinzufï¿½gen");
 		final JFileChooser jfcKiFolderChooser= new JFileChooser();
 		jfcKiFolderChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		jmiKiFolderChooser.addActionListener(new ActionListener() {
