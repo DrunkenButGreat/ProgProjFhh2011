@@ -117,7 +117,7 @@ public class StrategyLoader {
     		if(path.contains("com")) classname = path.substring(path.indexOf("com"),path.length()).replace("\\","/");
     		if(path.contains("org")) classname = path.substring(path.indexOf("org"),path.length()).replace("\\","/");
     		
-    	} else classname = classname.substring(1);
+    	} else classname = classname.substring(0);
     	
     	try{
 	    	 URL jarURL = new File(path).toURI().toURL();
