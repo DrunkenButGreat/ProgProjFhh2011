@@ -22,7 +22,7 @@ public class LogicMain extends Observable {
 	
 	public LogicMain(){
 		initLogicMain();
-		gameLog = false;
+		gameLog = true;
 		commandLine = false;
 	}
 	
