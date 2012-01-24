@@ -523,9 +523,9 @@ public class GameGui extends JFrame {
 				Map<String, String> offMoveStrategies= controller.getStrats(offStratPath);
 				String offStrat= offMoveStrategies.get(offStratShort);
 				
-				String shortDefStratPath= (String)jcbOffenderAiPath.getSelectedItem();
+				String shortDefStratPath= (String)jcbDefenderAiPath.getSelectedItem();
 				String defStratPath= controller.getKiFolderList().get(shortDefStratPath);
-				Map<String, String> defMoveStrategies= controller.getStrats(offStratPath);
+				Map<String, String> defMoveStrategies= controller.getStrats(defStratPath);
 				String defStrat= defMoveStrategies.get(defStratShort);
 				
 				cardLO.show(cardLOContainer, cardNameGamePanel);
