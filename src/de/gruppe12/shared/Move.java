@@ -21,6 +21,7 @@ public class Move implements de.fhhannover.inform.hnefatafl.vorgaben.Move {
 		return to;
 	}
 	
+	@Override
 	public String toString(){
 		StringBuilder sb = new StringBuilder();
 		sb.append("Von: "+ from.getCol() +" / "+from.getRow()+" / "+ from.getContent() + "\n");
