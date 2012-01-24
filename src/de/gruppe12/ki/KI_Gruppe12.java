@@ -10,39 +10,56 @@ import de.gruppe12.shared.*;
 
 
 /**
-* Die Klasse NormalStrategy ist die normale Spielstrategie <p>
+* Die Klasse KI_Gruppe12 ist die normale Spielstrategie <p>
 * Copyright: (c) 2011 <p>
 * Company: Gruppe 12 <p>
-* @author Markus
-* @version 1.0.1 10.12.2011
-* �nderungen: 10.12. KI verbessert!
+* @author Markus Blume, Lennart Henke
+* @version 1.3.3.7 24.01.2012
 */
 
 public class KI_Gruppe12 implements MoveStrategy {
-	private boolean gameLog, commandLine;
+	private boolean commandLine;
 	private int grpNr;
 	private String name;
 	private Board b;
 	private Random r;
 	
+	/**
+	 * Konstruktor
+	 */
+	
 	public KI_Gruppe12(){
 		grpNr = 12;
-		name = "normal"; 
+		name = "KI_Gruppe12"; 
 		b = new Board();
 		r = new Random();
-		this.gameLog = false;
 		this.commandLine = false;
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see de.fhhannover.inform.hnefatafl.vorgaben.MoveStrategy#getGroupNr()
+	 */
 	
 	@Override
 	public int getGroupNr() {
 		return grpNr;
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see de.fhhannover.inform.hnefatafl.vorgaben.MoveStrategy#getStrategyName()
+	 */
+	
 	@Override
 	public String getStrategyName() {
 		return name;
 	}	
+	
+	/*
+	 * (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	
 	@Override
 	public String toString(){
@@ -50,9 +67,9 @@ public class KI_Gruppe12 implements MoveStrategy {
 	}
 	
 	/**
-	 * Übernimmt einen Move auf ein gegebenes Board
-	 * @param move Zu übernehmender Move
-	 * @param board Zugehöriges Board
+	 * Uebernimmt einen Move auf ein gegebenes Board
+	 * @param move Zu uebernehmender Move
+	 * @param board Zugehoeriges Board
 	 * @return
 	 */
 	
@@ -66,10 +83,9 @@ public class KI_Gruppe12 implements MoveStrategy {
 	/**
 	 * 
 	 * GenerateMoves()
-	 * erzeutgt ein Array mit den nächsten möglichen Schritten
-	 * jeder Spielfigur 
-	 * 
-	 * @return eine ArrayList mit allen möglichen Moves
+	 * Erzeugt ein Array mit allen moeglichen Zuegen
+	 * fuer jede Spielfigur, ohne zu pruefen ob der Zug erlaubt ist.
+	 * @return ArrayList mit allen moeglichen Moves
 	 */
 	private ArrayList<Move> generateMoves(BoardContent type) {
 		ArrayList<Move> mList = new ArrayList<Move>(); 
@@ -107,19 +123,19 @@ public class KI_Gruppe12 implements MoveStrategy {
 
 	/**
 	 * calculateValue
-	 * Bewertet den Übergebenen Move.
+	 * Bewertet den Uebergebenen Move.
 	 * 
 	 * @return Bewertung des Moves
 	 */
 	   private int calculateValue(Move move, boolean isDefTurn) {
 		   int rating=0;
 		   
-		   // Abbrechen, wenn leerer Move übergeben wurde
+		   // Abbrechen, wenn leerer Move uebergeben wurde
 		   if (move == null) {
 			   return -1;
 		   }
 		   
-	   	  // Abbrechen bei ungültigem Move
+	   	  // Abbrechen bei ungueltigem Move
 	      if(!MoveCheck.check(move,this.b,isDefTurn,false)) {
 	    	  return -1;
 	      }
@@ -133,7 +149,7 @@ public class KI_Gruppe12 implements MoveStrategy {
 		  BoardContent c4 = b.getCell(move.getToCell().getCol()-1,move.getToCell().getRow()).getContent();
 	      
 		  
-		  //testet, wenn Gegner und kein leeres Feld steigt Value
+		  // Wenn Gegner und kein leeres Feld steigt Value
 		  if(p==BoardContent.ATTACKER){
 	      if((c1 != p)&&(c1!=BoardContent.EMPTY)){
 	    	  rating+=20;
@@ -149,14 +165,13 @@ public class KI_Gruppe12 implements MoveStrategy {
 	      }
 		  }
 	      
-	      //extra Berechnungen beginnen hier:
 	      int toRow=move.getToCell().getRow();
 	      int toCol=move.getToCell().getCol();
 	      
 	      int fromRow=move.getFromCell().getRow();
 	      int fromCol=move.getFromCell().getCol();
 	      
-	      //extra Berechnung für Attacker
+	      //extra Berechnung fuer Attacker
 	      //   0   1  2  3  4  5  6  7  8  9 10 11 12
 	      // 0|xx|10|10|xx|xx|xx|xx|xx|xx|xx|10|10|xx
 	      // 1|10|10|10|xx|xx|xx|xx|xx|xx|xx|10|10|10
@@ -246,7 +261,7 @@ public class KI_Gruppe12 implements MoveStrategy {
 			    	return rating + 550;	  
 			    }
 	    	  
-	    	  //Wenn König in der Nähe, dann ziehe dahin!
+	    	  //Wenn Koenig in der Naehe, dann ziehe dahin!
 	    	  if((c1 ==BoardContent.KING)){
 		    	  return rating + 500;
 		      }
@@ -261,7 +276,7 @@ public class KI_Gruppe12 implements MoveStrategy {
 		      }
 	    	  
 	      }
-	      //extra Berechnung für König
+	      //extra Berechnung für Koenig
 	      //   0  1  2  3  4  5  6  7  8  9  10 11 12
 	      // 0|10|08|08|06|06|02|01|02|06|06|08|08|10
 	      // 1|08|06|06|04|03|02|01|02|03|04|06|06|08
@@ -470,8 +485,8 @@ public class KI_Gruppe12 implements MoveStrategy {
 	    	  } 
 	    	  
 	      
-	      //Berechnung für Verteidiger?
-	    //extra Berechnung für Deffender
+	      //Berechnung fuer Verteidiger?
+	    //extra Berechnung fuer Deffender
 	      //    0 1  2  3  4  5  6  7  8  9  10 11 12
 	      // 0|xx|xx|10|xx|xx|xx|xx|xx|xx|xx|10|xx|xx
 	      // 1|xx|10|xx|xx|xx|xx|xx|xx|xx|xx|xx|10|xx
@@ -533,7 +548,10 @@ public class KI_Gruppe12 implements MoveStrategy {
 	      return rating;
 	   }	
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see de.fhhannover.inform.hnefatafl.vorgaben.MoveStrategy#calculateAttackerMove(de.fhhannover.inform.hnefatafl.vorgaben.Move, int)
+	 */
 	@Override
 	public de.fhhannover.inform.hnefatafl.vorgaben.Move calculateAttackerMove(
 			de.fhhannover.inform.hnefatafl.vorgaben.Move lastMove, int thinkTime) {	
@@ -545,7 +563,7 @@ public class KI_Gruppe12 implements MoveStrategy {
 				ArrayList<Integer> possibleMoves;
 				TreeMap<Integer, ArrayList<Integer>> ratedMoves = new TreeMap<Integer, ArrayList<Integer>>();
 				
-				// Übergebenen Move auf KI-internem Board übernehmen				
+				// Uebergebenen Move auf KI-internem Board uebernehmen				
 				this.b = doMove(lastMove,this.b);		
 				
 				// ArrayList mit allen erlauben Moves generieren		
@@ -554,7 +572,7 @@ public class KI_Gruppe12 implements MoveStrategy {
 			    // Moves nach Rating sortiert in TreeMap speichern
 		 		for(int i=0; i<generatedMoves.size(); i++) {
 			 			
-			 			// Wenn nur noch weniger als 5ms der Zeitscheibe übrig sind
+			 			// Wenn nur noch weniger als 5ms der Zeitscheibe uebrig sind
 			 			// wird die Bewertung der Moves abgebrochen
 				    	if (thinkTime - ((System.nanoTime() - startTime)/1000000) < 5) {
 				    			if (this.commandLine) System.out.println("Zeitscheibe abgelaufen");
@@ -566,7 +584,7 @@ public class KI_Gruppe12 implements MoveStrategy {
 				    	rating=calculateValue(generatedMoves.get(i), false);
 				    	if (rating == -1) continue;
 				    	
-				    	// Existiert schon ein Eintrag für das aktuelle Rating wird der Move an diese Liste gehängt
+				    	// Existiert schon ein Eintrag für das aktuelle Rating wird der Move an diese Liste gehaengt
 				    	// Existiert noch kein Eintrag wird eine neue Liste erstellt und in der TreeMap gespeichert
 				    	if (!ratedMoves.containsKey(rating)){
 				    		possibleMoves = new ArrayList<Integer>();			    		
@@ -579,7 +597,7 @@ public class KI_Gruppe12 implements MoveStrategy {
 			    		ratedMoves.put(rating, possibleMoves);			      
 			    } 		   
 			    
-			    //Aus den Moves mit dem Besten Rating einen per Zufall auswählen
+			    //Aus den Moves mit dem besten Rating einen per Zufall auswaehlen
 			    ArrayList<Integer> bestMoves = ratedMoves.get(ratedMoves.lastKey());
 			    int selectedMove = r.nextInt(bestMoves.size());			    
 		
@@ -587,10 +605,15 @@ public class KI_Gruppe12 implements MoveStrategy {
 				this.b = doMove(generatedMoves.get(bestMoves.get(selectedMove)),this.b);
 				
 				long t2 = (System.nanoTime() - startTime )/1000000;
-				if (this.commandLine) System.out.println("Time für Attackermove: " + t2 + " ms");
+				if (this.commandLine) System.out.println("Zeit fuer Attackermove: " + t2 + " ms");
 		    	return generatedMoves.get(bestMoves.get(selectedMove));
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see de.fhhannover.inform.hnefatafl.vorgaben.MoveStrategy#calculateDefenderMove(de.fhhannover.inform.hnefatafl.vorgaben.Move, int)
+	 */
+	
 	@Override
 	public de.fhhannover.inform.hnefatafl.vorgaben.Move calculateDefenderMove(
 			de.fhhannover.inform.hnefatafl.vorgaben.Move lastMove, int thinkTime) {
@@ -602,7 +625,7 @@ public class KI_Gruppe12 implements MoveStrategy {
 			ArrayList<Integer> possibleMoves;
 			TreeMap<Integer, ArrayList<Integer>> ratedMoves = new TreeMap<Integer, ArrayList<Integer>>();
 			
-			// Übergebenen Move auf KI-internem Board übernehmen				
+			// Uebergebenen Move auf KI-internem Board uebernehmen				
 			this.b = doMove(lastMove,this.b);		
 			
 			// ArrayList mit allen erlauben Moves generieren		
@@ -612,7 +635,7 @@ public class KI_Gruppe12 implements MoveStrategy {
 	 		// Moves nach Rating sortiert in TreeMap speichern
 	 		for(int i=0; i<generatedMoves.size(); i++) {
 		 			
-		 			// Wenn nur noch weniger als 5ms der Zeitscheibe übrig sind
+		 			// Wenn nur noch weniger als 5ms der Zeitscheibe uebrig sind
 		 			// wird die Bewertung der Moves abgebrochen
 			    	if (thinkTime - ((System.nanoTime() - startTime)/1000000) < 5) {
 			    			if (this.commandLine) System.out.println("Zeitscheibe abgelaufen");
@@ -624,7 +647,7 @@ public class KI_Gruppe12 implements MoveStrategy {
 			    	rating=calculateValue(generatedMoves.get(i), true);
 			    	if (rating == -1) continue;
 			    	
-			    	// Existiert schon ein Eintrag für das aktuelle Rating wird der Move an diese Liste gehängt
+			    	// Existiert schon ein Eintrag für das aktuelle Rating wird der Move an diese Liste gehaengt
 			    	// Existiert noch kein Eintrag wird eine neue Liste erstellt und in der TreeMap gespeichert
 			    	if (!ratedMoves.containsKey(rating)){
 			    		possibleMoves = new ArrayList<Integer>();			    		
@@ -637,15 +660,15 @@ public class KI_Gruppe12 implements MoveStrategy {
 		    		ratedMoves.put(rating, possibleMoves);			      
 		    } 		   
 		    
-		    //Aus den Moves mit dem Besten Rating einen per Zufall auswählen
+		    //Aus den Moves mit dem besten Rating einen per Zufall auswählen
 		    ArrayList<Integer> bestMoves = ratedMoves.get(ratedMoves.lastKey());
 		    int selectedMove = r.nextInt(bestMoves.size());
 	
-	    	// Move auf KI-internem Board übernehmen	
+	    	// Move auf KI-internem Board uebernehmen	
 			this.b = doMove(generatedMoves.get(bestMoves.get(selectedMove)),this.b);
 			
 			long t2 = (System.nanoTime() - startTime)/1000000;			
-			if (this.commandLine) System.out.println("Time für Defendermove: " + t2 + " ms");
+			if (this.commandLine) System.out.println("Zeit fuer Defendermove: " + t2 + " ms");
 	    	return generatedMoves.get(bestMoves.get(selectedMove));
 	}
 }

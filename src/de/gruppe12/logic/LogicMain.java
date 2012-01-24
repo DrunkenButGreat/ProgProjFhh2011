@@ -4,6 +4,14 @@ import java.util.Observable;
 import de.gruppe12.shared.*;
 import de.fhhannover.inform.hnefatafl.vorgaben.MoveStrategy;
 
+/** 
+ * LogicMain
+ * 
+ * @author Lennart Henke
+ * @Version 1.3.3.7
+ * 
+ */
+
 public class LogicMain extends Observable {
 	
 	private Board board;
@@ -11,20 +19,28 @@ public class LogicMain extends Observable {
 	de.fhhannover.inform.hnefatafl.vorgaben.Move currentMove;
 	private boolean gameEnd, gameLog, commandLine, defPlayerTurn;
 	private int thinkTime;
-	private int extraThinkTime = 1000;
+	private int extraThinkTime;;
 	private boolean humanAttacker, humanDefender;
 	private String lastGameLogEvent;
 	private String strAttacker = "Angreifer";
 	private String strDefender = "Verteidiger";
 	
-	// Konstruktoren für die unterschiedlichen Spielersituationen
-	
+	/**
+	 * Konstruktor
+	 */
 	
 	public LogicMain(){
 		initLogicMain();
 		gameLog = true;
 		commandLine = false;
+		extraThinkTime = 1000;
 	}
+	
+	/**
+	 * Startet ein neues Spiel mit menschlichem Angreifer und KI als Verteidiger
+	 * @param defender Verteidiger KI
+	 * @param thinkTime Zugzeit in ms
+	 */
 	
 	public void humanAttKiDef(MoveStrategy defender, int thinkTime){
 		setDefender(defender);
@@ -35,6 +51,12 @@ public class LogicMain extends Observable {
 		move();
 	}
 	
+	/**
+	 * Startet ein neues Spiel mit menschlichem Verteidiger und KI als Angreifer
+	 * @param attacker Angreifer KI
+	 * @param thinkTime Zugzeit in ms
+	 */
+	
 	public void humanDefKiAtt(MoveStrategy attacker, int thinkTime){
 		setAttacker(attacker);
 		this.humanDefender = true;
@@ -44,6 +66,11 @@ public class LogicMain extends Observable {
 		move();
 	}
 	
+	/**
+	 * Startet ein Spiel Mensch gegen Mensch
+	 * @param thinkTime Zugzeit in ms
+	 */
+	
 	public void humanDefHumanAtt(int thinkTime){
 		this.humanDefender = true;
 		this.humanAttacker = true;
@@ -51,6 +78,13 @@ public class LogicMain extends Observable {
 		initLogicMain();
 		move();
 	}
+	
+	/**
+	 * Starten ein Spiel KI gegen KI
+	 * @param defender Verteidiger KI
+	 * @param attacker Angreifer KI
+	 * @param thinkTime Zugzeit in ms
+	 */
 	
 	public void KiDefKiAtt(MoveStrategy defender, MoveStrategy attacker, int thinkTime){
 		setDefender(defender);
@@ -62,6 +96,10 @@ public class LogicMain extends Observable {
 		move();
 	}
 	
+	/**
+	 * Initialisiert das Board und globale Variablen
+	 */
+	
 	private void initLogicMain(){
 		this.board = new Board();
 		this.board.init();		
@@ -70,32 +108,64 @@ public class LogicMain extends Observable {
 		this.gameEnd = false;
 	}
 	
+	/**
+	 * Beendet alle spielenden KIs
+	 */
+	
 	public void resetLogic(){
 		this.gameEnd = true;
 	}
 
-	// Ende der Konstruktoren	
+	
+	/**
+	 * Setter für den Verteidiger
+	 * @param player Verteidiger KI
+	 */
 	
 	private void setDefender(MoveStrategy player){
 		this.defender = player;		
 	}
 	
+	/**
+	 * Setter für den Angreifer
+	 * @param player Angreifer KI
+	 */
 	private void setAttacker(MoveStrategy player){
 		this.attacker = player;		
 	}
+	
+	/**
+	 * Gibt das Board zurueck
+	 * @return Board
+	 */
 	
 	public Board getBoard(){
 		return this.board;
 	}	
 	
+	/**
+	 * Gibt zurueck, ob der Verteidiger am Zug ist
+	 * @return
+	 */
+	
 	public boolean getDefPlayerTurn(){
 		return this.defPlayerTurn;
 	}	
+	
+	/**
+	 * Nimmt einen Move entgegen und fuehrt ihn aus
+	 * @param move Auszufuehrender move
+	 */
 	
 	public void move(Move move){	
 		update(move);
 		move();
 	}
+	
+	/**
+	 * Speichert den aktuellen move zwischen
+	 * @param move Aktueller move
+	 */
 	
 	private void saveCurrentMove(de.fhhannover.inform.hnefatafl.vorgaben.Move move){
 		this.currentMove = move;
@@ -130,6 +200,7 @@ public class LogicMain extends Observable {
 	/**
 	 * Move-Schleife für die KI. Schleife läuft so lange, wie eine KI am Zug ist.
 	 */
+	
 	private void move(){
 		long startTime;
 		// Wenn der nächste Spieler eine KI ist, läuft die Schleife weiter
