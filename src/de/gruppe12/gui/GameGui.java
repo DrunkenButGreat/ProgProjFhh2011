@@ -442,7 +442,7 @@ public class GameGui extends JFrame {
 			
 			@Override
 			public void itemStateChanged(ItemEvent e) {
-				jcbAi.removeAll();
+				jcbAi.removeAllItems();
 				String aiPath= controller.getKiFolderList().get((String)jcbAiPath.getSelectedItem());
 				for (String s: controller.getStrats(aiPath).keySet()) {
 					jcbAi.addItem(s);
@@ -540,7 +540,7 @@ public class GameGui extends JFrame {
 			
 			@Override
 			public void itemStateChanged(ItemEvent e) {
-				jcbOffenderAi.removeAll();
+				jcbOffenderAi.removeAllItems();
 				String aiPath= controller.getKiFolderList().get((String)jcbOffenderAiPath.getSelectedItem());
 				for (String s: controller.getStrats(aiPath).keySet()) {
 					jcbOffenderAi.addItem(s);
@@ -553,7 +553,7 @@ public class GameGui extends JFrame {
 			
 			@Override
 			public void itemStateChanged(ItemEvent e) {
-				jcbDefenderAi.removeAll();
+				jcbDefenderAi.removeAllItems();
 				String aiPath= controller.getKiFolderList().get((String)jcbDefenderAiPath.getSelectedItem());
 				for (String s: controller.getStrats(aiPath).keySet()) {
 					jcbDefenderAi.addItem(s);
