@@ -147,6 +147,24 @@ public class MoveCheck {
 		if (board.getCellBC(currentMove.getFromCell()) == BoardContent.KING) {
 			isKing = true;
 		}
+		
+		/* Ueberpruefen ob Thron ueberquert wird */
+		if (!isKing) {
+			if (currentMove.getFromCell().getCol()==6) {
+				if (currentMove.getFromCell().getRow() <6 != currentMove.getToCell().getRow()<6) {
+					if (gamelog)
+						GameLog.logDebugEvent("Thron im Weg");
+					return false;
+				}
+			}
+			if (currentMove.getFromCell().getRow()==6) {
+				if (currentMove.getFromCell().getCol() <6 != currentMove.getToCell().getCol()<6) {
+					if (gamelog)
+						GameLog.logDebugEvent("Thron im Weg");
+					return false;
+				}
+			}
+		}
 
 		/* Bewegungsrichtung ermitteln */
 		if (currentMove.getFromCell().getCol() != currentMove.getToCell()
