@@ -24,6 +24,7 @@ public class GuiController implements Observer {
 	private static int thinkTime = 5000;
 	private String lastMoveLog = null;
 	private BoardContent[][] board = null;
+	private boolean kiFailed;
 
 	public GuiController() {
 		anim = new MoveAnimation(this);
@@ -50,10 +51,19 @@ public class GuiController implements Observer {
 		kiPaths.put(shortName, name);
 		return shortName;
 	}
+	
+	protected boolean kiDisqualified() {
+		return kiFailed;
+	}
 
 	public void setLogicMain(LogicMain logic) {
 		this.logic = logic;
 		logic.addObserver(this);
+	}
+	
+	private void reinit() {
+		kiFailed= false;
+		board= null;
 	}
 
 	public void resetLogic() {
@@ -156,6 +166,7 @@ public class GuiController implements Observer {
 		if (obj instanceof String) {
 			String str = (String) obj;
 			if (str.equals("GameOver")) {
+				kiFailed= true;
 				update();
 			}
 		}
@@ -234,7 +245,7 @@ public class GuiController implements Observer {
 	 */
 	protected void initHvHGame() {
 		logic.humanDefHumanAtt(thinkTime);
-		board = null;
+		reinit();
 	}
 
 	/**
@@ -269,7 +280,7 @@ public class GuiController implements Observer {
 			logic.humanAttKiDef(mStrat, thinkTime);
 		else
 			logic.humanDefKiAtt(mStrat, thinkTime);
-		board = null;
+		reinit();
 	}
 
 	/**
@@ -301,7 +312,7 @@ public class GuiController implements Observer {
 				logic.KiDefKiAtt(defStrat, offStrat, thinkTime);
 			}
 		}.start();
-		board = null;
+		reinit();
 	}
 
 	/**

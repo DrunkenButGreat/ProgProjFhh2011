@@ -25,6 +25,8 @@ public class JPanelBoardDisplay extends JPanel {
 	private Image defenderWinImage;
 	private Image offenderIcon;
 	private Image offenderWinImage;
+	private Image kiFailOffWinImage;
+	private Image kiFailDefWinImage;
 
 	/**
 	 * JPanelBoardDisplay
@@ -51,6 +53,11 @@ public class JPanelBoardDisplay extends JPanel {
 					"images/defbannerimg.gif"));
 			offenderWinImage = ImageIO.read(getClass().getResource(
 					"images/offbannerimg.gif"));
+			kiFailDefWinImage= ImageIO.read(getClass().getResource(
+			"images/kifaildefwin.gif"));
+			kiFailOffWinImage= ImageIO.read(getClass().getResource(
+			"images/kifailoffwin.gif"));
+			
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
@@ -142,7 +149,7 @@ public class JPanelBoardDisplay extends JPanel {
 
 		board = gc.getBoard();
 
-		int roughBoardSize = (int) (Math.min(getWidth(), getHeight()) * 0.9);
+		int roughBoardSize = (int) (Math.min(getWidth(), getHeight()) * 0.8);
 		fieldSize = roughBoardSize / 15;
 		boardStartX = (getWidth() - roughBoardSize) / 2;
 		boardStartY = (getHeight() - roughBoardSize) / 2;
@@ -174,9 +181,14 @@ public class JPanelBoardDisplay extends JPanel {
 		}
 
 		if (gc.gameFinished() && !gc.getAnimation().isRunning()) {
-			Image banner = offenderWinImage;
-			if (gc.defenderWon())
-				banner = defenderWinImage;
+			Image banner;
+			if (gc.kiDisqualified()) {
+				if (gc.defenderWon()) banner= kiFailDefWinImage;
+				else banner= kiFailOffWinImage;
+			} else {
+				if (gc.defenderWon()) banner= defenderWinImage;
+				else banner= offenderWinImage;
+			}
 
 			double imageRatio = banner.getHeight(null)
 					/ (double) banner.getWidth(null);
