@@ -170,7 +170,7 @@ public class RemoveCheck {
 								|| (x == 2 && (y == 0 || y == 12)))) {
 					tboard[x - 1][y] = BoardContent.EMPTY;
 					if (gamelog)
-						GameLog.logDebugEvent(opposite(me).toString()
+						GameLog.logDebugEvent(BoardContent.ATTACKER.toString()
 								+ " entfernt: " + (x - 1) + ", " + y);
 				}
 			} catch (Exception e) {
@@ -185,7 +185,7 @@ public class RemoveCheck {
 						|| (x == 10 && (y == 0 || y == 12)))) {
 					tboard[x + 1][y] = BoardContent.EMPTY;
 					if (gamelog)
-						GameLog.logDebugEvent(opposite(me).toString()
+						GameLog.logDebugEvent(BoardContent.ATTACKER.toString()
 								+ " entfernt: " + (x + 1) + ", " + y);
 				}
 			} catch (Exception e) {
@@ -200,7 +200,7 @@ public class RemoveCheck {
 						|| (y == 10 && (x == 0 || x == 12)))) {
 					tboard[x][y + 1] = BoardContent.EMPTY;
 					if (gamelog)
-						GameLog.logDebugEvent(opposite(me).toString()
+						GameLog.logDebugEvent(BoardContent.ATTACKER.toString()
 								+ " entfernt: " + x + ", " + (y + 1));
 				}
 			} catch (Exception e) {
@@ -215,7 +215,7 @@ public class RemoveCheck {
 						|| (y == 2 && (x == 0 || x == 12)))) {
 					tboard[x][y - 1] = BoardContent.EMPTY;
 					if (gamelog)
-						GameLog.logDebugEvent(opposite(me).toString()
+						GameLog.logDebugEvent(BoardContent.ATTACKER.toString()
 								+ " entfernt: " + x + ", " + (y - 1));
 				}
 			} catch (Exception e) {
