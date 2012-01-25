@@ -41,7 +41,7 @@ public class MoveCheck {
 			return false;
 		if (!checkMoveDirection(currentMove, board))
 			return false;
-		if (!checkForFortressAndThrone(currentMove, board))
+		if (!checkForFortress(currentMove, board))
 			return false;
 		if (!checkBoardContent(currentMove, board))
 			return false;
@@ -146,24 +146,6 @@ public class MoveCheck {
 		boolean isKing = false;
 		if (board.getCellBC(currentMove.getFromCell()) == BoardContent.KING) {
 			isKing = true;
-		}
-		
-		/* Ueberpruefen ob Thron ueberquert wird */
-		if (!isKing) {
-			if (currentMove.getFromCell().getCol()==6) {
-				if (currentMove.getFromCell().getRow() <6 != currentMove.getToCell().getRow()<6) {
-					if (gamelog)
-						GameLog.logDebugEvent("Thron im Weg");
-					return false;
-				}
-			}
-			if (currentMove.getFromCell().getRow()==6) {
-				if (currentMove.getFromCell().getCol() <6 != currentMove.getToCell().getCol()<6) {
-					if (gamelog)
-						GameLog.logDebugEvent("Thron im Weg");
-					return false;
-				}
-			}
 		}
 
 		/* Bewegungsrichtung ermitteln */
@@ -347,7 +329,7 @@ public class MoveCheck {
 	 * @param currentMove
 	 * @return : true/false
 	 */
-	private static boolean checkForFortressAndThrone(
+	private static boolean checkForFortress(
 			de.fhhannover.inform.hnefatafl.vorgaben.Move currentMove,
 			Board board) {
 
@@ -360,13 +342,6 @@ public class MoveCheck {
 					.getToCell().getRow()] != BoardContent.INVALID
 					&& board.get()[currentMove.getFromCell().getCol()][currentMove
 							.getFromCell().getRow()] != BoardContent.INVALID) {
-				if (currentMove.getToCell().getRow()==6 
-						&& currentMove.getToCell().getCol()==6 
-						&& board.get()[currentMove.getToCell().getCol()][currentMove.getToCell().getRow()]!= BoardContent.KING) {
-					if (gamelog)
-						GameLog.logDebugEvent("Normale Spielfigur auf Thron gezogen");
-					return false;
-				}
 				return true;
 			} else {
 				if (gamelog)
