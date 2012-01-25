@@ -108,6 +108,7 @@ public class RemoveCheck {
 
 		// Links gucken und evtl entfernen, wenn eigner Stein hinter Gegner -
 		// oder wenn Turm hinter Gegner
+		if (me == BoardContent.ATTACKER) {
 		try {
 			if (tboard[x - 1][y] == opposite(me)
 					&& (tboard[x - 2][y] == me || (x == 2 && (y == 0 || y == 12)))) {
@@ -160,6 +161,66 @@ public class RemoveCheck {
 			}
 		} catch (Exception e) {
 
+		}
+		}
+		else {
+			try {
+				if (tboard[x - 1][y] == BoardContent.ATTACKER
+						&& ((tboard[x - 2][y] == BoardContent.DEFENDER) || ((tboard[x - 2][y] == BoardContent.KING) )
+								|| (x == 2 && (y == 0 || y == 12)))) {
+					tboard[x - 1][y] = BoardContent.EMPTY;
+					if (gamelog)
+						GameLog.logDebugEvent(opposite(me).toString()
+								+ " entfernt: " + (x - 1) + ", " + y);
+				}
+			} catch (Exception e) {
+
+			}
+
+			// Rechts gucken und evtl entfernen, wenn eigner Stein hinter Gegner -
+			// oder wenn Turm hinter Gegner
+			try {
+				if (tboard[x + 1][y] == BoardContent.ATTACKER
+						&& ((tboard[x + 2][y] == BoardContent.DEFENDER) || ((tboard[x + 2][y] == BoardContent.KING) )
+						|| (x == 10 && (y == 0 || y == 12)))) {
+					tboard[x + 1][y] = BoardContent.EMPTY;
+					if (gamelog)
+						GameLog.logDebugEvent(opposite(me).toString()
+								+ " entfernt: " + (x + 1) + ", " + y);
+				}
+			} catch (Exception e) {
+
+			}
+
+			// Unten gucken und evtl entfernen, wenn eigner Stein hinter Gegner -
+			// oder wenn Turm hinter Gegner
+			try {
+				if (tboard[x][y + 1] == BoardContent.ATTACKER
+						&& ((tboard[x][y + 2] == BoardContent.DEFENDER) || ((tboard[x][y + 2] == BoardContent.KING)) 
+						|| (y == 10 && (x == 0 || x == 12)))) {
+					tboard[x][y + 1] = BoardContent.EMPTY;
+					if (gamelog)
+						GameLog.logDebugEvent(opposite(me).toString()
+								+ " entfernt: " + x + ", " + (y + 1));
+				}
+			} catch (Exception e) {
+
+			}
+
+			// Unten gucken und evtl entfernen, wenn eigner Stein hinter Gegner -
+			// oder wenn Turm hinter Gegner
+			try {
+				if (tboard[x][y - 1] == BoardContent.ATTACKER
+						&& ((tboard[x][y - 2] == BoardContent.DEFENDER) || ((tboard[x][y - 2] == BoardContent.KING)) 
+						|| (y == 2 && (x == 0 || x == 12)))) {
+					tboard[x][y - 1] = BoardContent.EMPTY;
+					if (gamelog)
+						GameLog.logDebugEvent(opposite(me).toString()
+								+ " entfernt: " + x + ", " + (y - 1));
+				}
+			} catch (Exception e) {
+
+			}
 		}
 
 		return tboard;
