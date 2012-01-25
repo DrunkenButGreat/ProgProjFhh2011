@@ -41,7 +41,7 @@ public class MoveCheck {
 			return false;
 		if (!checkMoveDirection(currentMove, board))
 			return false;
-		if (!checkForFortress(currentMove, board))
+		if (!checkForFortressAndThrone(currentMove, board))
 			return false;
 		if (!checkBoardContent(currentMove, board))
 			return false;
@@ -329,7 +329,7 @@ public class MoveCheck {
 	 * @param currentMove
 	 * @return : true/false
 	 */
-	private static boolean checkForFortress(
+	private static boolean checkForFortressAndThrone(
 			de.fhhannover.inform.hnefatafl.vorgaben.Move currentMove,
 			Board board) {
 
@@ -342,6 +342,13 @@ public class MoveCheck {
 					.getToCell().getRow()] != BoardContent.INVALID
 					&& board.get()[currentMove.getFromCell().getCol()][currentMove
 							.getFromCell().getRow()] != BoardContent.INVALID) {
+				if (currentMove.getToCell().getRow()==6 
+						&& currentMove.getToCell().getCol()==6 
+						&& board.get()[currentMove.getToCell().getCol()][currentMove.getToCell().getRow()]!= BoardContent.KING) {
+					if (gamelog)
+						GameLog.logDebugEvent("Normale Spielfigur auf Thron gezogen");
+					return false;
+				}
 				return true;
 			} else {
 				if (gamelog)
