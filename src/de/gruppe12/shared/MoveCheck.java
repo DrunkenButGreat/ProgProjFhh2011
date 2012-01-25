@@ -26,7 +26,7 @@ public class MoveCheck {
 	 * @param currentMove
 	 * @return
 	 */
-	public static Boolean check(
+	public static boolean check(
 			de.fhhannover.inform.hnefatafl.vorgaben.Move currentMove,
 			Board board, Boolean isDefTurn) {
 		long time1 = System.nanoTime();
@@ -57,14 +57,20 @@ public class MoveCheck {
 		return true;
 	}
 
-	public static Boolean check(
+	public static boolean check(
 			de.fhhannover.inform.hnefatafl.vorgaben.Move currentMove,
 			Board board, Boolean isDefTurn, boolean gameLog) {
 		gamelog = gameLog;
 		return check(currentMove, board, isDefTurn);
 	}
 	
-	public static Boolean checkCellsNotNull(
+	/**
+	 * Prueft, ob eine der im Move enthaltenen Cells null ist
+	 * @param currentMove Zu pruefender Zug
+	 * @return true/false
+	 */
+	
+	private static boolean checkCellsNotNull(
 			de.fhhannover.inform.hnefatafl.vorgaben.Move currentMove){
 				if (currentMove.getFromCell() == null ||
 					currentMove.getToCell() == null){
