@@ -15,7 +15,7 @@ import de.gruppe12.logic.GameLog;
 
 public class MoveCheck {
 	static final int boardSize = 12;
-	static boolean gamelog = false;
+	static boolean gamelog = true;
 
 	/**
 	 * check
@@ -100,12 +100,12 @@ public class MoveCheck {
 			de.fhhannover.inform.hnefatafl.vorgaben.Move currentMove,
 			Board board, Boolean isDefTurn) {
 		if (isDefTurn
-				&& (currentMove.getFromCell().getContent() == BoardContent.DEFENDER || currentMove
-						.getFromCell().getContent() == BoardContent.KING)) {
+				&& (board.getCellBC(currentMove.getFromCell())== BoardContent.DEFENDER || 
+						board.getCellBC(currentMove.getFromCell()) == BoardContent.KING)) {
 			return true;
 		}
 		if (!isDefTurn
-				&& currentMove.getFromCell().getContent() == BoardContent.ATTACKER) {
+				&& board.getCellBC(currentMove.getFromCell()) == BoardContent.ATTACKER) {
 			return true;
 		}
 		if (gamelog)
@@ -127,7 +127,7 @@ public class MoveCheck {
 			de.fhhannover.inform.hnefatafl.vorgaben.Move currentMove,
 			Board board) {
 		boolean isKing = false;
-		if (currentMove.getFromCell().getContent() == BoardContent.KING) {
+		if (board.getCellBC(currentMove.getFromCell()) == BoardContent.KING) {
 			isKing = true;
 		}
 
@@ -317,7 +317,7 @@ public class MoveCheck {
 			Board board) {
 
 		/* K�nig darf von daher erst pr�fen ob Content King */
-		if (currentMove.getFromCell().getContent() != BoardContent.KING) {
+		if (board.getCellBC(currentMove.getFromCell()) != BoardContent.KING) {
 
 			/* Test von Quelle und Ziel Move / Test anhand des Boardcontents */
 
