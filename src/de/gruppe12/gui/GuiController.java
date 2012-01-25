@@ -25,7 +25,6 @@ public class GuiController implements Observer {
 	private String lastMoveLog = null;
 	private BoardContent[][] board = null;
 	private boolean kiFailed;
-	private boolean bannerOff;
 
 	public GuiController() {
 		anim = new MoveAnimation(this);
@@ -35,10 +34,6 @@ public class GuiController implements Observer {
 		this.gui = gui;
 	}
 
-	protected void setBannerOff() {
-		bannerOff= true;
-		update();
-	}
 	protected String addKiPathName(String name) {
 		String shortName = name.substring(name.lastIndexOf('\\') + 1);
 		if (shortName.contains("."))
@@ -69,7 +64,6 @@ public class GuiController implements Observer {
 	private void reinit() {
 		kiFailed= false;
 		board= null;
-		bannerOff= false;
 	}
 
 	public void resetLogic() {
@@ -377,10 +371,6 @@ public class GuiController implements Observer {
 		synchronized (logic) {
 			logic.notifyAll();
 		}
-	}
-
-	public boolean bannerIsOff() {
-		return bannerOff;
 	}
 
 }

@@ -75,7 +75,6 @@ public class JPanelBoardDisplay extends JPanel {
 		addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if (gc.gameFinished()) gc.setBannerOff();
 				if (!gc.logicAwaitsPlayerMove()
 						|| gc.getAnimation().isRunning() || gc.gameFinished())
 					return;
@@ -182,31 +181,25 @@ public class JPanelBoardDisplay extends JPanel {
 		}
 
 		if (gc.gameFinished() && !gc.getAnimation().isRunning()) {
-			tempg.setColor(new Color(0,0,0,0.7f));
-			tempg.fillRect(boardStartX-fieldSize, boardStartY-fieldSize, fieldSize*17, fieldSize*17);
-			
-			
-			if (!gc.bannerIsOff()) {
-				Image banner;
-				if (gc.kiDisqualified()) {
-					if (gc.defenderWon()) banner= kiFailDefWinImage;
-					else banner= kiFailOffWinImage;
-				} else {
-					if (gc.defenderWon()) banner= defenderWinImage;
-					else banner= offenderWinImage;
-				}
-	
-				double imageRatio = banner.getHeight(null)
-						/ (double) banner.getWidth(null);
-				double bannerHeight = imageRatio * 19 * fieldSize;
-	
-				tempg.drawImage(
-						banner,
-						boardStartX - 2 * fieldSize,
-						(int) Math.round(boardStartY + 7.5 * fieldSize
-								- bannerHeight / 2), 19 * fieldSize,
-						(int) Math.round(bannerHeight), null);
+			Image banner;
+			if (gc.kiDisqualified()) {
+				if (gc.defenderWon()) banner= kiFailDefWinImage;
+				else banner= kiFailOffWinImage;
+			} else {
+				if (gc.defenderWon()) banner= defenderWinImage;
+				else banner= offenderWinImage;
 			}
+
+			double imageRatio = banner.getHeight(null)
+					/ (double) banner.getWidth(null);
+			double bannerHeight = imageRatio * 19 * fieldSize;
+
+			tempg.drawImage(
+					banner,
+					boardStartX - 2 * fieldSize,
+					(int) Math.round(boardStartY + 7.5 * fieldSize
+							- bannerHeight / 2), 19 * fieldSize,
+					(int) Math.round(bannerHeight), null);
 		}
 
 		tempg.dispose();
