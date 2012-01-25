@@ -30,7 +30,9 @@ public class MoveCheck {
 			de.fhhannover.inform.hnefatafl.vorgaben.Move currentMove,
 			Board board, Boolean isDefTurn) {
 		long time1 = System.nanoTime();
-
+		
+		if(!checkCellsNotNull(currentMove))
+			return false;
 		if (!checkIsMoving(currentMove, board))
 			return false;
 		if (!checkInBoard(currentMove, board))
@@ -60,6 +62,15 @@ public class MoveCheck {
 			Board board, Boolean isDefTurn, boolean gameLog) {
 		gamelog = gameLog;
 		return check(currentMove, board, isDefTurn);
+	}
+	
+	public static Boolean checkCellsNotNull(
+			de.fhhannover.inform.hnefatafl.vorgaben.Move currentMove){
+				if (currentMove.getFromCell() == null ||
+					currentMove.getToCell() == null){
+						return false;
+				}
+				return true;		
 	}
 
 	/**
