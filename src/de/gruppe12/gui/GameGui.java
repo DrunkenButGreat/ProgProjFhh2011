@@ -115,7 +115,7 @@ public class GameGui extends JFrame {
 
 		try {
 			setIconImage(ImageIO.read(getClass().getResource(
-					"images/viking icon.gif")));
+					"images/kingicon.gif")));
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
 		}

@@ -16,7 +16,7 @@ public class LogicMain extends Observable {
 
 	private Board board;
 	private MoveStrategy attacker, defender;
-	de.fhhannover.inform.hnefatafl.vorgaben.Move currentMove;
+	private de.fhhannover.inform.hnefatafl.vorgaben.Move currentMove;
 	private boolean gameEnd, gameLog, commandLine, defPlayerTurn;
 	private int thinkTime;
 	private int extraThinkTime;;
@@ -24,6 +24,7 @@ public class LogicMain extends Observable {
 	private String lastGameLogEvent;
 	private String strAttacker = "Angreifer";
 	private String strDefender = "Verteidiger";
+	private de.fhhannover.inform.hnefatafl.vorgaben.Move move;
 
 	/**
 	 * Konstruktor
@@ -228,6 +229,7 @@ public class LogicMain extends Observable {
 
 	private void move() {
 		long startTime;
+		
 		// Wenn der nächste Spieler eine KI ist, läuft die Schleife weiter
 		// wenn der nächste Spieler ein Mensch ist,
 		// wird die Schleife beendet und muss erneut von der GUI aufgerufen
@@ -244,13 +246,11 @@ public class LogicMain extends Observable {
 				public void run() {
 					// Wenn die Verteidiger KI am Zug ist
 					if (defPlayerTurn && !humanDefender) {
-						update(defender.calculateDefenderMove(currentMove,
-								thinkTime));
+						move = defender.calculateDefenderMove(currentMove, thinkTime);
 					}
 					// Wenn die Angreifer KI am Zug ist
 					else if (!defPlayerTurn && !humanAttacker) {
-						update(attacker.calculateAttackerMove(currentMove,
-								thinkTime));
+						move = attacker.calculateAttackerMove(currentMove, thinkTime);
 					}
 				}
 			});
@@ -277,6 +277,7 @@ public class LogicMain extends Observable {
 					return;
 				}
 			}
+			update(move);
 		}
 	}
 

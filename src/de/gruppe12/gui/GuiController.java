@@ -21,7 +21,7 @@ public class GuiController implements Observer {
 	private final MoveAnimation anim;
 	private GameGui gui;
 	private LogicMain logic;
-	private static int thinkTime = 10000;
+	private static int thinkTime = 5000;
 	private String lastMoveLog = null;
 	private BoardContent[][] board = null;
 
@@ -143,9 +143,9 @@ public class GuiController implements Observer {
 	 */
 	@Override
 	public void update(Observable obsSrc, Object obj) {
-		if (obj instanceof Move) {
+		if (obj instanceof de.fhhannover.inform.hnefatafl.vorgaben.Move) {
 			lastMoveLog = logic.getLastGameLogEvent();
-			Move move = (Move) obj;
+			de.fhhannover.inform.hnefatafl.vorgaben.Move move = (de.fhhannover.inform.hnefatafl.vorgaben.Move) obj;
 			Point sourceCell = new Point(move.getFromCell().getCol(), move
 					.getFromCell().getRow());
 			Point destCell = new Point(move.getToCell().getCol(), move
