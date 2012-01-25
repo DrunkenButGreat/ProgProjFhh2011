@@ -73,7 +73,7 @@ public class RemoveCheck {
 	private static Board doMove(
 			de.fhhannover.inform.hnefatafl.vorgaben.Move currentMove,
 			Board board) {
-		BoardContent bc = currentMove.getFromCell().getContent();
+		BoardContent bc = board.getCellBC(currentMove.getFromCell());
 		board.setCell(new Cell(currentMove.getFromCell().getCol(), currentMove
 				.getFromCell().getRow(), BoardContent.EMPTY));
 		board.setCell(new Cell(currentMove.getToCell().getCol(), currentMove
@@ -98,7 +98,7 @@ public class RemoveCheck {
 			Board board) {
 		int x = currentMove.getToCell().getCol(), y = currentMove.getToCell()
 				.getRow();
-		BoardContent me = currentMove.getToCell().getContent();
+		BoardContent me = board.getCellBC(currentMove.getToCell());
 		BoardContent tboard[][] = board.get();
 
 		/*
@@ -267,7 +267,7 @@ public class RemoveCheck {
 		}
 
 		// "K�nig zieht auf Burg" beendet die Methode und setzt das Finish Flag
-		if (currentMove.getToCell().getContent() == BoardContent.KING
+		if (board.getCellBC(currentMove.getToCell()) == BoardContent.KING
 				&& ((x == 0 && y == 0) || (x == 0 && y == tboard[0].length - 1)
 						|| (x == tboard.length - 1 && y == 0) || (x == tboard.length - 1 && y == tboard[0].length - 1))) {
 			tb.setFinish();
