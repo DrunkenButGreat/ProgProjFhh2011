@@ -160,6 +160,14 @@ public class JPanelBoardDisplay extends JPanel {
 				boardStartY - fieldSize + fieldSize * 17, 0, 0,
 				boardImage.getWidth(null), boardImage.getHeight(null), null);
 
+		if (!selectedCell.equals(unselected)) {
+			tempg.setColor(new Color(51f/256, 153f/256, 204f/256, 0.7f));
+
+			tempg.fillRect(boardStartX + fieldSize * (selectedCell.x + 1),
+					boardStartY + fieldSize * (selectedCell.y + 1), fieldSize,
+					fieldSize);
+		}
+		
 		for (int i = 0; i < 13; i++) {
 			for (int j = 0; j < 13; j++) {
 				if (board[i][j] != BoardContent.EMPTY
@@ -169,17 +177,6 @@ public class JPanelBoardDisplay extends JPanel {
 			}
 		}
 
-		if (!selectedCell.equals(unselected)) {
-			tempg.setColor(Color.BLUE);
-
-			tempg.drawRect(boardStartX + fieldSize * (selectedCell.x + 1),
-					boardStartY + fieldSize * (selectedCell.y + 1), fieldSize,
-					fieldSize);
-			tempg.drawRect(boardStartX + fieldSize * (selectedCell.x + 1) - 1,
-					boardStartY + fieldSize * (selectedCell.y + 1) - 1,
-					fieldSize + 2, fieldSize + 2);
-
-		}
 
 		if (gc.gameFinished() && !gc.getAnimation().isRunning()) {
 			tempg.setColor(new Color(0,0,0,0.7f));

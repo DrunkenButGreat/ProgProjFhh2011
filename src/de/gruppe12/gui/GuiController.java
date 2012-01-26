@@ -26,6 +26,7 @@ public class GuiController implements Observer {
 	private BoardContent[][] board = null;
 	private boolean kiFailed;
 	private boolean bannerOff;
+	private int zugCount;
 
 	public GuiController() {
 		anim = new MoveAnimation(this);
@@ -70,10 +71,15 @@ public class GuiController implements Observer {
 		kiFailed= false;
 		board= null;
 		bannerOff= false;
+		zugCount= 0;
 	}
 
 	public void resetLogic() {
 		logic.resetLogic();
+	}
+	
+	protected int getZugCount() {
+		return zugCount;
 	}
 
 	/**
@@ -160,6 +166,7 @@ public class GuiController implements Observer {
 	@Override
 	public void update(Observable obsSrc, Object obj) {
 		if (obj instanceof de.fhhannover.inform.hnefatafl.vorgaben.Move) {
+			zugCount++;
 			lastMoveLog = logic.getLastGameLogEvent();
 			de.fhhannover.inform.hnefatafl.vorgaben.Move move = (de.fhhannover.inform.hnefatafl.vorgaben.Move) obj;
 			Point sourceCell = new Point(move.getFromCell().getCol(), move
@@ -204,6 +211,7 @@ public class GuiController implements Observer {
 	 * ruft update()-Methode der GUI auf
 	 */
 	protected void update() {
+		
 		gui.update();
 	}
 

@@ -67,6 +67,8 @@ public class GameGui extends JFrame {
 
 	private JComboBox jcbDefenderAiPath;
 
+	private JTextField jtfZugCount;
+
 	/**
 	 * GameGui Konstruktor
 	 * 
@@ -655,6 +657,19 @@ public class GameGui extends JFrame {
 		jpnlGameInfo.add(jtfCurrentPlayer, BorderLayout.NORTH);
 		jtfCurrentPlayer.setOpaque(true);
 		jtfCurrentPlayer.setBackground(Color.LIGHT_GRAY);
+		
+		jtfZugCount = new JTextField();
+		jpnlGameInfo.add(jtfZugCount, BorderLayout.SOUTH);
+		jtfZugCount.setEditable(false);
+		jtfZugCount.setFont(font.deriveFont(14F));
+		jtfZugCount.setBorder(BorderFactory.createTitledBorder(
+				BorderFactory.createEtchedBorder(), "Count:"));
+		((TitledBorder) jtfZugCount.getBorder()).setTitleFont(font
+				.deriveFont(12F));
+		jtfZugCount.setOpaque(true);
+		jtfZugCount.setBackground(Color.LIGHT_GRAY);
+		
+		
 
 	}
 
@@ -774,6 +789,7 @@ public class GameGui extends JFrame {
 		if (logString != null) {
 			logListModel.addElement(logString);
 		}
+		jtfZugCount.setText(""+controller.getZugCount());
 
 		String currentPlayer;
 		if (controller.isDefendersTurn())
