@@ -179,7 +179,7 @@ public class JPanelBoardDisplay extends JPanel {
 
 
 		if (gc.gameFinished() && !gc.getAnimation().isRunning()) {
-			tempg.setColor(new Color(0,0,0,0.7f));
+			tempg.setColor(new Color(1,1,1,0.7f));
 			tempg.fillRect(boardStartX-fieldSize, boardStartY-fieldSize, fieldSize*17, fieldSize*17);
 			
 			
